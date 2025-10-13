@@ -45,5 +45,15 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	
+	<!-- Permissions for camera and photo gallery -->
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs access to the camera to scan codes and documents.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app needs access to your photos to import images for scanning.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>This app needs access to your photos to save scans.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app needs access to the microphone.</string>
 </dict>
 </plist>
