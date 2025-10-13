@@ -36,8 +36,8 @@ class AppColors {
   // Get score label
   static String getScoreLabel(int score) {
     if (score >= 75) return 'Excellent';
-    if (score >= 50) return 'Good';
-    if (score >= 25) return 'Mediocre';
-    return 'Poor';
+    if (score >= 50) return 'Bon';
+    if (score >= 25) return 'Moyen';
+    return 'Mauvais';
   }
 }

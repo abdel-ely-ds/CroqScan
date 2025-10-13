@@ -104,7 +104,7 @@ class ProductDetailsScreen extends StatelessWidget {
                 // Benefits
                 if (product.benefits.isNotEmpty)
                   _SectionCard(
-                    title: 'Benefits',
+                    title: 'Avantages',
                     icon: Icons.check_circle_outline,
                     iconColor: AppColors.scoreExcellent,
                     child: Column(
@@ -125,7 +125,7 @@ class ProductDetailsScreen extends StatelessWidget {
                 // Warnings
                 if (product.warnings.isNotEmpty)
                   _SectionCard(
-                    title: 'Warnings',
+                    title: 'Avertissements',
                     icon: Icons.warning_amber_outlined,
                     iconColor: AppColors.scorePoor,
                     child: Column(
@@ -145,7 +145,7 @@ class ProductDetailsScreen extends StatelessWidget {
 
                 // Ingredients
                 _SectionCard(
-                  title: 'Ingredients',
+                  title: 'Ingrédients',
                   icon: Icons.list_alt,
                   child: Wrap(
                     spacing: 8,
@@ -166,28 +166,28 @@ class ProductDetailsScreen extends StatelessWidget {
 
                 // Nutritional Info
                 _SectionCard(
-                  title: 'Nutritional Information',
+                  title: 'Informations Nutritionnelles',
                   icon: Icons.pie_chart_outline,
                   child: Column(
                     children: [
                       _NutritionRow(
-                        label: 'Protein',
+                        label: 'Protéines',
                         value: '${product.nutritionalInfo.protein}%',
                       ),
                       _NutritionRow(
-                        label: 'Fat',
+                        label: 'Matières grasses',
                         value: '${product.nutritionalInfo.fat}%',
                       ),
                       _NutritionRow(
-                        label: 'Fiber',
+                        label: 'Fibres',
                         value: '${product.nutritionalInfo.fiber}%',
                       ),
                       _NutritionRow(
-                        label: 'Moisture',
+                        label: 'Humidité',
                         value: '${product.nutritionalInfo.moisture}%',
                       ),
                       _NutritionRow(
-                        label: 'Ash',
+                        label: 'Cendres',
                         value: '${product.nutritionalInfo.ash}%',
                         isLast: true,
                       ),
@@ -225,7 +225,7 @@ class _ScoreCard extends StatelessWidget {
       child: Column(
         children: [
           const Text(
-            'Health Score',
+            'Score de Santé',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -268,13 +268,13 @@ class _ScoreCard extends StatelessWidget {
 
   String _getScoreDescription(int score) {
     if (score >= 75) {
-      return 'This product is excellent for your pet\'s health. It contains high-quality ingredients.';
+      return 'Ce produit est excellent pour la santé de votre animal. Il contient des ingrédients de haute qualité.';
     } else if (score >= 50) {
-      return 'This product is good but could be improved. Check the warnings below.';
+      return 'Ce produit est bon mais pourrait être amélioré. Vérifiez les avertissements ci-dessous.';
     } else if (score >= 25) {
-      return 'This product is mediocre. Consider alternatives with better ingredients.';
+      return 'Ce produit est médiocre. Considérez des alternatives avec de meilleurs ingrédients.';
     } else {
-      return 'This product is not recommended for your pet. Please check warnings carefully.';
+      return 'Ce produit n\'est pas recommandé pour votre animal. Veuillez vérifier attentivement les avertissements.';
     }
   }
 }

@@ -40,7 +40,7 @@ class _SearchScreenState extends State<SearchScreen> {
           onPressed: () => Navigator.pop(context),
         ),
         title: const Text(
-          'Search Products',
+          'Rechercher des Produits',
           style: TextStyle(
             color: AppColors.textPrimary,
             fontWeight: FontWeight.bold,
@@ -57,7 +57,7 @@ class _SearchScreenState extends State<SearchScreen> {
               controller: _searchController,
               onChanged: _performSearch,
               decoration: InputDecoration(
-                hintText: 'Search for products...',
+                hintText: 'Rechercher des produits...',
                 prefixIcon: const Icon(Icons.search, color: AppColors.primary),
                 suffixIcon: _searchController.text.isNotEmpty
                     ? IconButton(
@@ -89,7 +89,7 @@ class _SearchScreenState extends State<SearchScreen> {
               child: Row(
                 children: [
                   Text(
-                    '${_searchResults.length} product${_searchResults.length != 1 ? 's' : ''} found',
+                    '${_searchResults.length} produit${_searchResults.length > 1 ? 's' : ''} trouvé${_searchResults.length > 1 ? 's' : ''}',
                     style: const TextStyle(
                       color: AppColors.textSecondary,
                       fontSize: 14,
@@ -140,7 +140,7 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
           const SizedBox(height: 16),
           const Text(
-            'No products found',
+            'Aucun produit trouvé',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -151,7 +151,7 @@ class _SearchScreenState extends State<SearchScreen> {
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 48),
             child: Text(
-              'Try a different search term or scan a product barcode',
+              'Essayez un autre terme de recherche ou scannez un code-barres',
               style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
               textAlign: TextAlign.center,
             ),

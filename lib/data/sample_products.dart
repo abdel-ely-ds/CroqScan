@@ -1,31 +1,31 @@
 import '../models/product.dart';
 
-// Sample product database
+// Base de données de produits d'exemple
 class SampleProducts {
   static final List<Product> products = [
     Product(
       barcode: '3017620422003',
-      name: 'Premium Adult Dog Food',
-      brand: 'PetNutrition',
-      imageUrl: 'https://via.placeholder.com/300x300.png?text=Dog+Food',
+      name: 'Croquettes Premium Adulte Chien',
+      brand: 'NutriAnimal',
+      imageUrl: 'https://via.placeholder.com/300x300.png?text=Croquettes+Chien',
       healthScore: 85,
       suitableFor: [PetType.dog],
       description:
-          'High-quality protein-rich food for adult dogs with all essential nutrients.',
+          'Alimentation riche en protéines de haute qualité pour chiens adultes avec tous les nutriments essentiels.',
       ingredients: [
-        'Chicken (40%)',
-        'Brown rice',
-        'Sweet potato',
-        'Peas',
-        'Chicken fat',
-        'Vitamins & minerals',
+        'Poulet (40%)',
+        'Riz brun',
+        'Patate douce',
+        'Petits pois',
+        'Graisse de poulet',
+        'Vitamines et minéraux',
       ],
       warnings: [],
       benefits: [
-        'High protein content',
-        'Natural ingredients',
-        'No artificial colors',
-        'Supports healthy digestion',
+        'Teneur élevée en protéines',
+        'Ingrédients naturels',
+        'Sans colorants artificiels',
+        'Favorise une digestion saine',
       ],
       nutritionalInfo: NutritionalInfo(
         protein: 28.0,
@@ -37,26 +37,27 @@ class SampleProducts {
     ),
     Product(
       barcode: '3017620422010',
-      name: 'Budget Dog Kibble',
-      brand: 'EconomyPet',
-      imageUrl: 'https://via.placeholder.com/300x300.png?text=Budget+Food',
+      name: 'Croquettes Économiques Chien',
+      brand: 'ÉconoAnimal',
+      imageUrl:
+          'https://via.placeholder.com/300x300.png?text=Croquettes+Budget',
       healthScore: 35,
       suitableFor: [PetType.dog],
-      description: 'Economic dog food with basic nutrition.',
+      description: 'Alimentation économique pour chien avec nutrition de base.',
       ingredients: [
-        'Cereals (60%)',
-        'Meat by-products (20%)',
-        'Animal fat',
+        'Céréales (60%)',
+        'Sous-produits de viande (20%)',
+        'Graisse animale',
         'Colorants E102, E110',
-        'Preservatives',
+        'Conservateurs',
       ],
       warnings: [
-        'Contains artificial colors',
-        'High cereal content',
-        'Low meat content',
-        'May cause allergies',
+        'Contient des colorants artificiels',
+        'Teneur élevée en céréales',
+        'Faible teneur en viande',
+        'Peut causer des allergies',
       ],
-      benefits: ['Affordable price'],
+      benefits: ['Prix abordable'],
       nutritionalInfo: NutritionalInfo(
         protein: 18.0,
         fat: 8.0,
@@ -67,28 +68,28 @@ class SampleProducts {
     ),
     Product(
       barcode: '3017620422027',
-      name: 'Gourmet Cat Food - Salmon',
-      brand: 'FelineFine',
-      imageUrl: 'https://via.placeholder.com/300x300.png?text=Cat+Food',
+      name: 'Pâtée Gourmet Chat - Saumon',
+      brand: 'ChatFin',
+      imageUrl: 'https://via.placeholder.com/300x300.png?text=Patee+Chat',
       healthScore: 92,
       suitableFor: [PetType.cat],
       description:
-          'Premium wet food with real salmon, specially formulated for cats.',
+          'Pâtée premium au vrai saumon, spécialement formulée pour les chats.',
       ingredients: [
-        'Salmon (65%)',
-        'Fish broth',
-        'Rice',
-        'Carrots',
+        'Saumon (65%)',
+        'Bouillon de poisson',
+        'Riz',
+        'Carottes',
         'Taurine',
-        'Vitamins & minerals',
+        'Vitamines et minéraux',
       ],
       warnings: [],
       benefits: [
-        'Rich in Omega-3',
-        'High protein',
-        'Contains Taurine',
-        'No grains',
-        'Supports healthy coat',
+        'Riche en Oméga-3',
+        'Haute teneur en protéines',
+        'Contient de la taurine',
+        'Sans céréales',
+        'Favorise un pelage sain',
       ],
       nutritionalInfo: NutritionalInfo(
         protein: 12.0,
@@ -100,26 +101,26 @@ class SampleProducts {
     ),
     Product(
       barcode: '3017620422034',
-      name: 'Bird Seed Mix Premium',
-      brand: 'AvianCare',
-      imageUrl: 'https://via.placeholder.com/300x300.png?text=Bird+Food',
+      name: 'Mélange de Graines Premium Oiseaux',
+      brand: 'AviSoin',
+      imageUrl: 'https://via.placeholder.com/300x300.png?text=Graines+Oiseaux',
       healthScore: 78,
       suitableFor: [PetType.bird],
-      description: 'Nutritious seed mixture for parrots and parakeets.',
+      description: 'Mélange nutritif de graines pour perroquets et perruches.',
       ingredients: [
-        'Sunflower seeds',
+        'Graines de tournesol',
         'Millet',
-        'Canary seed',
-        'Oats',
-        'Dried fruits',
-        'Minerals',
+        'Alpiste',
+        'Avoine',
+        'Fruits séchés',
+        'Minéraux',
       ],
       warnings: [],
       benefits: [
-        'Variety of seeds',
-        'Natural ingredients',
-        'Rich in vitamins',
-        'Supports immune system',
+        'Variété de graines',
+        'Ingrédients naturels',
+        'Riche en vitamines',
+        'Renforce le système immunitaire',
       ],
       nutritionalInfo: NutritionalInfo(
         protein: 14.0,
@@ -131,26 +132,26 @@ class SampleProducts {
     ),
     Product(
       barcode: '3017620422041',
-      name: 'Treats with Artificial Colors',
-      brand: 'QuickSnack',
-      imageUrl: 'https://via.placeholder.com/300x300.png?text=Dog+Treats',
+      name: 'Friandises aux Colorants Artificiels',
+      brand: 'RapideSnack',
+      imageUrl: 'https://via.placeholder.com/300x300.png?text=Friandises+Chien',
       healthScore: 22,
       suitableFor: [PetType.dog, PetType.cat],
-      description: 'Colorful pet treats.',
+      description: 'Friandises colorées pour animaux.',
       ingredients: [
-        'Wheat flour',
-        'Sugar',
-        'Meat derivatives',
+        'Farine de blé',
+        'Sucre',
+        'Dérivés de viande',
         'Colorants E102, E110, E124',
-        'Preservatives E320',
-        'Flavor enhancers',
+        'Conservateurs E320',
+        'Exhausteurs de goût',
       ],
       warnings: [
-        'High sugar content',
-        'Multiple artificial colors',
-        'Preservatives',
-        'Low nutritional value',
-        'May cause hyperactivity',
+        'Teneur élevée en sucre',
+        'Multiples colorants artificiels',
+        'Conservateurs chimiques',
+        'Faible valeur nutritionnelle',
+        'Peut causer de l\'hyperactivité',
       ],
       benefits: [],
       nutritionalInfo: NutritionalInfo(
@@ -163,26 +164,27 @@ class SampleProducts {
     ),
     Product(
       barcode: '3017620422058',
-      name: 'Organic Rabbit Pellets',
-      brand: 'GreenPet',
-      imageUrl: 'https://via.placeholder.com/300x300.png?text=Rabbit+Food',
+      name: 'Granulés Bio Lapin',
+      brand: 'VertAnimal',
+      imageUrl: 'https://via.placeholder.com/300x300.png?text=Granules+Lapin',
       healthScore: 88,
       suitableFor: [PetType.rabbit],
-      description: 'Certified organic pellets for rabbits with timothy hay.',
+      description:
+          'Granulés certifiés biologiques pour lapins avec foin de timothy.',
       ingredients: [
-        'Timothy hay (70%)',
-        'Organic alfalfa',
-        'Organic oats',
-        'Dried vegetables',
-        'Minerals',
+        'Foin de timothy (70%)',
+        'Luzerne biologique',
+        'Avoine biologique',
+        'Légumes séchés',
+        'Minéraux',
       ],
       warnings: [],
       benefits: [
-        'Organic certified',
-        'High fiber content',
-        'Supports dental health',
-        'No artificial additives',
-        'Natural ingredients only',
+        'Certifié biologique',
+        'Riche en fibres',
+        'Favorise la santé dentaire',
+        'Sans additifs artificiels',
+        'Ingrédients naturels uniquement',
       ],
       nutritionalInfo: NutritionalInfo(
         protein: 14.0,
@@ -194,7 +196,7 @@ class SampleProducts {
     ),
   ];
 
-  // Find product by barcode
+  // Trouver un produit par code-barres
   static Product? findByBarcode(String barcode) {
     try {
       return products.firstWhere((p) => p.barcode == barcode);
@@ -203,7 +205,7 @@ class SampleProducts {
     }
   }
 
-  // Search products by name
+  // Rechercher des produits par nom
   static List<Product> search(String query) {
     if (query.isEmpty) return products;
     final lowerQuery = query.toLowerCase();

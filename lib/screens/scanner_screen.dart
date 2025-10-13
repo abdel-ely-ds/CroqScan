@@ -65,25 +65,25 @@ class _ScannerScreenState extends State<ScannerScreen> {
           children: [
             Icon(Icons.info_outline, color: AppColors.scoreMediocre),
             SizedBox(width: 12),
-            Text('Product Not Found'),
+            Text('Produit Non Trouvé'),
           ],
         ),
         content: Text(
-          'The product with barcode "$barcode" is not in our database yet.\n\nWe\'re constantly updating our database. Try again later or search for other products.',
+          'Le produit avec le code-barres "$barcode" n\'est pas encore dans notre base de données.\n\nNous mettons constamment à jour notre base de données. Réessayez plus tard ou recherchez d\'autres produits.',
         ),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.pop(context);
             },
-            child: const Text('Try Another'),
+            child: const Text('Essayer un Autre'),
           ),
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
               Navigator.pop(context);
             },
-            child: const Text('Go Back'),
+            child: const Text('Retour'),
           ),
         ],
       ),
@@ -157,7 +157,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
                   ),
                   const SizedBox(height: 16),
                   const Text(
-                    'Position the barcode in the frame',
+                    'Positionnez le code-barres dans le cadre',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 18,
@@ -167,7 +167,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'The scan will happen automatically',
+                    'Le scan se fera automatiquement',
                     style: TextStyle(
                       color: Colors.white.withOpacity(0.8),
                       fontSize: 14,

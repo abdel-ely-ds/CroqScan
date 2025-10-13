@@ -2,70 +2,70 @@
 
 ![CroqScan](image.png)
 
-**Pet Product Health Scanner** - Your trusted companion for checking the quality and safety of pet products.
+**Scanner Santé Produits Animaux** - Votre compagnon de confiance pour vérifier la qualité et la sécurité des produits pour animaux.
 
-Like Yuka for humans, CroqScan helps you scan and evaluate pet food and products to ensure the best health for your furry, feathered, and scaly friends.
+Comme Yuka pour les humains, CroqScan vous aide à scanner et évaluer la nourriture et les produits pour animaux afin d'assurer la meilleure santé à vos compagnons à poils, à plumes et à écailles.
 
-**Supported Platforms:** Android 📱 | iOS 🍎
-
----
-
-## 🚀 Features
-
-### ✅ Core Functionality
-
-- **Barcode Scanner** - Scan product barcodes using your camera
-- **Product Search** - Browse and search our product database
-- **Health Scoring** - 0-100 health score with color-coded ratings
-- **Detailed Analysis** - View ingredients, nutritional info, warnings, and benefits
-- **Multi-Pet Support** - Products categorized for dogs, cats, birds, rabbits, and more
-
-### 🎨 User Experience
-
-- **Beautiful UI** - Modern, clean design with Material 3
-- **Intuitive Navigation** - Simple and easy to use
-- **Trustworthy Design** - Professional interface that inspires confidence
-- **Responsive** - Smooth animations and fast performance
-
-### 📊 Product Information
-
-- **Health Score** (0-100) with visual indicators:
-  - 🟢 75-100: Excellent
-  - 🟡 50-74: Good
-  - 🟠 25-49: Mediocre
-  - 🔴 0-24: Poor
-- **Ingredient List** - Complete list of all ingredients
-- **Nutritional Analysis** - Protein, fat, fiber, moisture, ash content
-- **Warnings** - Alerts for harmful ingredients or concerns
-- **Benefits** - Highlights of positive qualities
+**Plateformes supportées :** Android 📱 | iOS 🍎
 
 ---
 
-## 📋 Prerequisites
+## 🚀 Fonctionnalités
+
+### ✅ Fonctionnalités Principales
+
+- **Scanner de Codes-Barres** - Scannez les codes-barres des produits avec votre caméra
+- **Recherche de Produits** - Parcourez et recherchez dans notre base de données
+- **Score de Santé** - Score 0-100 avec évaluations par code couleur
+- **Analyse Détaillée** - Consultez les ingrédients, infos nutritionnelles, avertissements et avantages
+- **Support Multi-Animaux** - Produits catégorisés pour chiens, chats, oiseaux, lapins et plus
+
+### 🎨 Expérience Utilisateur
+
+- **Interface Magnifique** - Design moderne et épuré avec Material 3
+- **Navigation Intuitive** - Simple et facile à utiliser
+- **Design de Confiance** - Interface professionnelle qui inspire confiance
+- **Responsive** - Animations fluides et performances rapides
+
+### 📊 Informations Produit
+
+- **Score de Santé** (0-100) avec indicateurs visuels :
+  - 🟢 75-100 : Excellent
+  - 🟡 50-74 : Bon
+  - 🟠 25-49 : Moyen
+  - 🔴 0-24 : Mauvais
+- **Liste d'Ingrédients** - Liste complète de tous les ingrédients
+- **Analyse Nutritionnelle** - Teneur en protéines, graisses, fibres, humidité, cendres
+- **Avertissements** - Alertes sur les ingrédients nocifs ou préoccupants
+- **Avantages** - Points forts des qualités positives
+
+---
+
+## 📋 Prérequis
 
 - Flutter SDK (version >=3.9.2)
-- For iOS: Xcode installed and configured
-- For Android: Android Studio with Android SDK
-- A device with a camera (for scanning)
+- Pour iOS : Xcode installé et configuré
+- Pour Android : Android Studio avec SDK Android
+- Un appareil avec caméra (pour scanner)
 
 ---
 
 ## 🛠️ Installation
 
-1. Clone the repository:
+1. Clonez le repository :
 
 ```bash
-git clone <your-repo>
+git clone <votre-repo>
 cd CroqScan
 ```
 
-2. Install dependencies:
+2. Installez les dépendances :
 
 ```bash
 flutter pub get
 ```
 
-3. For iOS, install pods:
+3. Pour iOS, installez les pods :
 
 ```bash
 cd ios
@@ -75,7 +75,7 @@ cd ..
 
 ---
 
-## 🏃 Running the Application
+## 🏃 Lancement de l'Application
 
 ### Android
 
@@ -83,7 +83,7 @@ cd ..
 flutter run
 ```
 
-or for a production build:
+ou pour un build de production :
 
 ```bash
 flutter build apk --release
@@ -95,102 +95,102 @@ flutter build apk --release
 flutter run
 ```
 
-or for a production build:
+ou pour un build de production :
 
 ```bash
 flutter build ios --release
 ```
 
-**iOS Note**: You need an Apple Developer account and configure code signing in Xcode. See the [Flutter iOS documentation](https://docs.flutter.dev/platform-integration/ios/setup).
+**Note iOS** : Vous devez avoir un compte développeur Apple et configurer la signature du code dans Xcode. Voir la [documentation Flutter iOS](https://docs.flutter.dev/platform-integration/ios/setup).
 
 ---
 
-## 📱 How to Use
+## 📱 Comment Utiliser
 
-### 1. Scan a Product
+### 1. Scanner un Produit
 
-- Open the app
-- Tap "Scan a Product"
-- Point your camera at the barcode
-- View instant health score and details
+- Ouvrez l'app
+- Appuyez sur "Scanner un Produit"
+- Pointez votre caméra vers le code-barres
+- Consultez le score de santé et les détails instantanés
 
-### 2. Search Products
+### 2. Rechercher des Produits
 
-- Open the app
-- Tap "Search Products"
-- Type product name or brand
-- Browse and tap to view details
+- Ouvrez l'app
+- Appuyez sur "Rechercher des Produits"
+- Tapez le nom du produit ou de la marque
+- Parcourez et appuyez pour voir les détails
 
-### 3. Understand the Score
+### 3. Comprendre le Score
 
-- **Excellent (75-100)**: High quality, safe for your pet
-- **Good (50-74)**: Acceptable but could be better
-- **Mediocre (25-49)**: Not recommended, check alternatives
-- **Poor (0-24)**: Avoid - contains harmful ingredients
+- **Excellent (75-100)** : Haute qualité, sûr pour votre animal
+- **Bon (50-74)** : Acceptable mais pourrait être mieux
+- **Moyen (25-49)** : Non recommandé, vérifiez les alternatives
+- **Mauvais (0-24)** : À éviter - contient des ingrédients nocifs
 
 ---
 
 ## 🔑 Permissions
 
-The application requires the following permissions:
+L'application nécessite les permissions suivantes :
 
-- **Camera**: To scan product barcodes
-- **Photo gallery**: To import images (future feature)
-- **Storage**: To save scan history (future feature)
-
----
-
-## 📦 Main Dependencies
-
-- `camera`: Camera access
-- `image_picker`: Image selection
-- `permission_handler`: Permission management
-- `mobile_scanner`: QR/barcode scanner
-- `path_provider`: System directory access
+- **Caméra** : Pour scanner les codes-barres des produits
+- **Galerie photo** : Pour importer des images (fonctionnalité future)
+- **Stockage** : Pour sauvegarder l'historique des scans (fonctionnalité future)
 
 ---
 
-## 🏗️ Project Structure
+## 📦 Dépendances Principales
+
+- `camera` : Accès à la caméra
+- `image_picker` : Sélection d'images
+- `permission_handler` : Gestion des permissions
+- `mobile_scanner` : Scanner QR/codes-barres
+- `path_provider` : Accès aux répertoires système
+
+---
+
+## 🏗️ Structure du Projet
 
 ```
 lib/
-  ├── main.dart                 # Application entry point
+  ├── main.dart                 # Point d'entrée de l'application
   ├── constants/
-  │   └── app_colors.dart       # Color palette and theming
+  │   └── app_colors.dart       # Palette de couleurs et thématique
   ├── models/
-  │   └── product.dart          # Product and nutritional data models
+  │   └── product.dart          # Modèles de données produit et nutritionnelles
   ├── data/
-  │   └── sample_products.dart  # Sample product database
+  │   └── sample_products.dart  # Base de données de produits d'exemple
   ├── screens/
-  │   ├── home_screen.dart      # Main home screen
-  │   ├── scanner_screen.dart   # Barcode scanner
-  │   ├── search_screen.dart    # Product search
-  │   └── product_details_screen.dart # Product details view
+  │   ├── home_screen.dart      # Écran d'accueil principal
+  │   ├── scanner_screen.dart   # Scanner de codes-barres
+  │   ├── search_screen.dart    # Recherche de produits
+  │   └── product_details_screen.dart # Vue détails produit
   └── widgets/
-      ├── score_badge.dart      # Health score badge
-      └── product_card.dart     # Product list item
+      ├── score_badge.dart      # Badge de score de santé
+      └── product_card.dart     # Élément de liste de produits
 
-android/                         # Android native configuration
-ios/                             # iOS native configuration
-assets/                          # Images and icons
+android/                         # Configuration native Android
+ios/                             # Configuration native iOS
+assets/                          # Images et icônes
 ```
 
 ---
 
-## 🎨 Design Philosophy
+## 🎨 Philosophie de Design
 
-CroqScan is designed with three key principles:
+CroqScan est conçu avec trois principes clés :
 
-1. **Trust** - Professional design that conveys reliability and expertise
-2. **Simplicity** - Easy to use for everyone, from tech-savvy to beginners
-3. **Clarity** - Clear visual indicators and straightforward information
+1. **Confiance** - Design professionnel qui transmet fiabilité et expertise
+2. **Simplicité** - Facile à utiliser pour tous, des utilisateurs avertis aux débutants
+3. **Clarté** - Indicateurs visuels clairs et informations simples
 
-### Color System
+### Système de Couleurs
 
-- **Blue (#2D9CDB)** - Primary color, represents trust and health
-- **Green (#27AE60)** - Excellent products, safe choice
-- **Yellow/Orange (#F2994A)** - Caution, mediocre products
-- **Red (#EB5757)** - Warning, poor quality
+- **Bleu (#2D9CDB)** - Couleur primaire, représente la confiance et la santé
+- **Vert (#27AE60)** - Produits excellents, choix sûr
+- **Jaune/Orange (#F2994A)** - Attention, produits moyens
+- **Rouge (#EB5757)** - Avertissement, mauvaise qualité
 
 ---
 
@@ -198,82 +198,82 @@ CroqScan is designed with three key principles:
 
 ### Android
 
-- **Application ID**: `com.croqscan.app`
-- **Min SDK**: 21 (Android 5.0)
-- **Target SDK**: Latest stable version
+- **ID d'Application** : `com.croqscan.app`
+- **SDK Min** : 21 (Android 5.0)
+- **SDK Cible** : Dernière version stable
 
 ### iOS
 
-- **Bundle ID**: To be configured in Xcode
-- **Deployment Target**: iOS 12.0+
+- **Bundle ID** : À configurer dans Xcode
+- **Cible de Déploiement** : iOS 12.0+
 
 ---
 
-## 📝 Roadmap
+## 📝 Feuille de Route
 
-### Current (v1.0)
+### Actuel (v1.0)
 
-- [x] Barcode scanning
-- [x] Product search
-- [x] Health scoring system
-- [x] Detailed product information
-- [x] Sample product database
+- [x] Scanner de codes-barres
+- [x] Recherche de produits
+- [x] Système de score de santé
+- [x] Informations détaillées sur les produits
+- [x] Base de données de produits d'exemple
 
-### Planned Features
+### Fonctionnalités Prévues
 
-- [ ] Real API integration
-- [ ] User accounts
-- [ ] Scan history
-- [ ] Favorites list
-- [ ] Product comparison
-- [ ] Share results
-- [ ] Community ratings
-- [ ] Custom pet profiles
-- [ ] Offline mode
-- [ ] Multi-language support
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! This app is designed to help pet owners make better choices for their pets' health.
-
-If you'd like to contribute:
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
+- [ ] Intégration API réelle
+- [ ] Comptes utilisateur
+- [ ] Historique des scans
+- [ ] Liste de favoris
+- [ ] Comparaison de produits
+- [ ] Partage de résultats
+- [ ] Évaluations communautaires
+- [ ] Profils d'animaux personnalisés
+- [ ] Mode hors ligne
+- [ ] Support multi-langues
 
 ---
 
-## 📄 License
+## 🤝 Contribution
 
-This project is licensed under the MIT License.
+Les contributions sont les bienvenues ! Cette app est conçue pour aider les propriétaires d'animaux à faire de meilleurs choix pour la santé de leurs animaux.
+
+Si vous souhaitez contribuer :
+
+1. Forkez le repository
+2. Créez une branche de fonctionnalité
+3. Effectuez vos modifications
+4. Soumettez une pull request
 
 ---
 
-## 🐾 About
+## 📄 Licence
 
-CroqScan was created to help pet owners make informed decisions about the products they buy for their beloved companions. Just like how Yuka helps humans eat better, CroqScan helps pets live healthier lives.
+Ce projet est sous licence MIT.
 
-**Made with ❤️ for pets and their humans**
+---
+
+## 🐾 À Propos
+
+CroqScan a été créé pour aider les propriétaires d'animaux à prendre des décisions éclairées sur les produits qu'ils achètent pour leurs compagnons bien-aimés. Tout comme Yuka aide les humains à mieux manger, CroqScan aide les animaux à vivre plus sainement.
+
+**Fait avec ❤️ pour les animaux et leurs humains**
 
 ---
 
 ## 📞 Support
 
-For questions, feature requests, or bug reports, please open an issue on GitHub.
+Pour des questions, demandes de fonctionnalités ou rapports de bugs, veuillez ouvrir une issue sur GitHub.
 
 ---
 
-## 🙏 Acknowledgments
+## 🙏 Remerciements
 
-- Inspired by Yuka app
-- Thanks to the Flutter community
-- Icons by Flutter Material Icons
-- Sample data for demonstration purposes only
+- Inspiré par l'application Yuka
+- Merci à la communauté Flutter
+- Icônes par Flutter Material Icons
+- Données d'exemple à des fins de démonstration uniquement
 
 ---
 
-**Remember: Always consult with your veterinarian for specific dietary needs and health concerns for your pets!** 🐕 🐈 🐦
+**Rappel : Consultez toujours votre vétérinaire pour les besoins alimentaires spécifiques et les problèmes de santé de vos animaux !** 🐕 🐈 🐦

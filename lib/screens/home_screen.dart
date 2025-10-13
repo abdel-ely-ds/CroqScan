@@ -45,7 +45,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        'Pet Product Health Scanner',
+                        'Scanner Santé Produits Animaux',
                         style: TextStyle(
                           fontSize: 14,
                           color: AppColors.textSecondary,
@@ -60,7 +60,7 @@ class HomeScreen extends StatelessWidget {
 
               // Welcome message
               const Text(
-                'Keep your pets healthy',
+                'Gardez vos animaux en bonne santé',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -69,7 +69,7 @@ class HomeScreen extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               const Text(
-                'Scan product barcodes to check their quality and ingredients.',
+                'Scannez les codes-barres des produits pour vérifier leur qualité et leurs ingrédients.',
                 style: TextStyle(
                   fontSize: 16,
                   color: AppColors.textSecondary,
@@ -82,8 +82,8 @@ class HomeScreen extends StatelessWidget {
               // Action buttons
               _ActionButton(
                 icon: Icons.qr_code_scanner,
-                title: 'Scan a Product',
-                subtitle: 'Use your camera to scan',
+                title: 'Scanner un Produit',
+                subtitle: 'Utilisez votre caméra pour scanner',
                 gradient: const LinearGradient(
                   colors: [AppColors.primary, AppColors.accent],
                 ),
@@ -101,8 +101,8 @@ class HomeScreen extends StatelessWidget {
 
               _ActionButton(
                 icon: Icons.search,
-                title: 'Search Products',
-                subtitle: 'Browse product database',
+                title: 'Rechercher des Produits',
+                subtitle: 'Parcourir la base de données',
                 gradient: LinearGradient(
                   colors: [
                     AppColors.primary.withOpacity(0.7),
@@ -141,7 +141,7 @@ class HomeScreen extends StatelessWidget {
                     const SizedBox(width: 16),
                     Expanded(
                       child: Text(
-                        'We analyze ingredients and provide health scores to help you choose the best for your pets.',
+                        'Nous analysons les ingrédients et fournissons des scores de santé pour vous aider à choisir le meilleur pour vos animaux.',
                         style: TextStyle(
                           fontSize: 13,
                           color: AppColors.textPrimary,

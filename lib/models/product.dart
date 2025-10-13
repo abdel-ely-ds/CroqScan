@@ -8,15 +8,15 @@ enum PetType {
   String get displayName {
     switch (this) {
       case PetType.dog:
-        return 'Dog';
+        return 'Chien';
       case PetType.cat:
-        return 'Cat';
+        return 'Chat';
       case PetType.bird:
-        return 'Bird';
+        return 'Oiseau';
       case PetType.rabbit:
-        return 'Rabbit';
+        return 'Lapin';
       case PetType.other:
-        return 'Other';
+        return 'Autre';
     }
   }
 }
