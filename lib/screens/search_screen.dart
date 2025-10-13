@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
-import '../data/sample_products.dart';
 import '../models/product.dart';
 import '../widgets/product_card.dart';
+import '../widgets/products_provider.dart';
+import '../services/product_service.dart';
 import 'product_details_screen.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -14,8 +15,42 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
-  List<Product> _searchResults = SampleProducts.products;
+  List<Product> _searchResults = [];
   PetType? _selectedPetFilter;
+  List<Product> _allProducts = [];
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    print('🔄 didChangeDependencies appelé');
+    final provider = ProductsProvider.of(context);
+    print('   Provider: ${provider != null ? "trouvé" : "NULL"}');
+    if (provider != null) {
+      print('   Provider a ${provider.products.length} produits');
+    }
+    print('   _allProducts.length actuel: ${_allProducts.length}');
+
+    if (provider != null && _allProducts.isEmpty) {
+      _allProducts = provider.products;
+      _searchResults = _allProducts;
+      print('✅ SearchScreen initialisé avec ${_allProducts.length} produits');
+      print('   _searchResults.length = ${_searchResults.length}');
+
+      // Log quelques produits pour vérifier
+      if (_allProducts.length > 0) {
+        print('   Exemples de produits:');
+        for (int i = 0; i < _allProducts.length && i < 3; i++) {
+          print(
+            '     ${i + 1}. ${_allProducts[i].name} (${_allProducts[i].brand})',
+          );
+        }
+      }
+    } else if (provider == null) {
+      print('⚠️ PROBLÈME: Provider est NULL!');
+    } else if (_allProducts.isNotEmpty) {
+      print('ℹ️ Produits déjà chargés, skip');
+    }
+  }
 
   @override
   void dispose() {
@@ -24,12 +59,20 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   void _performSearch(String query) {
+    print('🔎 Recherche: "$query", filtre: $_selectedPetFilter');
+    print('📊 Nombre de produits avant recherche: ${_allProducts.length}');
+
     setState(() {
-      _searchResults = SampleProducts.search(query);
-      if (_selectedPetFilter != null) {
-        _searchResults = _searchResults
-            .where((p) => p.suitableFor.contains(_selectedPetFilter))
-            .toList();
+      _searchResults = ProductService.searchProducts(
+        _allProducts,
+        query,
+        petFilter: _selectedPetFilter,
+      );
+      print('📊 Résultats trouvés: ${_searchResults.length}');
+      if (_searchResults.isNotEmpty && _searchResults.length <= 5) {
+        for (var p in _searchResults) {
+          print('  → ${p.name} (${p.brand})');
+        }
       }
     });
   }
@@ -42,6 +85,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   void _quickSearch(String term) {
+    print('⚡ Quick search: "$term"');
     _searchController.text = term;
     _performSearch(term);
   }

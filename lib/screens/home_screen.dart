@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
+import '../widgets/products_provider.dart';
 import 'scanner_screen.dart';
 import 'search_screen.dart';
 
@@ -8,6 +9,9 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final provider = ProductsProvider.of(context);
+    final int productCount = provider?.products.length ?? 0;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -74,6 +78,34 @@ class HomeScreen extends StatelessWidget {
                   fontSize: 16,
                   color: AppColors.textSecondary,
                   height: 1.5,
+                ),
+              ),
+              const SizedBox(height: 12),
+              // Database stats
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      Icons.inventory_2,
+                      size: 16,
+                      color: AppColors.primary,
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      '$productCount produits dans la base',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
                 ),
               ),
 

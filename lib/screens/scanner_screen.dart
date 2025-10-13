@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import '../constants/app_colors.dart';
-import '../data/sample_products.dart';
+import '../models/product.dart';
+import '../widgets/products_provider.dart';
+import '../services/product_service.dart';
 import 'product_details_screen.dart';
 
 class ScannerScreen extends StatefulWidget {
@@ -14,6 +16,16 @@ class ScannerScreen extends StatefulWidget {
 class _ScannerScreenState extends State<ScannerScreen> {
   MobileScannerController cameraController = MobileScannerController();
   bool _isProcessing = false;
+  List<Product> _allProducts = [];
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final provider = ProductsProvider.of(context);
+    if (provider != null && _allProducts.isEmpty) {
+      _allProducts = provider.products;
+    }
+  }
 
   @override
   void dispose() {
@@ -35,7 +47,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
     });
 
     // Search for product in database
-    final product = SampleProducts.findByBarcode(barcode);
+    final product = ProductService.findProductByBarcode(_allProducts, barcode);
 
     if (product != null && mounted) {
       // Product found - navigate to details

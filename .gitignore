@@ -100,3 +100,4 @@ lib/generated_plugin_registrant.dart
 *.apk
 *.aab
 *.ipa
+assets/openpetfoodfacts-products.jsonl
