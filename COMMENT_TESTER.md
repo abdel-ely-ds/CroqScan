@@ -96,26 +96,66 @@ flutter run -d android
 **À vérifier :**
 
 - [ ] L'écran de recherche s'ouvre
-- [ ] Les 6 produits sont listés initialement
+- [ ] Les filtres par animal s'affichent (Tous, Chiens, Chats, Oiseaux, Lapins)
+- [ ] Les recherches populaires sont visibles (Premium, Bio, Saumon, etc.)
+- [ ] Les 4 catégories s'affichent (Croquettes, Pâtées, Friandises, Bio)
+- [ ] Les 6 produits sont listés quand on cherche
 - [ ] La barre de recherche fonctionne
 - [ ] Les cartes de produits s'affichent correctement
 - [ ] Appuyer sur un produit ouvre les détails
 - [ ] L'état vide s'affiche quand aucun résultat
-- [ ] Le bouton effacer fonctionne
+- [ ] Le bouton "Tout effacer" fonctionne
 
 **Comment tester :**
 
 1. Depuis l'accueil, appuyez sur **"Rechercher des Produits"**
-2. Voyez tous les 6 produits d'exemple
-3. Tapez dans la barre de recherche :
+2. **Testez les filtres par animal** :
+   - Appuyez sur "Chiens" → voir seulement produits pour chiens
+   - Appuyez sur "Chats" → voir seulement produit chat
+   - Appuyez sur "Tous" → voir tous les produits
+3. **Testez les recherches populaires** :
+   - Appuyez sur "Premium" → recherche automatique
+   - Appuyez sur "Bio" → trouve produits bio
+   - Appuyez sur "Saumon" → trouve pâtée chat
+4. **Testez les catégories** :
+   - Appuyez sur "Croquettes & Nourriture Sèche"
+   - Appuyez sur "Produits Bio & Naturels"
+   - Vérifiez que la recherche se fait automatiquement
+5. **Tapez dans la barre de recherche** :
    - "chat" → devrait montrer la Pâtée Chat
    - "premium" → devrait montrer 2 produits
    - "bio" → devrait montrer les Granulés Lapin
    - "xyz" → devrait montrer l'état vide
-4. Appuyez sur le bouton X pour effacer la recherche
-5. Appuyez sur n'importe quelle carte de produit → va aux détails
+6. Appuyez sur le bouton X pour effacer la recherche
+7. Appuyez sur "Tout effacer" pour réinitialiser filtres et recherche
+8. Appuyez sur n'importe quelle carte de produit → va aux détails
 
-**Termes de recherche à essayer :**
+**Fonctionnalités à tester :**
+
+**Filtres par Animal :**
+
+- Appuyez sur "Chiens" → voir produits pour chiens uniquement
+- Appuyez sur "Chats" → voir produit chat uniquement
+- Appuyez sur "Oiseaux" → voir produit oiseau uniquement
+- Appuyez sur "Lapins" → voir produit lapin uniquement
+- Appuyez sur "Tous" → voir tous les produits
+
+**Recherches Populaires :**
+
+- Appuyez sur "Premium" → recherche instantanée
+- Appuyez sur "Bio" → trouve produits bio
+- Appuyez sur "Saumon" → trouve pâtée chat
+- Appuyez sur "Poulet" → trouve croquettes chien
+- Appuyez sur "Sans Céréales" → filtre les produits
+
+**Catégories :**
+
+- Appuyez sur "Croquettes & Nourriture Sèche"
+- Appuyez sur "Pâtées & Nourriture Humide"
+- Appuyez sur "Friandises & Snacks"
+- Appuyez sur "Produits Bio & Naturels"
+
+**Termes de recherche manuels à taper :**
 
 - "chien"
 - "chat"

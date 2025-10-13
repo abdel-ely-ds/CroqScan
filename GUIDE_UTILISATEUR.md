@@ -55,18 +55,32 @@ Bienvenue dans CroqScan ! Ce guide vous aidera à tirer le meilleur parti de vot
 ### Comment Rechercher
 
 1. Depuis l'écran d'accueil, appuyez sur **"Rechercher des Produits"**
-2. Tapez dans la barre de recherche :
+2. **Utilisez les filtres rapides** :
+   - Appuyez sur "Chiens", "Chats", "Oiseaux" ou "Lapins" pour filtrer
+   - Appuyez sur "Tous" pour tout voir
+3. **Recherches populaires** :
+   - Appuyez sur "Premium", "Bio", "Saumon", etc.
+   - Recherches instantanées en un tap
+4. **Catégories** :
+   - Croquettes & Nourriture Sèche
+   - Pâtées & Nourriture Humide
+   - Friandises & Snacks
+   - Produits Bio & Naturels
+5. **Ou tapez** dans la barre de recherche :
    - Nom de produit (ex: "Croquettes Premium Chien")
    - Nom de marque (ex: "NutriAnimal")
    - Mots-clés (ex: "saumon", "chat")
-3. Appuyez sur n'importe quel produit pour voir les détails
+6. Appuyez sur n'importe quel produit pour voir les détails
 
 ### Conseils de Recherche
 
+- Utilisez les filtres pour trouver rapidement ce que vous cherchez
+- Combinez les filtres animaux avec la recherche textuelle
+- Essayez les recherches populaires pour découvrir des produits
+- Explorez les catégories pour naviguer par type
+- Appuyez sur "Tout effacer" pour recommencer
 - Commencez par des mots-clés simples
 - Essayez les noms de marques pour des produits spécifiques
-- Recherchez par type d'animal (chien, chat, oiseau)
-- Effacez la recherche pour voir tous les produits
 
 ---
 

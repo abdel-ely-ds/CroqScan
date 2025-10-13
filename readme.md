@@ -16,6 +16,9 @@ Comme Yuka pour les humains, CroqScan vous aide à scanner et évaluer la nourri
 
 - **Scanner de Codes-Barres** - Scannez les codes-barres des produits avec votre caméra
 - **Recherche de Produits** - Parcourez et recherchez dans notre base de données
+- **Filtres par Animal** - Filtrez rapidement par type d'animal (chien, chat, oiseau, lapin)
+- **Recherches Populaires** - Accès rapide aux termes de recherche courants (Premium, Bio, etc.)
+- **Catégories** - Naviguez par type de produit (croquettes, pâtées, friandises, bio)
 - **Score de Santé** - Score 0-100 avec évaluations par code couleur
 - **Analyse Détaillée** - Consultez les ingrédients, infos nutritionnelles, avertissements et avantages
 - **Support Multi-Animaux** - Produits catégorisés pour chiens, chats, oiseaux, lapins et plus
@@ -118,7 +121,10 @@ flutter build ios --release
 
 - Ouvrez l'app
 - Appuyez sur "Rechercher des Produits"
-- Tapez le nom du produit ou de la marque
+- Utilisez les filtres rapides par animal (Chiens, Chats, Oiseaux, Lapins)
+- Ou appuyez sur les recherches populaires (Premium, Bio, Saumon, Poulet)
+- Ou explorez les catégories (Croquettes, Pâtées, Friandises, Bio)
+- Ou tapez le nom du produit ou de la marque
 - Parcourez et appuyez pour voir les détails
 
 ### 3. Comprendre le Score
