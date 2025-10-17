@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 import '../services/scan_history_service.dart';
+import '../services/profile_service.dart';
 import '../services/openpetfoodfacts_service.dart';
 import 'scanner_screen.dart';
 import 'search_screen_new.dart';
@@ -17,12 +18,15 @@ class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   List<Map<String, dynamic>> _recentScans = [];
   bool _isLoadingRecommendations = false;
+  AnimalProfile? _animalProfile;
+  String? _userName;
   late AnimationController _pulseController;
 
   @override
   void initState() {
     super.initState();
     _loadRecentScans();
+    _loadProfile();
     _loadRecommendations();
 
     // Animation de pulsation pour le bouton scanner
@@ -43,6 +47,17 @@ class _HomeScreenState extends State<HomeScreen>
     if (mounted) {
       setState(() {
         _recentScans = scans;
+      });
+    }
+  }
+
+  Future<void> _loadProfile() async {
+    final profile = await ProfileService.loadProfile();
+    final userName = await ProfileService.loadUserName();
+    if (mounted) {
+      setState(() {
+        _animalProfile = profile;
+        _userName = userName;
       });
     }
   }
@@ -72,6 +87,7 @@ class _HomeScreenState extends State<HomeScreen>
         child: RefreshIndicator(
           onRefresh: () async {
             await _loadRecentScans();
+            await _loadProfile();
             await _loadRecommendations();
           },
           child: CustomScrollView(
@@ -135,17 +151,21 @@ class _HomeScreenState extends State<HomeScreen>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Bonjour 👋',
-                      style: TextStyle(
+                    Text(
+                      _userName != null
+                          ? 'Bonjour $_userName 👋'
+                          : 'Bonjour 👋',
+                      style: const TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
                         color: AppColors.textPrimary,
                       ),
                     ),
                     Text(
-                      'Des produits sains pour vos animaux 🐾',
-                      style: TextStyle(
+                      _animalProfile != null
+                          ? 'Des produits sains pour ${_animalProfile!.name} 🐾'
+                          : 'Des produits sains pour vos animaux 🐾',
+                      style: const TextStyle(
                         fontSize: 14,
                         color: AppColors.textSecondary,
                       ),
@@ -419,11 +439,13 @@ class _HomeScreenState extends State<HomeScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           child: Text(
-            'Nos recommandations 🦴',
-            style: TextStyle(
+            _animalProfile != null
+                ? 'Nos recommandations pour ${_animalProfile!.name} 🦴'
+                : 'Nos recommandations 🦴',
+            style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
               color: AppColors.textPrimary,

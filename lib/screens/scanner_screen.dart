@@ -149,102 +149,147 @@ class _ScannerScreenState extends State<ScannerScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: Stack(
-        children: [
-          // Camera view
-          MobileScanner(
-            controller: cameraController,
-            onDetect: _onBarcodeDetected,
-          ),
-
-          // Overlay
-          CustomPaint(painter: ScannerOverlay(), child: Container()),
-
-          // Top bar
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back, color: Colors.white),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                  IconButton(
-                    icon: Icon(
-                      cameraController.torchEnabled
-                          ? Icons.flash_on
-                          : Icons.flash_off,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-                      cameraController.toggleTorch();
-                      setState(() {});
-                    },
-                  ),
-                ],
+    return WillPopScope(
+      onWillPop: () async {
+        // Arrêter la caméra avant de quitter
+        _isScreenActive = false;
+        await cameraController.stop();
+        return true;
+      },
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        body: GestureDetector(
+          // Détection du swipe horizontal pour revenir en arrière
+          onHorizontalDragEnd: (details) {
+            // Si le swipe est vers la droite et assez rapide
+            if (details.primaryVelocity != null &&
+                details.primaryVelocity! > 500) {
+              _isScreenActive = false;
+              cameraController.stop();
+              Navigator.pop(context);
+            }
+          },
+          child: Stack(
+            children: [
+              // Camera view
+              MobileScanner(
+                controller: cameraController,
+                onDetect: _onBarcodeDetected,
               ),
-            ),
-          ),
 
-          // Instructions
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [Colors.transparent, Colors.black.withOpacity(0.8)],
+              // Overlay
+              CustomPaint(painter: ScannerOverlay(), child: Container()),
+
+              // Top bar
+              SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.black.withValues(alpha: 0.5),
+                          shape: BoxShape.circle,
+                        ),
+                        child: IconButton(
+                          icon: const Icon(
+                            Icons.arrow_back,
+                            color: Colors.white,
+                            size: 28,
+                          ),
+                          onPressed: () {
+                            _isScreenActive = false;
+                            cameraController.stop();
+                            Navigator.pop(context);
+                          },
+                          tooltip: 'Retour',
+                        ),
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.black.withValues(alpha: 0.5),
+                          shape: BoxShape.circle,
+                        ),
+                        child: IconButton(
+                          icon: Icon(
+                            cameraController.torchEnabled
+                                ? Icons.flash_on
+                                : Icons.flash_off,
+                            color: Colors.white,
+                            size: 28,
+                          ),
+                          onPressed: () {
+                            cameraController.toggleTorch();
+                            setState(() {});
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              padding: const EdgeInsets.all(32),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(
-                    Icons.qr_code_scanner,
-                    color: Colors.white,
-                    size: 48,
-                  ),
-                  const SizedBox(height: 16),
-                  const Text(
-                    'Positionnez le code-barres dans le cadre',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Le scan se fera automatiquement',
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(0.8),
-                      fontSize: 14,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            ),
-          ),
 
-          // Processing indicator
-          if (_isProcessing)
-            Container(
-              color: Colors.black.withOpacity(0.5),
-              child: const Center(
-                child: CircularProgressIndicator(color: AppColors.primary),
+              // Instructions
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.transparent,
+                        Colors.black.withValues(alpha: 0.8),
+                      ],
+                    ),
+                  ),
+                  padding: const EdgeInsets.all(32),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.qr_code_scanner,
+                        color: Colors.white,
+                        size: 48,
+                      ),
+                      const SizedBox(height: 16),
+                      const Text(
+                        'Positionnez le code-barres dans le cadre',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Le scan se fera automatiquement',
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.8),
+                          fontSize: 14,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
-        ],
+
+              // Processing indicator
+              if (_isProcessing)
+                Container(
+                  color: Colors.black.withValues(alpha: 0.5),
+                  child: const Center(
+                    child: CircularProgressIndicator(color: AppColors.primary),
+                  ),
+                ),
+            ],
+          ),
+        ),
       ),
     );
   }
