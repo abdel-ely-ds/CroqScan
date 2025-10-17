@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import '../constants/app_colors.dart';
-import '../models/product.dart';
-import '../widgets/products_provider.dart';
-import '../services/product_service.dart';
 import '../services/openpetfoodfacts_service.dart';
 import 'product_details_screen.dart';
 
@@ -17,16 +14,6 @@ class ScannerScreen extends StatefulWidget {
 class _ScannerScreenState extends State<ScannerScreen> {
   MobileScannerController cameraController = MobileScannerController();
   bool _isProcessing = false;
-  List<Product> _allProducts = [];
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final provider = ProductsProvider.of(context);
-    if (provider != null && _allProducts.isEmpty) {
-      _allProducts = provider.products;
-    }
-  }
 
   @override
   void dispose() {
@@ -50,19 +37,11 @@ class _ScannerScreenState extends State<ScannerScreen> {
     // Pause the camera to prevent multiple scans
     await cameraController.stop();
 
-    Product? product;
-
-    // 1. Search in local database first
-    print('🔍 Recherche locale du code-barres: $barcode');
-    product = ProductService.findProductByBarcode(_allProducts, barcode);
-
-    // 2. If not found locally, try OpenPetFoodFacts API
-    if (product == null) {
-      print('❌ Produit non trouvé localement, interrogation de l\'API...');
-      product = await OpenPetFoodFactsService.fetchProductByBarcode(barcode);
-    } else {
-      print('✅ Produit trouvé dans la base locale');
-    }
+    // Recherche directe sur l'API OpenPetFoodFacts
+    print('🌐 Recherche du code-barres sur l\'API: $barcode');
+    final product = await OpenPetFoodFactsService.fetchProductByBarcode(
+      barcode,
+    );
 
     if (product != null && mounted) {
       // Product found - navigate to details
@@ -70,7 +49,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
       await Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => ProductDetailsScreen(product: product!),
+          builder: (context) => ProductDetailsScreen(product: product),
         ),
       );
     } else if (mounted) {

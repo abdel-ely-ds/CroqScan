@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  // Primary colors - Trustworthy and health-focused
-  static const Color primary = Color(0xFF2D9CDB); // Calm blue
-  static const Color primaryDark = Color(0xFF1976D2);
-  static const Color accent = Color(0xFF56CCF2); // Light blue
+  // Primary colors - Trustworthy and health-focused (PetScan branding)
+  static const Color primary = Color(0xFF3DBE8B); // Mint green - health & trust
+  static const Color primaryDark = Color(0xFF2D9D6F);
+  static const Color accent = Color(0xFF5DD5A4); // Light mint green
+
+  // Navigation colors
+  static const Color navActive = Color(0xFF3DBE8B); // Active tab color
+  static const Color navInactive = Color(0xFFA7A7A7); // Inactive tab color
 
   // Product score colors (like Yuka)
   static const Color scoreExcellent = Color(0xFF27AE60); // Green

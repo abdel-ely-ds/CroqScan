@@ -5,9 +5,17 @@ import 'score_badge.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
+  final bool isFavorite;
+  final VoidCallback? onFavoriteToggle;
 
-  const ProductCard({super.key, required this.product, required this.onTap});
+  const ProductCard({
+    super.key,
+    required this.product,
+    this.onTap,
+    this.isFavorite = false,
+    this.onFavoriteToggle,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -78,6 +86,17 @@ class ProductCard extends StatelessWidget {
               ),
 
               const SizedBox(width: 16),
+
+              // Favorite button (if callback provided)
+              if (onFavoriteToggle != null)
+                IconButton(
+                  icon: Icon(
+                    isFavorite ? Icons.favorite : Icons.favorite_border,
+                    color: isFavorite ? Colors.red : AppColors.textSecondary,
+                  ),
+                  onPressed: onFavoriteToggle,
+                  iconSize: 24,
+                ),
 
               // Score Badge
               ScoreBadge(score: product.healthScore, size: 60),

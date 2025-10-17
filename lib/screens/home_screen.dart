@@ -1,18 +1,11 @@
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
-import '../widgets/products_provider.dart';
-import 'scanner_screen.dart';
-import 'search_screen_new.dart';
-// import 'history_screen.dart'; // Temporairement désactivé
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final provider = ProductsProvider.of(context);
-    final int productCount = provider?.products.length ?? 0;
-
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -43,7 +36,7 @@ class HomeScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'CroqScan',
+                          'PetScan',
                           style: TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
@@ -51,7 +44,7 @@ class HomeScreen extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          'Scanner Santé Produits Animaux',
+                          'Prenez soin de vos animaux',
                           style: TextStyle(
                             fontSize: 14,
                             color: AppColors.textSecondary,
@@ -64,150 +57,100 @@ class HomeScreen extends StatelessWidget {
 
                 const SizedBox(height: 32),
 
-                // Welcome message
+                // Bienvenue message
                 const Text(
-                  'Gardez vos animaux en bonne santé',
+                  'Bienvenue sur PetScan',
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 12),
                 const Text(
-                  'Scannez les codes-barres des produits pour vérifier leur qualité et leurs ingrédients.',
+                  'Scannez un code-barres pour analyser la qualité des produits pour animaux en temps réel.',
                   style: TextStyle(
                     fontSize: 16,
                     color: AppColors.textSecondary,
                     height: 1.5,
                   ),
                 ),
+
+                const SizedBox(height: 32),
+
+                // Action principale - Scanner
+                _buildScannerCard(context),
+
+                const SizedBox(height: 24),
+
+                // Features
+                _buildFeatureCard(
+                  icon: Icons.api,
+                  title: 'Données en temps réel',
+                  description: 'Recherche directe sur OpenPetFoodFacts',
+                  color: AppColors.primary,
+                ),
                 const SizedBox(height: 12),
-                // Database stats
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(
-                        Icons.inventory_2,
-                        size: 16,
-                        color: AppColors.primary,
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        '$productCount produits dans la base',
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: AppColors.primary,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
+                _buildFeatureCard(
+                  icon: Icons.verified_user,
+                  title: 'Analyse complète',
+                  description: 'Score santé, ingrédients et recommandations',
+                  color: AppColors.scoreExcellent,
+                ),
+                const SizedBox(height: 12),
+                _buildFeatureCard(
+                  icon: Icons.favorite,
+                  title: 'Vos favoris',
+                  description: 'Sauvegardez vos produits préférés',
+                  color: Colors.red,
                 ),
 
                 const SizedBox(height: 32),
 
-                // Action buttons
-                _ActionButton(
-                  icon: Icons.qr_code_scanner,
-                  title: 'Scanner un Produit',
-                  subtitle: 'Utilisez votre caméra pour scanner',
-                  gradient: const LinearGradient(
-                    colors: [AppColors.primary, AppColors.accent],
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ScannerScreen(),
-                      ),
-                    );
-                  },
-                ),
-
-                const SizedBox(height: 16),
-
-                _ActionButton(
-                  icon: Icons.search,
-                  title: 'Rechercher des Produits',
-                  subtitle: 'Parcourir la base de données',
-                  gradient: LinearGradient(
-                    colors: [
-                      AppColors.primary.withOpacity(0.7),
-                      AppColors.accent.withOpacity(0.7),
-                    ],
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const SearchScreenNew(),
-                      ),
-                    );
-                  },
-                ),
-
-                const SizedBox(height: 16),
-
-                // Historique temporairement désactivé - à implémenter
-                /*
-                _ActionButton(
-                  icon: Icons.history,
-                  title: 'Historique des Scans',
-                  subtitle: 'Voir vos scans récents',
-                  gradient: LinearGradient(
-                    colors: [
-                      AppColors.primary.withOpacity(0.5),
-                      AppColors.accent.withOpacity(0.5),
-                    ],
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const HistoryScreen(),
-                      ),
-                    );
-                  },
-                ),
-                */
-                const SizedBox(height: 24),
-
-                // Info card
+                // Info OpenPetFoodFacts
                 Container(
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: AppColors.scoreExcellent.withOpacity(0.1),
+                    gradient: LinearGradient(
+                      colors: [
+                        AppColors.primary.withOpacity(0.1),
+                        AppColors.accent.withOpacity(0.05),
+                      ],
+                    ),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: AppColors.scoreExcellent.withOpacity(0.3),
+                      color: AppColors.primary.withOpacity(0.2),
                     ),
                   ),
-                  child: Row(
+                  child: const Column(
                     children: [
-                      Icon(
-                        Icons.verified_user,
-                        color: AppColors.scoreExcellent,
-                        size: 32,
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Text(
-                          'Nous analysons les ingrédients et fournissons des scores de santé pour vous aider à choisir le meilleur pour vos animaux.',
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: AppColors.textPrimary,
-                            height: 1.5,
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.info_outline,
+                            color: AppColors.primary,
+                            size: 24,
                           ),
+                          SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              'Propulsé par OpenPetFoodFacts',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.textPrimary,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 12),
+                      Text(
+                        'Base de données collaborative et libre de produits pour animaux du monde entier.',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: AppColors.textSecondary,
+                          height: 1.5,
                         ),
                       ),
                     ],
@@ -224,86 +167,119 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class _ActionButton extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  final Gradient gradient;
-  final VoidCallback onTap;
-
-  const _ActionButton({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.gradient,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
+Widget _buildScannerCard(BuildContext context) {
+  return Container(
+    decoration: BoxDecoration(
+      gradient: const LinearGradient(
+        colors: [AppColors.primary, AppColors.accent],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
+      borderRadius: BorderRadius.circular(20),
+      boxShadow: [
+        BoxShadow(
+          color: AppColors.primary.withOpacity(0.4),
+          blurRadius: 20,
+          offset: const Offset(0, 10),
+        ),
+      ],
+    ),
+    child: Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: onTap,
+        onTap: () {
+          // Le scanner s'ouvrira via la navbar
+        },
         borderRadius: BorderRadius.circular(20),
-        child: Ink(
-          decoration: BoxDecoration(
-            gradient: gradient,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.primary.withOpacity(0.3),
-                blurRadius: 12,
-                offset: const Offset(0, 6),
+        child: Padding(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.qr_code_scanner,
+                  size: 60,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                'Scanner un produit',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Utilisez la barre de navigation en bas',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.white.withOpacity(0.9),
+                ),
               ),
             ],
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Icon(icon, color: Colors.white, size: 32),
-                ),
-                const SizedBox(width: 20),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        subtitle,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.white.withOpacity(0.9),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const Icon(
-                  Icons.arrow_forward_ios,
-                  color: Colors.white,
-                  size: 20,
-                ),
-              ],
-            ),
-          ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
+
+Widget _buildFeatureCard({
+  required IconData icon,
+  required String title,
+  required String description,
+  required Color color,
+}) {
+  return Container(
+    padding: const EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(16),
+      border: Border.all(color: AppColors.divider),
+    ),
+    child: Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Icon(icon, color: color, size: 24),
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                description,
+                style: const TextStyle(
+                  fontSize: 13,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
 }

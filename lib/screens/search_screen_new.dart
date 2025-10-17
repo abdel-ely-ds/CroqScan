@@ -383,276 +383,289 @@ class _SearchScreenNewState extends State<SearchScreenNew> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.textPrimary),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text(
-          'Rechercher',
-          style: TextStyle(
-            color: AppColors.textPrimary,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        actions: [
-          if (_selectedMainCategory != null ||
-              _selectedSubCategories.isNotEmpty ||
-              _searchController.text.isNotEmpty)
-            IconButton(
-              icon: const Icon(Icons.refresh, color: AppColors.textPrimary),
-              onPressed: () {
-                setState(() {
-                  _searchController.clear();
-                  _selectedMainCategory = null;
-                  _selectedSubCategories.clear();
-                  _searchResults = [];
-                  _totalResults = 0;
-                });
-              },
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Header avec titre et reset
+            Container(
+              color: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Row(
+                children: [
+                  const Text(
+                    'Rechercher',
+                    style: TextStyle(
+                      color: AppColors.textPrimary,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                  ),
+                  const Spacer(),
+                  if (_selectedMainCategory != null ||
+                      _selectedSubCategories.isNotEmpty ||
+                      _searchController.text.isNotEmpty)
+                    IconButton(
+                      icon: const Icon(
+                        Icons.refresh,
+                        color: AppColors.textPrimary,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _searchController.clear();
+                          _selectedMainCategory = null;
+                          _selectedSubCategories.clear();
+                          _searchResults = [];
+                          _totalResults = 0;
+                        });
+                      },
+                      tooltip: 'Réinitialiser',
+                    ),
+                ],
+              ),
             ),
-        ],
-      ),
-      body: Column(
-        children: [
-          // Barre de recherche et filtres COMPACTS
-          Container(
-            color: Colors.white,
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Barre de recherche
-                TextField(
-                  controller: _searchController,
-                  decoration: InputDecoration(
-                    hintText: 'Nom, marque ou mot-clé...',
-                    hintStyle: TextStyle(fontSize: 15),
-                    prefixIcon: Icon(Icons.search, color: AppColors.primary),
-                    suffixIcon: _searchController.text.isNotEmpty
-                        ? IconButton(
-                            icon: Icon(Icons.clear, size: 20),
-                            onPressed: () =>
-                                setState(() => _searchController.clear()),
-                          )
-                        : null,
-                    filled: true,
-                    fillColor: AppColors.background,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16),
-                      borderSide: BorderSide.none,
+            // Barre de recherche et filtres COMPACTS
+            Container(
+              color: Colors.white,
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Barre de recherche
+                  TextField(
+                    controller: _searchController,
+                    decoration: InputDecoration(
+                      hintText: 'Nom, marque ou mot-clé...',
+                      hintStyle: TextStyle(fontSize: 15),
+                      prefixIcon: Icon(Icons.search, color: AppColors.primary),
+                      suffixIcon: _searchController.text.isNotEmpty
+                          ? IconButton(
+                              icon: Icon(Icons.clear, size: 20),
+                              onPressed: () =>
+                                  setState(() => _searchController.clear()),
+                            )
+                          : null,
+                      filled: true,
+                      fillColor: AppColors.background,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16),
+                        borderSide: BorderSide.none,
+                      ),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                      isDense: true,
                     ),
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
-                    ),
-                    isDense: true,
                   ),
-                ),
 
-                SizedBox(height: 12),
+                  SizedBox(height: 12),
 
-                // Catégories principales (horizontal scroll)
-                SizedBox(
-                  height: 50,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: _mainCategories.entries.map((entry) {
-                      final isSelected = _selectedMainCategory == entry.key;
-                      final cat = entry.value;
-
-                      return Padding(
-                        padding: EdgeInsets.only(right: 8),
-                        child: InkWell(
-                          onTap: () {
-                            setState(() {
-                              if (isSelected) {
-                                _selectedMainCategory = null;
-                                _selectedSubCategories.clear();
-                              } else {
-                                _selectedMainCategory = entry.key;
-                                _selectedSubCategories.clear();
-                              }
-                            });
-                          },
-                          borderRadius: BorderRadius.circular(25),
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 8,
-                            ),
-                            decoration: BoxDecoration(
-                              gradient: isSelected
-                                  ? LinearGradient(
-                                      colors: [
-                                        cat.color,
-                                        cat.color.withOpacity(0.7),
-                                      ],
-                                    )
-                                  : null,
-                              color: isSelected
-                                  ? null
-                                  : cat.color.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(25),
-                              border: Border.all(
-                                color: isSelected
-                                    ? cat.color
-                                    : cat.color.withOpacity(0.3),
-                                width: isSelected ? 2 : 1,
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(cat.icon, style: TextStyle(fontSize: 20)),
-                                SizedBox(width: 6),
-                                Text(
-                                  cat.name,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: isSelected
-                                        ? Colors.white
-                                        : cat.color,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                if (isSelected) ...[
-                                  SizedBox(width: 6),
-                                  Icon(
-                                    Icons.check,
-                                    color: Colors.white,
-                                    size: 16,
-                                  ),
-                                ],
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ),
-
-                // Sous-catégories si une catégorie principale est sélectionnée
-                if (_selectedMainCategory != null) ...[
-                  SizedBox(height: 8),
+                  // Catégories principales (horizontal scroll)
                   SizedBox(
-                    height: 36,
+                    height: 50,
                     child: ListView(
                       scrollDirection: Axis.horizontal,
-                      children: _mainCategories[_selectedMainCategory]!
-                          .subCategories
-                          .map((subCat) {
-                            final isSelected = _selectedSubCategories.contains(
-                              subCat.tag,
-                            );
-                            final color =
-                                _mainCategories[_selectedMainCategory]!.color;
+                      children: _mainCategories.entries.map((entry) {
+                        final isSelected = _selectedMainCategory == entry.key;
+                        final cat = entry.value;
 
-                            return Padding(
-                              padding: EdgeInsets.only(right: 6),
-                              child: InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    if (isSelected) {
-                                      _selectedSubCategories.remove(subCat.tag);
-                                    } else {
-                                      _selectedSubCategories.add(subCat.tag);
-                                    }
-                                  });
-                                },
-                                borderRadius: BorderRadius.circular(18),
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 6,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: isSelected
-                                        ? color
-                                        : color.withOpacity(0.1),
-                                    borderRadius: BorderRadius.circular(18),
-                                    border: Border.all(
-                                      color: isSelected
-                                          ? color
-                                          : color.withOpacity(0.4),
-                                    ),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        subCat.name,
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w600,
-                                          color: isSelected
-                                              ? Colors.white
-                                              : color,
-                                        ),
-                                      ),
-                                      if (isSelected) ...[
-                                        SizedBox(width: 4),
-                                        Icon(
-                                          Icons.check,
-                                          color: Colors.white,
-                                          size: 12,
-                                        ),
-                                      ],
-                                    ],
-                                  ),
+                        return Padding(
+                          padding: EdgeInsets.only(right: 8),
+                          child: InkWell(
+                            onTap: () {
+                              setState(() {
+                                if (isSelected) {
+                                  _selectedMainCategory = null;
+                                  _selectedSubCategories.clear();
+                                } else {
+                                  _selectedMainCategory = entry.key;
+                                  _selectedSubCategories.clear();
+                                }
+                              });
+                            },
+                            borderRadius: BorderRadius.circular(25),
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 8,
+                              ),
+                              decoration: BoxDecoration(
+                                gradient: isSelected
+                                    ? LinearGradient(
+                                        colors: [
+                                          cat.color,
+                                          cat.color.withOpacity(0.7),
+                                        ],
+                                      )
+                                    : null,
+                                color: isSelected
+                                    ? null
+                                    : cat.color.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(25),
+                                border: Border.all(
+                                  color: isSelected
+                                      ? cat.color
+                                      : cat.color.withOpacity(0.3),
+                                  width: isSelected ? 2 : 1,
                                 ),
                               ),
-                            );
-                          })
-                          .toList(),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    cat.icon,
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                  SizedBox(width: 6),
+                                  Text(
+                                    cat.name,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: isSelected
+                                          ? Colors.white
+                                          : cat.color,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  if (isSelected) ...[
+                                    SizedBox(width: 6),
+                                    Icon(
+                                      Icons.check,
+                                      color: Colors.white,
+                                      size: 16,
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+
+                  // Sous-catégories si une catégorie principale est sélectionnée
+                  if (_selectedMainCategory != null) ...[
+                    SizedBox(height: 8),
+                    SizedBox(
+                      height: 36,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: _mainCategories[_selectedMainCategory]!
+                            .subCategories
+                            .map((subCat) {
+                              final isSelected = _selectedSubCategories
+                                  .contains(subCat.tag);
+                              final color =
+                                  _mainCategories[_selectedMainCategory]!.color;
+
+                              return Padding(
+                                padding: EdgeInsets.only(right: 6),
+                                child: InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      if (isSelected) {
+                                        _selectedSubCategories.remove(
+                                          subCat.tag,
+                                        );
+                                      } else {
+                                        _selectedSubCategories.add(subCat.tag);
+                                      }
+                                    });
+                                  },
+                                  borderRadius: BorderRadius.circular(18),
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 6,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: isSelected
+                                          ? color
+                                          : color.withOpacity(0.1),
+                                      borderRadius: BorderRadius.circular(18),
+                                      border: Border.all(
+                                        color: isSelected
+                                            ? color
+                                            : color.withOpacity(0.4),
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          subCat.name,
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w600,
+                                            color: isSelected
+                                                ? Colors.white
+                                                : color,
+                                          ),
+                                        ),
+                                        if (isSelected) ...[
+                                          SizedBox(width: 4),
+                                          Icon(
+                                            Icons.check,
+                                            color: Colors.white,
+                                            size: 12,
+                                          ),
+                                        ],
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            })
+                            .toList(),
+                      ),
+                    ),
+                  ],
+
+                  SizedBox(height: 12),
+
+                  // Bouton de recherche
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: _isLoading ? null : _performSearch,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: Colors.white,
+                        padding: EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        elevation: 2,
+                      ),
+                      child: _isLoading
+                          ? SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation(
+                                  Colors.white,
+                                ),
+                              ),
+                            )
+                          : Text(
+                              'Rechercher',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                     ),
                   ),
                 ],
-
-                SizedBox(height: 12),
-
-                // Bouton de recherche
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _isLoading ? null : _performSearch,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: Colors.white,
-                      padding: EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      elevation: 2,
-                    ),
-                    child: _isLoading
-                        ? SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation(Colors.white),
-                            ),
-                          )
-                        : Text(
-                            'Rechercher',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
 
-          // Résultats (prend tout l'espace restant)
-          Expanded(child: _buildResults()),
-        ],
+            // Résultats (prend tout l'espace restant)
+            Expanded(child: _buildResults()),
+          ],
+        ),
       ),
     );
   }

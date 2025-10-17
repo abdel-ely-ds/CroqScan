@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'constants/app_colors.dart';
-import 'screens/home_screen.dart';
+import 'widgets/main_navigation.dart';
 import 'widgets/products_provider.dart';
 
 void main() {
@@ -35,7 +35,7 @@ class CroqScanApp extends StatelessWidget {
         return ProductsProvider(
           products: products,
           child: MaterialApp(
-            title: 'CroqScan',
+            title: 'PetScan',
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
               colorScheme: ColorScheme.fromSeed(
@@ -86,7 +86,7 @@ class CroqScanApp extends StatelessWidget {
                 ),
               ),
             ),
-            home: const HomeScreen(),
+            home: const MainNavigation(),
           ),
         );
       },

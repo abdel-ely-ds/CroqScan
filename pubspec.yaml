@@ -71,7 +71,7 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
-    - assets/openpetfoodfacts-products.jsonl
+    # - assets/openpetfoodfacts-products.jsonl  # Base locale retirée - API uniquement
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

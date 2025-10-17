@@ -1,109 +1,236 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../models/product.dart';
 import '../constants/app_colors.dart';
+import '../services/favorites_service.dart';
 
-class ProductDetailsScreen extends StatelessWidget {
+class ProductDetailsScreen extends StatefulWidget {
   final Product product;
 
   const ProductDetailsScreen({super.key, required this.product});
 
   @override
+  State<ProductDetailsScreen> createState() => _ProductDetailsScreenState();
+}
+
+class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
+  bool isFavorite = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFavoriteStatus();
+  }
+
+  Future<void> _loadFavoriteStatus() async {
+    final status = await FavoritesService.isFavorite(widget.product.barcode);
+    if (mounted) {
+      setState(() {
+        isFavorite = status;
+      });
+    }
+  }
+
+  Future<void> _toggleFavorite() async {
+    HapticFeedback.lightImpact();
+
+    final newStatus = await FavoritesService.toggleFavorite(
+      widget.product.barcode,
+    );
+
+    if (mounted) {
+      setState(() {
+        isFavorite = newStatus;
+      });
+
+      // Snackbar amélioré
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              Icon(
+                isFavorite ? Icons.favorite : Icons.favorite_border,
+                color: Colors.white,
+                size: 20,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  isFavorite ? 'Ajouté à vos favoris' : 'Retiré de vos favoris',
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          backgroundColor: isFavorite
+              ? AppColors.scoreExcellent
+              : AppColors.textSecondary,
+          duration: const Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          margin: const EdgeInsets.all(16),
+        ),
+      );
+    }
+  }
+
+  void _shareProduct() {
+    // TODO: Implémenter le partage avec share_plus
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('📤 Fonctionnalité de partage à venir'),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: CustomScrollView(
-        slivers: [
-          // 🖼️ En-tête avec image
-          _buildHeader(context),
+      body: Stack(
+        children: [
+          CustomScrollView(
+            slivers: [
+              // 🖼️ En-tête avec image
+              _buildHeader(context),
 
-          // Contenu scrollable
-          SliverToBoxAdapter(
-            child: Column(
-              children: [
-                // 💯 Score santé global
-                _buildHealthScoreSection(),
+              // Contenu scrollable
+              SliverToBoxAdapter(
+                child: Column(
+                  children: [
+                    // 💯 Score santé global
+                    _buildHealthScoreSection(),
 
-                SizedBox(height: 12),
+                    const SizedBox(height: 12),
 
-                // 🍗 Analyse nutritionnelle
-                _buildNutritionalAnalysis(),
+                    // 💪 Valeurs nutritionnelles
+                    _buildNutritionalValues(),
 
-                SizedBox(height: 12),
+                    const SizedBox(height: 12),
 
-                // 🧠 Ingrédients
-                _buildIngredientsSection(),
+                    // 🦴 Ingrédients
+                    _buildIngredientsSection(),
 
-                SizedBox(height: 12),
+                    const SizedBox(height: 12),
 
-                // 📋 Informations produit
-                _buildProductInfo(),
+                    // ✅ ⚠️ Analyse (points positifs/négatifs)
+                    if (widget.product.warnings.isNotEmpty ||
+                        widget.product.benefits.isNotEmpty)
+                      _buildAnalysisSection(),
 
-                SizedBox(height: 12),
+                    if (widget.product.warnings.isNotEmpty ||
+                        widget.product.benefits.isNotEmpty)
+                      const SizedBox(height: 12),
 
-                // ⚠️ Avertissements & ✅ Avantages
-                if (product.warnings.isNotEmpty || product.benefits.isNotEmpty)
-                  _buildWarningsAndBenefits(),
+                    // 📋 Catégories & origine
+                    _buildCategoriesSection(),
 
-                SizedBox(height: 20),
+                    const SizedBox(height: 12),
 
-                // 🔄 Actions rapides
-                _buildQuickActions(context),
+                    // 🔄 Produits similaires
+                    _buildSimilarProducts(),
 
-                SizedBox(height: 40),
-              ],
-            ),
+                    const SizedBox(height: 80),
+                  ],
+                ),
+              ),
+            ],
+          ),
+
+          // 🔄 Bouton d'action flottant
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: _buildFloatingActionBar(),
           ),
         ],
       ),
     );
   }
 
-  // 🖼️ En-tête avec image du produit (version douce et élégante)
+  // 🖼️ En-tête avec image du produit
   Widget _buildHeader(BuildContext context) {
     return SliverAppBar(
-      expandedHeight: 200,
+      expandedHeight: 280,
       pinned: true,
       backgroundColor: Colors.white,
       leading: IconButton(
         icon: Container(
-          padding: EdgeInsets.all(8),
+          padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.95),
+            color: Colors.white.withValues(alpha: 0.95),
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.08),
+                color: Colors.black.withValues(alpha: 0.08),
                 blurRadius: 12,
-                offset: Offset(0, 2),
+                offset: const Offset(0, 2),
               ),
             ],
           ),
-          child: Icon(Icons.arrow_back, color: AppColors.textPrimary, size: 20),
+          child: const Icon(
+            Icons.arrow_back,
+            color: AppColors.textPrimary,
+            size: 20,
+          ),
         ),
         onPressed: () => Navigator.pop(context),
       ),
       actions: [
+        // Bouton Favori
         IconButton(
           icon: Container(
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.95),
+              color: Colors.white.withValues(alpha: 0.95),
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.08),
+                  color: Colors.black.withValues(alpha: 0.08),
                   blurRadius: 12,
-                  offset: Offset(0, 2),
+                  offset: const Offset(0, 2),
                 ),
               ],
             ),
-            child: Icon(Icons.share, color: AppColors.textPrimary, size: 20),
+            child: Icon(
+              isFavorite ? Icons.favorite : Icons.favorite_border,
+              color: isFavorite ? Colors.red : AppColors.textPrimary,
+              size: 20,
+            ),
           ),
-          onPressed: () {
-            // TODO: Partager
-          },
+          onPressed: _toggleFavorite,
         ),
-        SizedBox(width: 8),
+        // Bouton Partager
+        IconButton(
+          icon: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.95),
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.08),
+                  blurRadius: 12,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: const Icon(
+              Icons.share,
+              color: AppColors.textPrimary,
+              size: 20,
+            ),
+          ),
+          onPressed: _shareProduct,
+        ),
+        const SizedBox(width: 8),
       ],
       flexibleSpace: FlexibleSpaceBar(
         background: Container(
@@ -116,79 +243,41 @@ class ProductDetailsScreen extends StatelessWidget {
           ),
           child: SafeArea(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-              child: product.imageUrl.isNotEmpty
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              child: widget.product.imageUrl.isNotEmpty
                   ? Center(
                       child: GestureDetector(
                         onTap: () => _showImagePopup(context),
                         child: Hero(
-                          tag: 'product_image_${product.barcode}',
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.05),
-                                    blurRadius: 20,
-                                    offset: Offset(0, 4),
-                                  ),
-                                ],
-                              ),
-                              child: Stack(
-                                children: [
-                                  Image.network(
-                                    product.imageUrl,
-                                    fit: BoxFit.contain,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Padding(
-                                        padding: EdgeInsets.all(32),
-                                        child: Icon(
-                                          Icons.pets,
-                                          size: 60,
-                                          color: AppColors.textSecondary
-                                              .withOpacity(0.3),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                  // Indicateur "tap to zoom"
-                                  Positioned(
-                                    bottom: 8,
-                                    right: 8,
-                                    child: Container(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 4,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: Colors.black.withOpacity(0.6),
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Icon(
-                                            Icons.zoom_in,
-                                            size: 14,
-                                            color: Colors.white,
-                                          ),
-                                          SizedBox(width: 4),
-                                          Text(
-                                            'Agrandir',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 11,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                          tag: 'product_image_${widget.product.barcode}',
+                          child: Container(
+                            constraints: const BoxConstraints(maxHeight: 220),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.05),
+                                  blurRadius: 20,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: Image.network(
+                                widget.product.imageUrl,
+                                fit: BoxFit.contain,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return const Padding(
+                                    padding: EdgeInsets.all(32),
+                                    child: Icon(
+                                      Icons.pets,
+                                      size: 60,
+                                      color: AppColors.textSecondary,
                                     ),
-                                  ),
-                                ],
+                                  );
+                                },
                               ),
                             ),
                           ),
@@ -197,15 +286,15 @@ class ProductDetailsScreen extends StatelessWidget {
                     )
                   : Center(
                       child: Container(
-                        padding: EdgeInsets.all(32),
+                        padding: const EdgeInsets.all(32),
                         decoration: BoxDecoration(
                           color: AppColors.background,
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        child: Icon(
+                        child: const Icon(
                           Icons.pets,
                           size: 60,
-                          color: AppColors.textSecondary.withOpacity(0.3),
+                          color: AppColors.textSecondary,
                         ),
                       ),
                     ),
@@ -216,22 +305,22 @@ class ProductDetailsScreen extends StatelessWidget {
     );
   }
 
-  // 💯 Score santé global (style Yuka)
+  // 💯 Score santé global
   Widget _buildHealthScoreSection() {
-    final scoreColor = _getScoreColor(product.healthScore);
-    final scoreLabel = _getScoreLabel(product.healthScore);
+    final scoreColor = _getScoreColor(widget.product.healthScore);
+    final scoreLabel = _getScoreLabel(widget.product.healthScore);
 
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16),
-      padding: EdgeInsets.all(24),
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
-            offset: Offset(0, 4),
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -239,25 +328,25 @@ class ProductDetailsScreen extends StatelessWidget {
         children: [
           // Nom et marque
           Text(
-            product.name,
-            style: TextStyle(
+            widget.product.name,
+            style: const TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
               color: AppColors.textPrimary,
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Text(
-            product.brand,
-            style: TextStyle(
+            widget.product.brand,
+            style: const TextStyle(
               fontSize: 16,
               color: AppColors.textSecondary,
               fontWeight: FontWeight.w500,
             ),
           ),
 
-          SizedBox(height: 24),
+          const SizedBox(height: 24),
 
           // Score circulaire
           Container(
@@ -267,8 +356,8 @@ class ProductDetailsScreen extends StatelessWidget {
               shape: BoxShape.circle,
               gradient: RadialGradient(
                 colors: [
-                  scoreColor.withOpacity(0.2),
-                  scoreColor.withOpacity(0.05),
+                  scoreColor.withValues(alpha: 0.2),
+                  scoreColor.withValues(alpha: 0.05),
                 ],
               ),
               border: Border.all(color: scoreColor, width: 8),
@@ -278,14 +367,14 @@ class ProductDetailsScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    '${product.healthScore}',
+                    '${widget.product.healthScore}',
                     style: TextStyle(
                       fontSize: 48,
                       fontWeight: FontWeight.bold,
                       color: scoreColor,
                     ),
                   ),
-                  Text(
+                  const Text(
                     '/100',
                     style: TextStyle(
                       fontSize: 16,
@@ -297,15 +386,15 @@ class ProductDetailsScreen extends StatelessWidget {
             ),
           ),
 
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
 
           // Label du score
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
             decoration: BoxDecoration(
-              color: scoreColor.withOpacity(0.1),
+              color: scoreColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: scoreColor.withOpacity(0.3)),
+              border: Border.all(color: scoreColor.withValues(alpha: 0.3)),
             ),
             child: Text(
               scoreLabel,
@@ -317,9 +406,9 @@ class ProductDetailsScreen extends StatelessWidget {
             ),
           ),
 
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
 
-          Text(
+          const Text(
             'Basé sur l\'analyse nutritionnelle et des ingrédients',
             style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
             textAlign: TextAlign.center,
@@ -329,11 +418,11 @@ class ProductDetailsScreen extends StatelessWidget {
     );
   }
 
-  // 🍗 Analyse nutritionnelle
-  Widget _buildNutritionalAnalysis() {
+  // 💪 Valeurs nutritionnelles
+  Widget _buildNutritionalValues() {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16),
-      padding: EdgeInsets.all(20),
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
@@ -343,10 +432,21 @@ class ProductDetailsScreen extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.analytics, color: AppColors.primary, size: 24),
-              SizedBox(width: 12),
-              Text(
-                'Analyse nutritionnelle',
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Icon(
+                  Icons.analytics,
+                  color: AppColors.primary,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 12),
+              const Text(
+                '💪 Valeurs nutritionnelles',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -356,117 +456,127 @@ class ProductDetailsScreen extends StatelessWidget {
             ],
           ),
 
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
 
-          // Barres nutritionnelles
-          _buildNutrientBar(
+          // Nutriments en grille
+          _buildNutrientCard(
             'Protéines',
-            product.nutritionalInfo.protein,
+            widget.product.nutritionalInfo.protein,
             Icons.fitness_center,
             AppColors.scoreExcellent,
-            targetMin: 25,
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 12),
 
-          _buildNutrientBar(
+          _buildNutrientCard(
             'Matières grasses',
-            product.nutritionalInfo.fat,
+            widget.product.nutritionalInfo.fat,
             Icons.water_drop,
             Colors.orange,
-            targetMax: 20,
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 12),
 
-          _buildNutrientBar(
+          _buildNutrientCard(
             'Fibres',
-            product.nutritionalInfo.fiber,
+            widget.product.nutritionalInfo.fiber,
             Icons.grass,
             Colors.green,
-            targetMin: 2,
           ),
 
-          if (product.nutritionalInfo.ash > 0) ...[
-            SizedBox(height: 16),
-            _buildNutrientBar(
-              'Cendres',
-              product.nutritionalInfo.ash,
-              Icons.local_fire_department,
-              Colors.grey,
-              targetMax: 10,
+          if (widget.product.nutritionalInfo.moisture > 0) ...[
+            const SizedBox(height: 12),
+            _buildNutrientCard(
+              'Humidité',
+              widget.product.nutritionalInfo.moisture,
+              Icons.opacity,
+              Colors.blue,
             ),
           ],
+
+          const SizedBox(height: 16),
+
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: AppColors.background,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Row(
+              children: [
+                Icon(
+                  Icons.info_outline,
+                  size: 16,
+                  color: AppColors.textSecondary,
+                ),
+                SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'Pour 100g de produit',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildNutrientBar(
+  Widget _buildNutrientCard(
     String label,
     double value,
     IconData icon,
-    Color color, {
-    double? targetMin,
-    double? targetMax,
-  }) {
-    final percentage = (value / 50).clamp(0.0, 1.0);
-    final isGood =
-        (targetMin != null && value >= targetMin) ||
-        (targetMax != null && value <= targetMax) ||
-        (targetMin == null && targetMax == null);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Icon(icon, size: 18, color: color),
-            SizedBox(width: 8),
-            Text(
+    Color color,
+  ) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: color.withValues(alpha: 0.2)),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(icon, size: 20, color: color),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
               label,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
                 color: AppColors.textPrimary,
               ),
             ),
-            Spacer(),
-            Text(
-              '${value.toStringAsFixed(1)}%',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: color,
-              ),
-            ),
-            SizedBox(width: 8),
-            Icon(
-              isGood ? Icons.check_circle : Icons.info,
-              size: 18,
-              color: isGood
-                  ? AppColors.scoreExcellent
-                  : AppColors.scoreMediocre,
-            ),
-          ],
-        ),
-        SizedBox(height: 8),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: LinearProgressIndicator(
-            value: percentage,
-            minHeight: 8,
-            backgroundColor: color.withOpacity(0.1),
-            valueColor: AlwaysStoppedAnimation(color),
           ),
-        ),
-      ],
+          Text(
+            '${value.toStringAsFixed(1)} g',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
-  // 🧠 Ingrédients
+  // 🦴 Ingrédients
   Widget _buildIngredientsSection() {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16),
-      padding: EdgeInsets.all(20),
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
@@ -476,10 +586,21 @@ class ProductDetailsScreen extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.list_alt, color: AppColors.primary, size: 24),
-              SizedBox(width: 12),
-              Text(
-                'Ingrédients',
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Icon(
+                  Icons.list_alt,
+                  color: AppColors.primary,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 12),
+              const Text(
+                '🦴 Ingrédients',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -489,45 +610,52 @@ class ProductDetailsScreen extends StatelessWidget {
             ],
           ),
 
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
 
           // Liste d'ingrédients avec chips
           Wrap(
             spacing: 8,
             runSpacing: 8,
-            children: product.ingredients.map((ingredient) {
+            children: widget.product.ingredients.map((ingredient) {
               final isProblematic = _isProblematicIngredient(ingredient);
               final isGood = _isGoodIngredient(ingredient);
 
               return Container(
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
                   color: isProblematic
-                      ? Colors.red.withOpacity(0.1)
+                      ? Colors.red.withValues(alpha: 0.1)
                       : isGood
-                      ? AppColors.scoreExcellent.withOpacity(0.1)
+                      ? AppColors.scoreExcellent.withValues(alpha: 0.1)
                       : AppColors.background,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: isProblematic
-                        ? Colors.red.withOpacity(0.3)
+                        ? Colors.red.withValues(alpha: 0.3)
                         : isGood
-                        ? AppColors.scoreExcellent.withOpacity(0.3)
-                        : AppColors.textSecondary.withOpacity(0.2),
+                        ? AppColors.scoreExcellent.withValues(alpha: 0.3)
+                        : AppColors.textSecondary.withValues(alpha: 0.2),
                   ),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     if (isProblematic)
-                      Icon(Icons.warning_amber, size: 14, color: Colors.red)
+                      const Icon(
+                        Icons.warning_amber,
+                        size: 14,
+                        color: Colors.red,
+                      )
                     else if (isGood)
-                      Icon(
+                      const Icon(
                         Icons.check_circle,
                         size: 14,
                         color: AppColors.scoreExcellent,
                       ),
-                    if (isProblematic || isGood) SizedBox(width: 4),
+                    if (isProblematic || isGood) const SizedBox(width: 4),
                     Flexible(
                       child: Text(
                         ingredient,
@@ -554,11 +682,141 @@ class ProductDetailsScreen extends StatelessWidget {
     );
   }
 
-  // 📋 Informations produit
-  Widget _buildProductInfo() {
+  // ✅ ⚠️ Analyse (points positifs/négatifs)
+  Widget _buildAnalysisSection() {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16),
-      padding: EdgeInsets.all(20),
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        children: [
+          // Points positifs
+          if (widget.product.benefits.isNotEmpty)
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppColors.scoreExcellent.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: AppColors.scoreExcellent.withValues(alpha: 0.3),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Row(
+                    children: [
+                      Icon(
+                        Icons.check_circle,
+                        color: AppColors.scoreExcellent,
+                        size: 20,
+                      ),
+                      SizedBox(width: 8),
+                      Text(
+                        '✅ Points positifs',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.scoreExcellent,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  ...widget.product.benefits.map(
+                    (benefit) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Icon(
+                            Icons.circle,
+                            size: 6,
+                            color: AppColors.scoreExcellent,
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              benefit,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: AppColors.textPrimary,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+          // Avertissements
+          if (widget.product.warnings.isNotEmpty) ...[
+            if (widget.product.benefits.isNotEmpty) const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.red.shade50,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.warning_amber,
+                        color: Colors.red,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        '⚠️ Points d\'attention',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red.shade700,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  ...widget.product.warnings.map(
+                    (warning) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Icon(Icons.circle, size: 6, color: Colors.red),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              warning,
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.red.shade800,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  // 📋 Catégories & origine
+  Widget _buildCategoriesSection() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
@@ -568,10 +826,21 @@ class ProductDetailsScreen extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.info_outline, color: AppColors.primary, size: 24),
-              SizedBox(width: 12),
-              Text(
-                'Informations',
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Icon(
+                  Icons.category,
+                  color: AppColors.primary,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 12),
+              const Text(
+                'Informations produit',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -581,34 +850,38 @@ class ProductDetailsScreen extends StatelessWidget {
             ],
           ),
 
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
 
-          _buildInfoRow('Code-barres', product.barcode),
-          _buildInfoRow('Marque', product.brand),
-          _buildInfoRow('Catégories', product.description),
+          _buildInfoRow(Icons.qr_code, 'Code-barres', widget.product.barcode),
+          _buildInfoRow(Icons.business, 'Marque', widget.product.brand),
+          _buildInfoRow(Icons.label, 'Catégorie', widget.product.description),
 
-          if (product.suitableFor.isNotEmpty) ...[
-            SizedBox(height: 12),
+          if (widget.product.suitableFor.isNotEmpty) ...[
+            const SizedBox(height: 12),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.pets, size: 18, color: AppColors.textSecondary),
-                SizedBox(width: 12),
+                const Icon(
+                  Icons.pets,
+                  size: 18,
+                  color: AppColors.textSecondary,
+                ),
+                const SizedBox(width: 12),
                 Expanded(
                   child: Wrap(
                     spacing: 6,
                     runSpacing: 6,
-                    children: product.suitableFor.map((petType) {
+                    children: widget.product.suitableFor.map((petType) {
                       return Container(
-                        padding: EdgeInsets.symmetric(
+                        padding: const EdgeInsets.symmetric(
                           horizontal: 10,
                           vertical: 4,
                         ),
                         decoration: BoxDecoration(
-                          color: _getPetColor(petType).withOpacity(0.15),
+                          color: _getPetColor(petType).withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: _getPetColor(petType).withOpacity(0.4),
+                            color: _getPetColor(petType).withValues(alpha: 0.4),
                           ),
                         ),
                         child: Row(
@@ -616,9 +889,9 @@ class ProductDetailsScreen extends StatelessWidget {
                           children: [
                             Text(
                               _getPetEmoji(petType),
-                              style: TextStyle(fontSize: 14),
+                              style: const TextStyle(fontSize: 14),
                             ),
-                            SizedBox(width: 4),
+                            const SizedBox(width: 4),
                             Text(
                               petType.displayName,
                               style: TextStyle(
@@ -641,228 +914,86 @@ class ProductDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoRow(String label, String value) {
+  Widget _buildInfoRow(IconData icon, String label, String value) {
     return Padding(
-      padding: EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.only(bottom: 12),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.circle, size: 6, color: AppColors.primary),
-          SizedBox(width: 12),
-          Text(
-            '$label : ',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textSecondary,
-            ),
-          ),
+          Icon(icon, size: 18, color: AppColors.textSecondary),
+          const SizedBox(width: 12),
           Expanded(
-            child: Text(
-              value,
-              style: TextStyle(fontSize: 14, color: AppColors.textPrimary),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // ⚠️ Avertissements & ✅ Avantages
-  Widget _buildWarningsAndBenefits() {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        children: [
-          // Avertissements
-          if (product.warnings.isNotEmpty)
-            Container(
-              padding: EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.red.shade50,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.red.withOpacity(0.3)),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.warning_amber, color: Colors.red, size: 20),
-                      SizedBox(width: 8),
-                      Text(
-                        'Points d\'attention',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.red.shade700,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 12),
-                  ...product.warnings.map(
-                    (warning) => Padding(
-                      padding: EdgeInsets.only(bottom: 8),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(Icons.circle, size: 6, color: Colors.red),
-                          SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              warning,
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.red.shade800,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-          // Avantages
-          if (product.benefits.isNotEmpty) ...[
-            if (product.warnings.isNotEmpty) SizedBox(height: 12),
-            Container(
-              padding: EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: AppColors.scoreExcellent.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                  color: AppColors.scoreExcellent.withOpacity(0.3),
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.check_circle,
-                        color: AppColors.scoreExcellent,
-                        size: 20,
-                      ),
-                      SizedBox(width: 8),
-                      Text(
-                        'Points positifs',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.scoreExcellent,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 12),
-                  ...product.benefits.map(
-                    (benefit) => Padding(
-                      padding: EdgeInsets.only(bottom: 8),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Icons.circle,
-                            size: 6,
-                            color: AppColors.scoreExcellent,
-                          ),
-                          SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              benefit,
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: AppColors.scoreExcellent.withOpacity(
-                                  0.9,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  // 🔄 Actions rapides
-  Widget _buildQuickActions(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        children: [
-          // Bouton Scanner un autre produit
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.pop(context);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                elevation: 2,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.qr_code_scanner, size: 22),
-                  SizedBox(width: 10),
-                  Text(
-                    'Scanner un autre produit',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          SizedBox(height: 12),
-
-          // Info OpenPetFoodFacts
-          Container(
-            padding: EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: AppColors.background,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(
-                  Icons.info_outline,
-                  size: 18,
-                  color: AppColors.textSecondary,
+                Text(
+                  label,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textSecondary,
+                  ),
                 ),
-                SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    'Données issues d\'OpenPetFoodFacts',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: AppColors.textSecondary,
-                    ),
+                const SizedBox(height: 2),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: AppColors.textPrimary,
                   ),
                 ),
               ],
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  // 🔄 Produits similaires (désactivé - mode API uniquement)
+  Widget _buildSimilarProducts() {
+    // Mode API uniquement - pas de base de données locale
+    // Les produits similaires nécessiteraient une recherche API complexe
+    return const SizedBox.shrink();
+  }
+
+  // 🔄 Barre d'actions flottante
+  Widget _buildFloatingActionBar() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 20,
+            offset: const Offset(0, -5),
+          ),
+        ],
+      ),
+      child: SafeArea(
+        child: SizedBox(
+          width: double.infinity,
+          child: ElevatedButton.icon(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(Icons.qr_code_scanner, size: 22),
+            label: const Text(
+              'Scanner un autre produit',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              elevation: 2,
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -881,49 +1012,20 @@ class ProductDetailsScreen extends StatelessWidget {
               children: [
                 // Image zoomable plein écran
                 Hero(
-                  tag: 'product_image_${product.barcode}',
+                  tag: 'product_image_${widget.product.barcode}',
                   child: InteractiveViewer(
                     minScale: 0.5,
                     maxScale: 5.0,
-                    child: Container(
-                      width: double.infinity,
-                      height: double.infinity,
+                    child: Center(
                       child: Image.network(
-                        product.imageUrl,
+                        widget.product.imageUrl,
                         fit: BoxFit.contain,
-                        width: double.infinity,
-                        height: double.infinity,
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return Center(
-                            child: CircularProgressIndicator(
-                              value: loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded /
-                                        loadingProgress.expectedTotalBytes!
-                                  : null,
-                              valueColor: AlwaysStoppedAnimation(Colors.white),
-                            ),
-                          );
-                        },
                         errorBuilder: (context, error, stackTrace) {
-                          return Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.error_outline,
-                                  size: 64,
-                                  color: Colors.white.withOpacity(0.5),
-                                ),
-                                SizedBox(height: 16),
-                                Text(
-                                  'Image non disponible',
-                                  style: TextStyle(
-                                    color: Colors.white.withOpacity(0.7),
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ],
+                          return const Center(
+                            child: Icon(
+                              Icons.error_outline,
+                              size: 64,
+                              color: Colors.white,
                             ),
                           );
                         },
@@ -932,35 +1034,25 @@ class ProductDetailsScreen extends StatelessWidget {
                   ),
                 ),
 
-                // Bouton fermer en haut (avec fade)
+                // Bouton fermer
                 Positioned(
                   top: 0,
                   right: 0,
-                  child: FadeTransition(
-                    opacity: animation,
-                    child: SafeArea(
-                      child: Padding(
-                        padding: EdgeInsets.all(16),
-                        child: GestureDetector(
-                          onTap: () => Navigator.pop(context),
-                          child: Container(
-                            padding: EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.3),
-                                  blurRadius: 12,
-                                  offset: Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: Icon(
-                              Icons.close,
-                              color: AppColors.textPrimary,
-                              size: 24,
-                            ),
+                  child: SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.close,
+                            color: AppColors.textPrimary,
+                            size: 24,
                           ),
                         ),
                       ),
@@ -968,49 +1060,39 @@ class ProductDetailsScreen extends StatelessWidget {
                   ),
                 ),
 
-                // Indication en bas (avec fade)
+                // Indication zoom
                 Positioned(
                   bottom: 40,
                   left: 0,
                   right: 0,
-                  child: FadeTransition(
-                    opacity: animation,
-                    child: Center(
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 12,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.9),
-                          borderRadius: BorderRadius.circular(25),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.2),
-                              blurRadius: 12,
-                              offset: Offset(0, 4),
+                  child: Center(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 12,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.9),
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.zoom_in,
+                            color: AppColors.primary,
+                            size: 20,
+                          ),
+                          SizedBox(width: 8),
+                          Text(
+                            'Pincez pour zoomer',
+                            style: TextStyle(
+                              color: AppColors.textPrimary,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
                             ),
-                          ],
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.zoom_in,
-                              color: AppColors.primary,
-                              size: 20,
-                            ),
-                            SizedBox(width: 8),
-                            Text(
-                              'Pincez pour zoomer',
-                              style: TextStyle(
-                                color: AppColors.textPrimary,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -1035,7 +1117,7 @@ class ProductDetailsScreen extends StatelessWidget {
     if (score >= 75) return 'Excellent';
     if (score >= 50) return 'Bon';
     if (score >= 25) return 'Moyen';
-    return 'Médiocre';
+    return 'À éviter';
   }
 
   bool _isProblematicIngredient(String ingredient) {
@@ -1045,7 +1127,8 @@ class ProductDetailsScreen extends StatelessWidget {
         lower.contains('colorant') ||
         lower.contains('e1') ||
         lower.contains('sucre') ||
-        lower.contains('sugar');
+        lower.contains('sugar') ||
+        lower.contains('additif');
   }
 
   bool _isGoodIngredient(String ingredient) {
@@ -1055,19 +1138,21 @@ class ProductDetailsScreen extends StatelessWidget {
         lower.contains('saumon') ||
         lower.contains('salmon') ||
         lower.contains('bio') ||
-        lower.contains('organic');
+        lower.contains('organic') ||
+        lower.contains('viande') ||
+        lower.contains('meat');
   }
 
   Color _getPetColor(PetType petType) {
     switch (petType) {
       case PetType.dog:
-        return Color(0xFF4A90E2);
+        return AppColors.dogColor;
       case PetType.cat:
-        return Color(0xFFFF6B9D);
+        return AppColors.catColor;
       case PetType.bird:
-        return Colors.orange;
+        return AppColors.birdColor;
       case PetType.rabbit:
-        return Colors.brown;
+        return AppColors.otherPetColor;
       default:
         return AppColors.textSecondary;
     }
