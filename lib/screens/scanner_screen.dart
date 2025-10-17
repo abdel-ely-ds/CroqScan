@@ -4,6 +4,7 @@ import '../constants/app_colors.dart';
 import '../models/product.dart';
 import '../widgets/products_provider.dart';
 import '../services/product_service.dart';
+import '../services/openpetfoodfacts_service.dart';
 import 'product_details_screen.dart';
 
 class ScannerScreen extends StatefulWidget {
@@ -46,32 +47,50 @@ class _ScannerScreenState extends State<ScannerScreen> {
       _isProcessing = true;
     });
 
-    // Search for product in database
-    final product = ProductService.findProductByBarcode(_allProducts, barcode);
+    // Pause the camera to prevent multiple scans
+    await cameraController.stop();
+
+    Product? product;
+
+    // 1. Search in local database first
+    print('🔍 Recherche locale du code-barres: $barcode');
+    product = ProductService.findProductByBarcode(_allProducts, barcode);
+
+    // 2. If not found locally, try OpenPetFoodFacts API
+    if (product == null) {
+      print('❌ Produit non trouvé localement, interrogation de l\'API...');
+      product = await OpenPetFoodFactsService.fetchProductByBarcode(barcode);
+    } else {
+      print('✅ Produit trouvé dans la base locale');
+    }
 
     if (product != null && mounted) {
       // Product found - navigate to details
+      // Camera will be disposed when we leave this screen
       await Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => ProductDetailsScreen(product: product),
+          builder: (context) => ProductDetailsScreen(product: product!),
         ),
       );
     } else if (mounted) {
-      // Product not found
-      _showProductNotFound(barcode);
-    }
+      // Product not found anywhere - show dialog
+      await _showProductNotFound(barcode);
 
-    if (mounted) {
-      setState(() {
-        _isProcessing = false;
-      });
+      // Restart camera after dialog is dismissed
+      if (mounted) {
+        await cameraController.start();
+        setState(() {
+          _isProcessing = false;
+        });
+      }
     }
   }
 
-  void _showProductNotFound(String barcode) {
-    showDialog(
+  Future<void> _showProductNotFound(String barcode) async {
+    await showDialog(
       context: context,
+      barrierDismissible: false, // Prevent dismissing by tapping outside
       builder: (context) => AlertDialog(
         title: const Row(
           children: [
@@ -86,14 +105,14 @@ class _ScannerScreenState extends State<ScannerScreen> {
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.pop(context); // Close dialog
             },
             child: const Text('Essayer un Autre'),
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.pop(context);
-              Navigator.pop(context);
+              Navigator.pop(context); // Close dialog
+              Navigator.pop(context); // Go back to home screen
             },
             child: const Text('Retour'),
           ),

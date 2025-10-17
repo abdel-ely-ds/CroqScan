@@ -72,6 +72,22 @@ class Product {
       nutritionalInfo: NutritionalInfo.fromJson(json['nutritionalInfo'] ?? {}),
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'barcode': barcode,
+      'name': name,
+      'brand': brand,
+      'imageUrl': imageUrl,
+      'healthScore': healthScore,
+      'suitableFor': suitableFor.map((e) => e.name).toList(),
+      'description': description,
+      'ingredients': ingredients,
+      'warnings': warnings,
+      'benefits': benefits,
+      'nutritionalInfo': nutritionalInfo.toJson(),
+    };
+  }
 }
 
 class NutritionalInfo {
@@ -97,5 +113,15 @@ class NutritionalInfo {
       moisture: (json['moisture'] ?? 0).toDouble(),
       ash: (json['ash'] ?? 0).toDouble(),
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'protein': protein,
+      'fat': fat,
+      'fiber': fiber,
+      'moisture': moisture,
+      'ash': ash,
+    };
   }
 }

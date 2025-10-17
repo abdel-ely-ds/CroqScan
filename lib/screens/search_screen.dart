@@ -291,36 +291,64 @@ class _SearchScreenState extends State<SearchScreen> {
                     ),
                     const SizedBox(height: 12),
 
+                    // Catégories basées sur la taxonomie OpenPetFoodFacts
+                    // Source: https://world.openpetfoodfacts.org/data/taxonomies/categories.json
+                    
                     _CategoryCard(
-                      title: 'Croquettes & Nourriture Sèche',
-                      icon: Icons.grain,
+                      title: 'Nourriture pour Chats',
+                      icon: Icons.pets,
+                      color: AppColors.catColor,
+                      description: 'Croquettes, pâtées et snacks pour chats',
+                      onTap: () {
+                        _searchController.clear();
+                        _filterByPetType(PetType.cat);
+                      },
+                    ),
+
+                    _CategoryCard(
+                      title: 'Nourriture pour Chiens',
+                      icon: Icons.pets,
                       color: AppColors.primary,
-                      description: 'Aliments secs pour tous types d\'animaux',
+                      description: 'Croquettes, pâtées et snacks pour chiens',
+                      onTap: () {
+                        _searchController.clear();
+                        _filterByPetType(PetType.dog);
+                      },
+                    ),
+
+                    _CategoryCard(
+                      title: 'Croquettes (Nourriture Sèche)',
+                      icon: Icons.grain,
+                      color: Colors.brown,
+                      description: 'Aliments secs pour chiens et chats',
                       onTap: () => _quickSearch('croquettes'),
                     ),
 
                     _CategoryCard(
-                      title: 'Pâtées & Nourriture Humide',
+                      title: 'Pâtées (Nourriture Humide)',
                       icon: Icons.water_drop,
-                      color: AppColors.catColor,
+                      color: Colors.blue,
                       description: 'Nourriture humide riche en protéines',
                       onTap: () => _quickSearch('pâtée'),
                     ),
 
                     _CategoryCard(
-                      title: 'Friandises & Snacks',
-                      icon: Icons.cookie,
-                      color: AppColors.scoreMediocre,
-                      description: 'Récompenses et gâteries pour animaux',
-                      onTap: () => _quickSearch('friandises'),
+                      title: 'Produits Biologiques',
+                      icon: Icons.eco,
+                      color: AppColors.scoreExcellent,
+                      description: 'Produits bio et naturels certifiés',
+                      onTap: () => _quickSearch('bio'),
                     ),
 
                     _CategoryCard(
-                      title: 'Produits Bio & Naturels',
-                      icon: Icons.eco,
-                      color: AppColors.scoreExcellent,
-                      description: 'Produits biologiques certifiés',
-                      onTap: () => _quickSearch('bio'),
+                      title: 'Nourriture pour Oiseaux',
+                      icon: Icons.flutter_dash,
+                      color: Colors.orange,
+                      description: 'Graines et mélanges pour oiseaux',
+                      onTap: () {
+                        _searchController.clear();
+                        _filterByPetType(PetType.bird);
+                      },
                     ),
 
                     const SizedBox(height: 16),

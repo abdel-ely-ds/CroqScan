@@ -150,21 +150,61 @@ class ProductService {
   }
 
   /// Determine which pets the product is suitable for
+  /// Utilise la taxonomie officielle d'OpenPetFoodFacts
+  /// Source: https://world.openpetfoodfacts.org/data/taxonomies/categories.json
   static List<PetType> _determinePetTypes(Map<String, dynamic> json) {
     final List<PetType> types = [];
     final List<dynamic> categoriesTags = json['categories_tags'] ?? [];
     final String categoriesStr = categoriesTags.join(' ').toLowerCase();
+    final String categories = (json['categories'] ?? '').toLowerCase();
 
-    if (categoriesStr.contains('dog')) {
+    // Catégories pour chiens (Dog food)
+    // Taxonomie: en:dog-food, en:dog-biscuit, en:dry-dog-food, en:wet-dog-food, en:puppy-food
+    if (categoriesStr.contains('en:dog-food') ||
+        categoriesStr.contains('dog-food') ||
+        categoriesStr.contains('en:dog-biscuit') ||
+        categoriesStr.contains('en:dry-dog-food') ||
+        categoriesStr.contains('en:wet-dog-food') ||
+        categoriesStr.contains('en:puppy-food') ||
+        categoriesStr.contains('dog') ||
+        categories.contains('chien') ||
+        categories.contains('hund')) {
       types.add(PetType.dog);
     }
-    if (categoriesStr.contains('cat')) {
+
+    // Catégories pour chats (Cat food)
+    // Taxonomie: en:cat-food, en:adult-cat-food, en:kitten-food, en:dry-cat-food, en:wet-cat-food
+    if (categoriesStr.contains('en:cat-food') ||
+        categoriesStr.contains('cat-food') ||
+        categoriesStr.contains('en:adult-cat-food') ||
+        categoriesStr.contains('en:kitten-food') ||
+        categoriesStr.contains('en:dry-cat-food') ||
+        categoriesStr.contains('en:wet-cat-food') ||
+        categoriesStr.contains('en:castrated-cat-food') ||
+        categoriesStr.contains('en:senior-cat-food') ||
+        categoriesStr.contains('cat') ||
+        categories.contains('chat') ||
+        categories.contains('gato')) {
       types.add(PetType.cat);
     }
-    if (categoriesStr.contains('bird')) {
+
+    // Catégories pour oiseaux (Bird food)
+    // Taxonomie: en:bird-food
+    if (categoriesStr.contains('en:bird-food') ||
+        categoriesStr.contains('bird-food') ||
+        categoriesStr.contains('bird') ||
+        categories.contains('oiseau') ||
+        categories.contains('vogel')) {
       types.add(PetType.bird);
     }
-    if (categoriesStr.contains('rabbit')) {
+
+    // Catégories pour lapins (Rabbit food)
+    // Taxonomie: en:rabbit-food
+    if (categoriesStr.contains('en:rabbit-food') ||
+        categoriesStr.contains('rabbit-food') ||
+        categoriesStr.contains('rabbit') ||
+        categories.contains('lapin') ||
+        categories.contains('kaninchen')) {
       types.add(PetType.rabbit);
     }
 
