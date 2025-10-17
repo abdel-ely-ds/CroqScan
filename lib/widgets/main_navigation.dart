@@ -24,16 +24,15 @@ class _MainNavigationState extends State<MainNavigation> {
   final List<ScrollController> _scrollControllers = [
     ScrollController(), // Home
     ScrollController(), // Search
-    ScrollController(), // Scanner (non utilisé)
     ScrollController(), // Favorites
     ScrollController(), // Profile
   ];
 
   // Construire les écrans à la demande
+  // Le scanner n'est PAS dans l'IndexedStack pour éviter qu'il reste actif
   List<Widget> get _screens => [
     const HomeScreen(),
     const SearchScreenNew(),
-    const ScannerScreen(), // Écran central
     FavoritesScreen(key: _favoritesKey), // Avec clé pour forcer rebuild
     const ProfileScreen(),
   ];
@@ -50,7 +49,7 @@ class _MainNavigationState extends State<MainNavigation> {
     HapticFeedback.lightImpact();
 
     if (index == 2) {
-      // Scanner - Navigation en plein écran
+      // Scanner - Navigation en plein écran (pas dans l'IndexedStack)
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -59,10 +58,19 @@ class _MainNavigationState extends State<MainNavigation> {
         ),
       );
     } else {
-      if (_currentIndex == index) {
+      // Mapper l'index du bouton à l'index réel de l'écran
+      // Bouton 0 → Écran 0 (Home)
+      // Bouton 1 → Écran 1 (Search)
+      // Bouton 2 → Scanner (route séparée, pas dans IndexedStack)
+      // Bouton 3 (Favoris) → Écran 2
+      // Bouton 4 (Profil) → Écran 3
+      final screenIndex = index > 2 ? index - 1 : index;
+
+      if (_currentIndex == screenIndex) {
         // Déjà sur cet onglet - scroll to top
-        if (_scrollControllers[index].hasClients) {
-          _scrollControllers[index].animateTo(
+        if (screenIndex < _scrollControllers.length &&
+            _scrollControllers[screenIndex].hasClients) {
+          _scrollControllers[screenIndex].animateTo(
             0,
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeOut,
@@ -71,10 +79,10 @@ class _MainNavigationState extends State<MainNavigation> {
       } else {
         // Changement d'onglet
         setState(() {
-          _currentIndex = index;
+          _currentIndex = screenIndex;
 
-          // Si on navigue vers les favoris (index 3), forcer un rebuild
-          if (index == 3) {
+          // Si on navigue vers les favoris (écran index 2), forcer un rebuild
+          if (screenIndex == 2) {
             _favoritesKey = UniqueKey();
             print('🔄 Navigation vers Favoris - Refresh forcé');
           }
@@ -143,7 +151,9 @@ class _MainNavigationState extends State<MainNavigation> {
     required String label,
     required int index,
   }) {
-    final bool isActive = _currentIndex == index;
+    // Mapper l'index du bouton à l'index de l'écran
+    final screenIndex = index > 2 ? index - 1 : index;
+    final bool isActive = _currentIndex == screenIndex;
 
     return Expanded(
       child: GestureDetector(

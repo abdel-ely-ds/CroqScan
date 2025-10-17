@@ -19,7 +19,7 @@ class _SearchScreenNewState extends State<SearchScreenNew> {
 
   // État de la recherche
   String? _selectedMainCategory;
-  final Set<String> _selectedSubCategories = {};
+  String? _selectedSubCategory; // Une seule sous-catégorie à la fois
   bool _isLoading = false;
   bool _isLoadingMore = false;
   List<Product> _searchResults = [];
@@ -92,7 +92,7 @@ class _SearchScreenNewState extends State<SearchScreenNew> {
     // Vérifier qu'au moins un critère est sélectionné
     if (_searchController.text.isEmpty &&
         _selectedMainCategory == null &&
-        _selectedSubCategories.isEmpty) {
+        _selectedSubCategory == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Row(
@@ -138,11 +138,9 @@ class _SearchScreenNewState extends State<SearchScreenNew> {
       if (_selectedMainCategory != null) {
         print('   🏷️  Catégorie principale: $_selectedMainCategory');
       }
-      if (_selectedSubCategories.isNotEmpty) {
-        final cleanedTags = _selectedSubCategories
-            .map((tag) => tag.replaceFirst('en:', ''))
-            .join(', ');
-        print('   🏷️  Sous-catégories: $cleanedTags');
+      if (_selectedSubCategory != null) {
+        final cleanedTag = _selectedSubCategory!.replaceFirst('en:', '');
+        print('   🏷️  Sous-catégorie: $cleanedTag');
       }
 
       print('   📄 Page: $_currentPage / 20 produits par page');
@@ -167,12 +165,10 @@ class _SearchScreenNewState extends State<SearchScreenNew> {
       // Construire la liste de toutes les catégories à rechercher
       final List<String> allCategoriesToSearch = [];
 
-      if (_selectedSubCategories.isNotEmpty) {
-        // Si des sous-catégories sont sélectionnées, utiliser uniquement celles-ci
-        final cleanedTags = _selectedSubCategories
-            .map((tag) => tag.replaceFirst('en:', ''))
-            .toList();
-        allCategoriesToSearch.addAll(cleanedTags);
+      if (_selectedSubCategory != null) {
+        // Si une sous-catégorie est sélectionnée, utiliser uniquement celle-ci
+        final cleanedTag = _selectedSubCategory!.replaceFirst('en:', '');
+        allCategoriesToSearch.add(cleanedTag);
       } else if (_selectedMainCategory != null) {
         // Sinon, utiliser la catégorie principale seule
         allCategoriesToSearch.add(_selectedMainCategory!);
@@ -402,7 +398,7 @@ class _SearchScreenNewState extends State<SearchScreenNew> {
                   ),
                   const Spacer(),
                   if (_selectedMainCategory != null ||
-                      _selectedSubCategories.isNotEmpty ||
+                      _selectedSubCategory != null ||
                       _searchController.text.isNotEmpty)
                     IconButton(
                       icon: const Icon(
@@ -413,7 +409,7 @@ class _SearchScreenNewState extends State<SearchScreenNew> {
                         setState(() {
                           _searchController.clear();
                           _selectedMainCategory = null;
-                          _selectedSubCategories.clear();
+                          _selectedSubCategory = null;
                           _searchResults = [];
                           _totalResults = 0;
                         });
@@ -476,10 +472,10 @@ class _SearchScreenNewState extends State<SearchScreenNew> {
                               setState(() {
                                 if (isSelected) {
                                   _selectedMainCategory = null;
-                                  _selectedSubCategories.clear();
+                                  _selectedSubCategory = null;
                                 } else {
                                   _selectedMainCategory = entry.key;
-                                  _selectedSubCategories.clear();
+                                  _selectedSubCategory = null;
                                 }
                               });
                             },
@@ -554,8 +550,8 @@ class _SearchScreenNewState extends State<SearchScreenNew> {
                         children: _mainCategories[_selectedMainCategory]!
                             .subCategories
                             .map((subCat) {
-                              final isSelected = _selectedSubCategories
-                                  .contains(subCat.tag);
+                              final isSelected =
+                                  _selectedSubCategory == subCat.tag;
                               final color =
                                   _mainCategories[_selectedMainCategory]!.color;
 
@@ -564,12 +560,11 @@ class _SearchScreenNewState extends State<SearchScreenNew> {
                                 child: InkWell(
                                   onTap: () {
                                     setState(() {
+                                      // Une seule sous-catégorie à la fois
                                       if (isSelected) {
-                                        _selectedSubCategories.remove(
-                                          subCat.tag,
-                                        );
+                                        _selectedSubCategory = null;
                                       } else {
-                                        _selectedSubCategories.add(subCat.tag);
+                                        _selectedSubCategory = subCat.tag;
                                       }
                                     });
                                   },

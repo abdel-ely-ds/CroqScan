@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import '../constants/app_colors.dart';
 import '../services/openpetfoodfacts_service.dart';
+import '../services/scan_history_service.dart';
 import 'product_details_screen.dart';
 
 class ScannerScreen extends StatefulWidget {
@@ -11,18 +12,52 @@ class ScannerScreen extends StatefulWidget {
   State<ScannerScreen> createState() => _ScannerScreenState();
 }
 
-class _ScannerScreenState extends State<ScannerScreen> {
+class _ScannerScreenState extends State<ScannerScreen>
+    with WidgetsBindingObserver {
   MobileScannerController cameraController = MobileScannerController();
   bool _isProcessing = false;
+  bool _isScreenActive = true;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    print('📷 Scanner initialisé');
+  }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     cameraController.dispose();
+    print('📷 Scanner disposé');
     super.dispose();
   }
 
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // Gérer le cycle de vie de l'app
+    switch (state) {
+      case AppLifecycleState.resumed:
+        // L'app revient au premier plan
+        if (_isScreenActive && !_isProcessing) {
+          cameraController.start();
+          print('📷 Caméra redémarrée');
+        }
+        break;
+      case AppLifecycleState.paused:
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.hidden:
+      case AppLifecycleState.detached:
+        // L'app passe en arrière-plan
+        cameraController.stop();
+        print('📷 Caméra arrêtée (app en arrière-plan)');
+        break;
+    }
+  }
+
   void _onBarcodeDetected(BarcodeCapture capture) async {
-    if (_isProcessing) return;
+    // Ne scanner que si l'écran est actif et qu'on ne traite pas déjà un code
+    if (_isProcessing || !_isScreenActive) return;
 
     final List<Barcode> barcodes = capture.barcodes;
     if (barcodes.isEmpty) return;
@@ -44,6 +79,18 @@ class _ScannerScreenState extends State<ScannerScreen> {
     );
 
     if (product != null && mounted) {
+      // Ajouter à l'historique
+      await ScanHistoryService.addToHistory(
+        product.barcode,
+        product.name,
+        product.brand,
+        product.imageUrl,
+        product.healthScore,
+      );
+
+      // Marquer l'écran comme inactif pour arrêter les scans
+      _isScreenActive = false;
+
       // Product found - navigate to details
       // Camera will be disposed when we leave this screen
       await Navigator.pushReplacement(
@@ -57,7 +104,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
       await _showProductNotFound(barcode);
 
       // Restart camera after dialog is dismissed
-      if (mounted) {
+      if (mounted && _isScreenActive) {
         await cameraController.start();
         setState(() {
           _isProcessing = false;
