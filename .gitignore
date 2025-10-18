@@ -4,6 +4,7 @@
 *.pyc
 *.swp
 .DS_Store
+._*
 .atom/
 .build/
 .buildlog/
@@ -74,6 +75,7 @@ app.*.map.json
 **/ios/Flutter/flutter_export_environment.sh
 **/ios/ServiceDefinitions.json
 **/ios/Runner/GeneratedPluginRegistrant.*
+**/ios/Podfile.lock
 **/macos/Flutter/ephemeral
 **/macos/Flutter/GeneratedPluginRegistrant.swift
 **/macos/Flutter/Flutter-Generated.xcconfig
@@ -101,3 +103,8 @@ lib/generated_plugin_registrant.dart
 *.aab
 *.ipa
 assets/openpetfoodfacts-products.jsonl
+
+# Ignore image files in root (screenshots, etc)
+/*.png
+/*.jpg
+/*.jpeg
