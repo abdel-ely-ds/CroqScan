@@ -11,6 +11,7 @@
         "cupertino_icons",
         "flutter",
         "flutter_secure_storage",
+        "font_awesome_flutter",
         "http",
         "image_picker",
         "mobile_scanner",
@@ -49,6 +50,13 @@
         "stream_channel",
         "test_api",
         "vector_math"
+      ]
+    },
+    {
+      "name": "font_awesome_flutter",
+      "version": "10.11.0",
+      "dependencies": [
+        "flutter"
       ]
     },
     {

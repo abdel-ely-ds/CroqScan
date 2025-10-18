@@ -316,23 +316,52 @@ class _SearchScreenNewState extends State<SearchScreenNew> {
         ash: _parseNutrient(nutriments['ash_100g']),
       );
 
-      int score = 50;
-      if (nutritionalInfo.protein >= 30)
-        score += 15;
-      else if (nutritionalInfo.protein >= 25)
-        score += 10;
+      // Calculate score based on nutritional values
+      double score = 50.0;
+      
+      // Protein scoring (up to 30 points)
+      if (nutritionalInfo.protein >= 35) score += 30;
+      else if (nutritionalInfo.protein >= 30) score += 27;
+      else if (nutritionalInfo.protein >= 25) score += 22;
+      else if (nutritionalInfo.protein >= 20) score += 17;
+      else if (nutritionalInfo.protein >= 15) score += 12;
+      else if (nutritionalInfo.protein >= 10) score += 7;
+      else score += 2;
+      
+      // Fat scoring (up to 15 points)
+      if (nutritionalInfo.fat >= 10 && nutritionalInfo.fat <= 20) score += 15;
+      else if (nutritionalInfo.fat >= 8 && nutritionalInfo.fat < 10 || 
+               nutritionalInfo.fat > 20 && nutritionalInfo.fat <= 25) score += 10;
+      else if (nutritionalInfo.fat >= 5 && nutritionalInfo.fat < 8 || 
+               nutritionalInfo.fat > 25 && nutritionalInfo.fat <= 30) score += 5;
+      
+      // Fiber scoring (up to 10 points)
+      if (nutritionalInfo.fiber >= 2 && nutritionalInfo.fiber <= 5) score += 10;
+      else if (nutritionalInfo.fiber >= 1 && nutritionalInfo.fiber < 2 || 
+               nutritionalInfo.fiber > 5 && nutritionalInfo.fiber <= 8) score += 5;
+      
+      // Ingredient quality (up to 20 points)
       final lowerIng = ingredientsText.toLowerCase();
-      if (lowerIng.contains('bio')) score += 10;
-      if (lowerIng.contains('poulet') || lowerIng.contains('chicken'))
-        score += 10;
-      score = score.clamp(0, 100);
+      int goodIng = 0;
+      if (lowerIng.contains('poulet') || lowerIng.contains('chicken')) goodIng++;
+      if (lowerIng.contains('saumon') || lowerIng.contains('salmon')) goodIng++;
+      if (lowerIng.contains('viande') || lowerIng.contains('meat')) goodIng++;
+      if (lowerIng.contains('bio') || lowerIng.contains('organic')) goodIng++;
+      score += (goodIng * 3).clamp(0, 20);
+      
+      // Penalties for bad ingredients
+      if (lowerIng.contains('sous-produit') || lowerIng.contains('by-product')) score -= 5;
+      if (lowerIng.contains('colorant') || RegExp(r'e1[0-9]{2}').hasMatch(lowerIng)) score -= 5;
+      if (lowerIng.contains('sucre') || lowerIng.contains('sugar')) score -= 5;
+      
+      int finalScore = score.clamp(0, 100).round();
 
       return Product(
         barcode: code,
         name: name,
         brand: brand,
         imageUrl: imageUrl,
-        healthScore: score,
+        healthScore: finalScore,
         suitableFor: suitableFor,
         description: categories,
         ingredients: ingredients,

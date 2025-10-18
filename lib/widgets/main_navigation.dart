@@ -151,74 +151,256 @@ class _MainNavigationState extends State<MainNavigation> {
     required String label,
     required int index,
   }) {
-    // Mapper l'index du bouton à l'index de l'écran
-    final screenIndex = index > 2 ? index - 1 : index;
-    final bool isActive = _currentIndex == screenIndex;
+    return _NavItemWithHover(
+      icon: icon,
+      label: label,
+      index: index,
+      currentIndex: _currentIndex,
+      onTap: () => _onTabTapped(index),
+    );
+  }
+
+  Widget _buildScannerButton() {
+    return _ScannerButtonWithHover(
+      onTap: () => _onTabTapped(2),
+    );
+  }
+}
+
+// Nav item with hover effect
+class _NavItemWithHover extends StatefulWidget {
+  final IconData icon;
+  final String label;
+  final int index;
+  final int currentIndex;
+  final VoidCallback onTap;
+
+  const _NavItemWithHover({
+    required this.icon,
+    required this.label,
+    required this.index,
+    required this.currentIndex,
+    required this.onTap,
+  });
+
+  @override
+  State<_NavItemWithHover> createState() => _NavItemWithHoverState();
+}
+
+class _NavItemWithHoverState extends State<_NavItemWithHover>
+    with SingleTickerProviderStateMixin {
+  bool _isHovered = false;
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.15).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final screenIndex = widget.index > 2 ? widget.index - 1 : widget.index;
+    final bool isActive = widget.currentIndex == screenIndex;
 
     return Expanded(
-      child: GestureDetector(
-        onTap: () => _onTabTapped(index),
-        behavior: HitTestBehavior.opaque,
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                size: 24,
-                color: isActive ? AppColors.navActive : AppColors.navInactive,
-              ),
-              const SizedBox(height: 3),
-              FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
-                    color: isActive
-                        ? AppColors.navActive
-                        : AppColors.navInactive,
+      child: MouseRegion(
+        onEnter: (_) {
+          setState(() => _isHovered = true);
+          _controller.forward();
+        },
+        onExit: (_) {
+          setState(() => _isHovered = false);
+          _controller.reverse();
+        },
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(
+          onTap: widget.onTap,
+          behavior: HitTestBehavior.opaque,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
+            decoration: BoxDecoration(
+              gradient: _isHovered && !isActive
+                  ? LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        AppColors.primary.withValues(alpha: 0.08),
+                        AppColors.primary.withValues(alpha: 0.02),
+                      ],
+                    )
+                  : null,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: ScaleTransition(
+              scale: _scaleAnimation,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TweenAnimationBuilder<Color?>(
+                    duration: const Duration(milliseconds: 200),
+                    tween: ColorTween(
+                      begin: isActive
+                          ? AppColors.navActive
+                          : AppColors.navInactive,
+                      end: isActive
+                          ? AppColors.navActive
+                          : (_isHovered
+                              ? AppColors.primary
+                              : AppColors.navInactive),
+                    ),
+                    builder: (context, color, child) {
+                      return Icon(
+                        widget.icon,
+                        size: 24,
+                        color: color,
+                      );
+                    },
                   ),
-                  maxLines: 1,
-                  textAlign: TextAlign.center,
-                ),
+                  const SizedBox(height: 3),
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: TweenAnimationBuilder<Color?>(
+                      duration: const Duration(milliseconds: 200),
+                      tween: ColorTween(
+                        begin: isActive
+                            ? AppColors.navActive
+                            : AppColors.navInactive,
+                        end: isActive
+                            ? AppColors.navActive
+                            : (_isHovered
+                                ? AppColors.primary
+                                : AppColors.navInactive),
+                      ),
+                      builder: (context, color, child) {
+                        return Text(
+                          widget.label,
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: isActive || _isHovered
+                                ? FontWeight.w600
+                                : FontWeight.normal,
+                            color: color,
+                          ),
+                          maxLines: 1,
+                          textAlign: TextAlign.center,
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
     );
   }
+}
 
-  Widget _buildScannerButton() {
-    return GestureDetector(
-      onTap: () => _onTabTapped(2),
-      child: Container(
-        width: 56,
-        height: 56,
-        margin: const EdgeInsets.symmetric(horizontal: 8),
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [AppColors.primary, AppColors.accent],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.primary.withOpacity(0.4),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
+// Scanner button with hover effect
+class _ScannerButtonWithHover extends StatefulWidget {
+  final VoidCallback onTap;
+
+  const _ScannerButtonWithHover({required this.onTap});
+
+  @override
+  State<_ScannerButtonWithHover> createState() =>
+      _ScannerButtonWithHoverState();
+}
+
+class _ScannerButtonWithHoverState extends State<_ScannerButtonWithHover>
+    with SingleTickerProviderStateMixin {
+  bool _isHovered = false;
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.1).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) {
+        setState(() => _isHovered = true);
+        _controller.forward();
+      },
+      onExit: (_) {
+        setState(() => _isHovered = false);
+        _controller.reverse();
+      },
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: ScaleTransition(
+          scale: _scaleAnimation,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            width: 56,
+            height: 56,
+            margin: const EdgeInsets.symmetric(horizontal: 8),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: _isHovered
+                    ? [
+                        AppColors.primary,
+                        AppColors.accent,
+                        AppColors.secondary,
+                      ]
+                    : [
+                        AppColors.primary,
+                        AppColors.accent,
+                      ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.primary.withValues(
+                    alpha: _isHovered ? 0.6 : 0.4,
+                  ),
+                  blurRadius: _isHovered ? 16 : 12,
+                  offset: Offset(0, _isHovered ? 6 : 4),
+                ),
+              ],
             ),
-          ],
-        ),
-        child: const Icon(
-          Icons.qr_code_scanner_rounded,
-          color: Colors.white,
-          size: 28,
+            child: const Icon(
+              Icons.qr_code_scanner_rounded,
+              color: Colors.white,
+              size: 28,
+            ),
+          ),
         ),
       ),
     );

@@ -49,12 +49,15 @@ class Product {
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
+    final nutritionalInfo = NutritionalInfo.fromJson(json['nutritionalInfo'] ?? {});
+    final ingredients = List<String>.from(json['ingredients'] ?? []);
+    
     return Product(
       barcode: json['barcode'] ?? '',
       name: json['name'] ?? '',
       brand: json['brand'] ?? '',
       imageUrl: json['imageUrl'] ?? '',
-      healthScore: json['healthScore'] ?? 50,
+      healthScore: json['healthScore'] ?? _calculateHealthScore(nutritionalInfo, ingredients),
       suitableFor:
           (json['suitableFor'] as List<dynamic>?)
               ?.map(
@@ -66,11 +69,110 @@ class Product {
               .toList() ??
           [],
       description: json['description'] ?? '',
-      ingredients: List<String>.from(json['ingredients'] ?? []),
+      ingredients: ingredients,
       warnings: List<String>.from(json['warnings'] ?? []),
       benefits: List<String>.from(json['benefits'] ?? []),
-      nutritionalInfo: NutritionalInfo.fromJson(json['nutritionalInfo'] ?? {}),
+      nutritionalInfo: nutritionalInfo,
     );
+  }
+
+  /// Calculate health score based on nutritional values and ingredients
+  /// Score range: 0-100
+  static int _calculateHealthScore(NutritionalInfo nutrition, List<String> ingredients) {
+    double score = 50.0; // Start with neutral score
+
+    // 1. Protein score (30 points max) - Higher is better for pets
+    if (nutrition.protein >= 30) {
+      score += 30; // Excellent protein
+    } else if (nutrition.protein >= 25) {
+      score += 25; // Very good
+    } else if (nutrition.protein >= 20) {
+      score += 20; // Good
+    } else if (nutrition.protein >= 15) {
+      score += 15; // Adequate
+    } else if (nutrition.protein >= 10) {
+      score += 10; // Low
+    } else {
+      score += 5; // Very low
+    }
+
+    // 2. Fat score (15 points max) - Moderate fat is ideal (10-20%)
+    if (nutrition.fat >= 10 && nutrition.fat <= 20) {
+      score += 15; // Optimal range
+    } else if (nutrition.fat >= 8 && nutrition.fat < 10 || nutrition.fat > 20 && nutrition.fat <= 25) {
+      score += 10; // Acceptable
+    } else if (nutrition.fat >= 5 && nutrition.fat < 8 || nutrition.fat > 25 && nutrition.fat <= 30) {
+      score += 5; // Suboptimal
+    } else {
+      score += 0; // Too low or too high
+    }
+
+    // 3. Fiber score (10 points max) - Moderate fiber is good (2-5%)
+    if (nutrition.fiber >= 2 && nutrition.fiber <= 5) {
+      score += 10; // Optimal
+    } else if (nutrition.fiber >= 1 && nutrition.fiber < 2 || nutrition.fiber > 5 && nutrition.fiber <= 8) {
+      score += 5; // Acceptable
+    } else {
+      score += 0; // Too low or too high
+    }
+
+    // 4. Ingredients quality (20 points max)
+    int badIngredients = 0;
+    int goodIngredients = 0;
+
+    for (var ingredient in ingredients) {
+      final lower = ingredient.toLowerCase();
+      
+      // Check for bad ingredients
+      if (lower.contains('sous-produit') ||
+          lower.contains('by-product') ||
+          lower.contains('colorant') ||
+          lower.contains('e1') || // Artificial colors
+          lower.contains('e2') ||
+          lower.contains('e3') ||
+          lower.contains('e4') ||
+          lower.contains('sucre') ||
+          lower.contains('sugar') ||
+          lower.contains('additif') ||
+          lower.contains('corn syrup') ||
+          lower.contains('céréale') && lower.contains('premier') // Grains as first ingredient
+      ) {
+        badIngredients++;
+      }
+      
+      // Check for good ingredients
+      if (lower.contains('poulet') ||
+          lower.contains('chicken') ||
+          lower.contains('saumon') ||
+          lower.contains('salmon') ||
+          lower.contains('bio') ||
+          lower.contains('organic') ||
+          lower.contains('viande') ||
+          lower.contains('meat') ||
+          lower.contains('dinde') ||
+          lower.contains('turkey') ||
+          lower.contains('agneau') ||
+          lower.contains('lamb') ||
+          lower.contains('poisson') ||
+          lower.contains('fish')
+      ) {
+        goodIngredients++;
+      }
+    }
+
+    // Deduct for bad ingredients
+    score -= (badIngredients * 5);
+    
+    // Add for good ingredients (max +20)
+    score += (goodIngredients * 4).clamp(0, 20);
+
+    // 5. Bonus for balanced nutrition
+    if (nutrition.protein >= 25 && nutrition.fat >= 10 && nutrition.fat <= 20 && nutrition.fiber >= 2) {
+      score += 5; // Bonus for well-balanced formula
+    }
+
+    // Ensure score is between 0 and 100
+    return score.clamp(0, 100).round();
   }
 
   Map<String, dynamic> toJson() {

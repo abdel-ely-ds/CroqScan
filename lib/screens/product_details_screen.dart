@@ -158,7 +158,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   // 🖼️ En-tête avec image du produit
   Widget _buildHeader(BuildContext context) {
     return SliverAppBar(
-      expandedHeight: 280,
+      expandedHeight: 200,
       pinned: true,
       backgroundColor: Colors.white,
       leading: IconButton(
@@ -243,7 +243,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           ),
           child: SafeArea(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               child: widget.product.imageUrl.isNotEmpty
                   ? Center(
                       child: GestureDetector(
@@ -251,29 +251,29 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         child: Hero(
                           tag: 'product_image_${widget.product.barcode}',
                           child: Container(
-                            constraints: const BoxConstraints(maxHeight: 220),
+                            constraints: const BoxConstraints(maxHeight: 150),
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.circular(20),
+                              borderRadius: BorderRadius.circular(16),
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.black.withValues(alpha: 0.05),
-                                  blurRadius: 20,
-                                  offset: const Offset(0, 4),
+                                  blurRadius: 15,
+                                  offset: const Offset(0, 2),
                                 ),
                               ],
                             ),
                             child: ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
+                              borderRadius: BorderRadius.circular(16),
                               child: Image.network(
                                 widget.product.imageUrl,
                                 fit: BoxFit.contain,
                                 errorBuilder: (context, error, stackTrace) {
                                   return const Padding(
-                                    padding: EdgeInsets.all(32),
+                                    padding: EdgeInsets.all(24),
                                     child: Icon(
                                       Icons.pets,
-                                      size: 60,
+                                      size: 48,
                                       color: AppColors.textSecondary,
                                     ),
                                   );
@@ -286,14 +286,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     )
                   : Center(
                       child: Container(
-                        padding: const EdgeInsets.all(32),
+                        padding: const EdgeInsets.all(24),
                         decoration: BoxDecoration(
                           color: AppColors.background,
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(16),
                         ),
                         child: const Icon(
                           Icons.pets,
-                          size: 60,
+                          size: 48,
                           color: AppColors.textSecondary,
                         ),
                       ),
@@ -311,56 +311,29 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     final scoreLabel = _getScoreLabel(widget.product.healthScore);
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      padding: const EdgeInsets.all(24),
+      margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
+            color: Colors.black.withValues(alpha: 0.06),
+            blurRadius: 12,
             offset: const Offset(0, 4),
           ),
         ],
       ),
-      child: Column(
+      child: Row(
         children: [
-          // Nom et marque
-          Text(
-            widget.product.name,
-            style: const TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: AppColors.textPrimary,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            widget.product.brand,
-            style: const TextStyle(
-              fontSize: 16,
-              color: AppColors.textSecondary,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-
-          const SizedBox(height: 24),
-
-          // Score circulaire
+          // Score circulaire compact
           Container(
-            width: 140,
-            height: 140,
+            width: 80,
+            height: 80,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              gradient: RadialGradient(
-                colors: [
-                  scoreColor.withValues(alpha: 0.2),
-                  scoreColor.withValues(alpha: 0.05),
-                ],
-              ),
-              border: Border.all(color: scoreColor, width: 8),
+              color: scoreColor.withValues(alpha: 0.1),
+              border: Border.all(color: scoreColor, width: 6),
             ),
             child: Center(
               child: Column(
@@ -369,15 +342,16 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   Text(
                     '${widget.product.healthScore}',
                     style: TextStyle(
-                      fontSize: 48,
+                      fontSize: 28,
                       fontWeight: FontWeight.bold,
                       color: scoreColor,
+                      height: 1,
                     ),
                   ),
-                  const Text(
+                  Text(
                     '/100',
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 11,
                       color: AppColors.textSecondary,
                     ),
                   ),
@@ -386,32 +360,39 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             ),
           ),
 
-          const SizedBox(height: 16),
+          const SizedBox(width: 20),
 
-          // Label du score
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-            decoration: BoxDecoration(
-              color: scoreColor.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: scoreColor.withValues(alpha: 0.3)),
+          // Score details
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: scoreColor.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    scoreLabel,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: scoreColor,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 6),
+                const Text(
+                  'Score de santé du produit',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
             ),
-            child: Text(
-              scoreLabel,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: scoreColor,
-              ),
-            ),
-          ),
-
-          const SizedBox(height: 12),
-
-          const Text(
-            'Basé sur l\'analyse nutritionnelle et des ingrédients',
-            style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
-            textAlign: TextAlign.center,
           ),
         ],
       ),
@@ -426,6 +407,13 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.06),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -580,6 +568,13 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.06),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -711,7 +706,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       ),
                       SizedBox(width: 8),
                       Text(
-                        '✅ Points positifs',
+                        'Points positifs',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -727,10 +722,13 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Icon(
-                            Icons.circle,
-                            size: 6,
-                            color: AppColors.scoreExcellent,
+                          Padding(
+                            padding: const EdgeInsets.only(top: 6),
+                            child: const Icon(
+                              Icons.circle,
+                              size: 6,
+                              color: AppColors.scoreExcellent,
+                            ),
                           ),
                           const SizedBox(width: 8),
                           Expanded(
@@ -772,7 +770,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        '⚠️ Points d\'attention',
+                        'Points d\'attention',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -788,7 +786,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Icon(Icons.circle, size: 6, color: Colors.red),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 6),
+                            child: const Icon(Icons.circle, size: 6, color: Colors.red),
+                          ),
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
@@ -820,6 +821,13 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.06),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1107,16 +1115,16 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
   // Helpers
   Color _getScoreColor(int score) {
-    if (score >= 75) return AppColors.scoreExcellent;
-    if (score >= 50) return AppColors.scoreGood;
-    if (score >= 25) return AppColors.scoreMediocre;
-    return AppColors.scorePoor;
+    return AppColors.getScoreColor(score);
   }
 
   String _getScoreLabel(int score) {
-    if (score >= 75) return 'Excellent';
-    if (score >= 50) return 'Bon';
-    if (score >= 25) return 'Moyen';
+    if (score >= 80) return 'Excellent';
+    if (score >= 70) return 'Très bon';
+    if (score >= 60) return 'Bon';
+    if (score >= 50) return 'Moyen';
+    if (score >= 40) return 'Passable';
+    if (score >= 30) return 'Médiocre';
     return 'À éviter';
   }
 

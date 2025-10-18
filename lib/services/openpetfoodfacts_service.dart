@@ -195,66 +195,91 @@ class OpenPetFoodFactsService {
     );
   }
 
-  /// Calculer le score de santé
+  /// Calculer le score de santé de manière détaillée
   static int _calculateHealthScore(
     List<String> ingredients,
     String ingredientsText,
     NutritionalInfo nutritionalInfo,
   ) {
-    int score = 50; // Score de base
-    final lowerIngredients = ingredientsText.toLowerCase();
+    double score = 50.0; // Score de base
 
-    // Bonus pour les protéines
-    if (nutritionalInfo.protein >= 30) {
-      score += 15;
+    // 1. Protéines (jusqu'à 30 points) - Plus c'est élevé, mieux c'est
+    if (nutritionalInfo.protein >= 35) {
+      score += 30;
+    } else if (nutritionalInfo.protein >= 30) {
+      score += 27;
     } else if (nutritionalInfo.protein >= 25) {
-      score += 10;
+      score += 22;
     } else if (nutritionalInfo.protein >= 20) {
+      score += 17;
+    } else if (nutritionalInfo.protein >= 15) {
+      score += 12;
+    } else if (nutritionalInfo.protein >= 10) {
+      score += 7;
+    } else {
+      score += 2;
+    }
+
+    // 2. Matières grasses (jusqu'à 15 points) - 10-20% est idéal
+    if (nutritionalInfo.fat >= 10 && nutritionalInfo.fat <= 20) {
+      score += 15;
+    } else if (nutritionalInfo.fat >= 8 && nutritionalInfo.fat < 10 ||
+               nutritionalInfo.fat > 20 && nutritionalInfo.fat <= 25) {
+      score += 10;
+    } else if (nutritionalInfo.fat >= 5 && nutritionalInfo.fat < 8 ||
+               nutritionalInfo.fat > 25 && nutritionalInfo.fat <= 30) {
       score += 5;
     }
 
-    // Bonus pour bio/organic
-    if (lowerIngredients.contains('bio') ||
-        lowerIngredients.contains('organic')) {
+    // 3. Fibres (jusqu'à 10 points) - 2-5% est idéal
+    if (nutritionalInfo.fiber >= 2 && nutritionalInfo.fiber <= 5) {
       score += 10;
+    } else if (nutritionalInfo.fiber >= 1 && nutritionalInfo.fiber < 2 ||
+               nutritionalInfo.fiber > 5 && nutritionalInfo.fiber <= 8) {
+      score += 5;
     }
 
-    // Bonus pour viande de qualité
-    if (lowerIngredients.contains('poulet') ||
-        lowerIngredients.contains('chicken')) {
-      score += 10;
+    final lowerIngredients = ingredientsText.toLowerCase();
+    int goodIngredients = 0;
+    int badIngredients = 0;
+
+    // 4. Bonus pour ingrédients de qualité
+    if (lowerIngredients.contains('poulet') || lowerIngredients.contains('chicken')) goodIngredients++;
+    if (lowerIngredients.contains('saumon') || lowerIngredients.contains('salmon')) goodIngredients++;
+    if (lowerIngredients.contains('dinde') || lowerIngredients.contains('turkey')) goodIngredients++;
+    if (lowerIngredients.contains('agneau') || lowerIngredients.contains('lamb')) goodIngredients++;
+    if (lowerIngredients.contains('viande') || lowerIngredients.contains('meat')) goodIngredients++;
+    if (lowerIngredients.contains('poisson') || lowerIngredients.contains('fish')) goodIngredients++;
+    if (lowerIngredients.contains('bio') || lowerIngredients.contains('organic')) goodIngredients++;
+    
+    score += (goodIngredients * 3).clamp(0, 20);
+
+    // 5. Malus pour mauvais ingrédients
+    if (lowerIngredients.contains('sous-produit') || lowerIngredients.contains('by-product')) badIngredients++;
+    if (RegExp(r'e1[0-9]{2}').hasMatch(lowerIngredients)) badIngredients++;
+    if (lowerIngredients.contains('colorant')) badIngredients++;
+    if (lowerIngredients.contains('sucre') || lowerIngredients.contains('sugar')) badIngredients++;
+    if (lowerIngredients.contains('additif')) badIngredients++;
+    
+    // Céréales en premier ingrédient
+    if (ingredients.isNotEmpty) {
+      final first = ingredients[0].toLowerCase();
+      if (first.contains('céréale') || first.contains('maïs') ||
+          first.contains('blé') || first.contains('corn') || first.contains('wheat')) {
+        badIngredients++;
+      }
     }
-    if (lowerIngredients.contains('saumon') ||
-        lowerIngredients.contains('salmon')) {
-      score += 10;
+    
+    score -= (badIngredients * 5);
+
+    // 6. Bonus pour formule équilibrée
+    if (nutritionalInfo.protein >= 25 && 
+        nutritionalInfo.fat >= 10 && nutritionalInfo.fat <= 20 && 
+        nutritionalInfo.fiber >= 2) {
+      score += 5;
     }
 
-    // Malus pour colorants artificiels
-    if (RegExp(r'e1[0-9]{2}').hasMatch(lowerIngredients)) {
-      score -= 20;
-    }
-
-    // Malus pour sous-produits
-    if (lowerIngredients.contains('sous-produit') ||
-        lowerIngredients.contains('by-product')) {
-      score -= 15;
-    }
-
-    // Malus pour céréales en début de liste
-    if (ingredients.isNotEmpty &&
-        (ingredients[0].toLowerCase().contains('céréale') ||
-            ingredients[0].toLowerCase().contains('maïs') ||
-            ingredients[0].toLowerCase().contains('blé'))) {
-      score -= 10;
-    }
-
-    // Malus pour sucre
-    if (lowerIngredients.contains('sucre') ||
-        lowerIngredients.contains('sugar')) {
-      score -= 10;
-    }
-
-    return score.clamp(0, 100);
+    return score.clamp(0, 100).round();
   }
 
   /// Générer les avertissements
