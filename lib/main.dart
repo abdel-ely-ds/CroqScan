@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'constants/app_colors.dart';
-import 'widgets/main_navigation.dart';
+import 'screens/splash_screen.dart';
 import 'widgets/products_provider.dart';
 
 void main() {
@@ -86,7 +86,7 @@ class CroqScanApp extends StatelessWidget {
                 ),
               ),
             ),
-            home: const MainNavigation(),
+            home: const SplashScreen(),
           ),
         );
       },

@@ -134,6 +134,42 @@
       "languageVersion": "3.7"
     },
     {
+      "name": "flutter_secure_storage",
+      "rootUri": "file:///Users/Marc-Enzo%20Bonnafon/.pub-cache/hosted/pub.dev/flutter_secure_storage-9.2.4",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "flutter_secure_storage_linux",
+      "rootUri": "file:///Users/Marc-Enzo%20Bonnafon/.pub-cache/hosted/pub.dev/flutter_secure_storage_linux-1.2.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "flutter_secure_storage_macos",
+      "rootUri": "file:///Users/Marc-Enzo%20Bonnafon/.pub-cache/hosted/pub.dev/flutter_secure_storage_macos-3.1.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "flutter_secure_storage_platform_interface",
+      "rootUri": "file:///Users/Marc-Enzo%20Bonnafon/.pub-cache/hosted/pub.dev/flutter_secure_storage_platform_interface-1.1.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "flutter_secure_storage_web",
+      "rootUri": "file:///Users/Marc-Enzo%20Bonnafon/.pub-cache/hosted/pub.dev/flutter_secure_storage_web-1.2.1",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
+      "name": "flutter_secure_storage_windows",
+      "rootUri": "file:///Users/Marc-Enzo%20Bonnafon/.pub-cache/hosted/pub.dev/flutter_secure_storage_windows-3.1.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "flutter_test",
       "rootUri": "file:///Users/Marc-Enzo%20Bonnafon/programming/flutter/packages/flutter_test",
       "packageUri": "lib/",
@@ -404,6 +440,24 @@
       "languageVersion": "3.3"
     },
     {
+      "name": "sign_in_with_apple",
+      "rootUri": "file:///Users/Marc-Enzo%20Bonnafon/.pub-cache/hosted/pub.dev/sign_in_with_apple-6.1.4",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
+      "name": "sign_in_with_apple_platform_interface",
+      "rootUri": "file:///Users/Marc-Enzo%20Bonnafon/.pub-cache/hosted/pub.dev/sign_in_with_apple_platform_interface-1.1.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
+      "name": "sign_in_with_apple_web",
+      "rootUri": "file:///Users/Marc-Enzo%20Bonnafon/.pub-cache/hosted/pub.dev/sign_in_with_apple_web-2.1.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.3"
+    },
+    {
       "name": "sky_engine",
       "rootUri": "file:///Users/Marc-Enzo%20Bonnafon/programming/flutter/bin/cache/pkg/sky_engine",
       "packageUri": "lib/",
@@ -474,6 +528,12 @@
       "rootUri": "file:///Users/Marc-Enzo%20Bonnafon/.pub-cache/hosted/pub.dev/web-1.1.1",
       "packageUri": "lib/",
       "languageVersion": "3.4"
+    },
+    {
+      "name": "win32",
+      "rootUri": "file:///Users/Marc-Enzo%20Bonnafon/.pub-cache/hosted/pub.dev/win32-5.15.0",
+      "packageUri": "lib/",
+      "languageVersion": "3.8"
     },
     {
       "name": "xdg_directories",

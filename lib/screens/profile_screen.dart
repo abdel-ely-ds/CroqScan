@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 import '../services/profile_service.dart';
+import '../services/auth_service.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -12,6 +13,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   AnimalProfile? _profile;
   String? _userName;
+  UserInfo? _appleUser;
   bool _isLoading = true;
 
   @override
@@ -27,13 +29,133 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     final profile = await ProfileService.loadProfile();
     final userName = await ProfileService.loadUserName();
+    final appleUser = await AuthService.getUserInfo();
 
     if (mounted) {
       setState(() {
         _profile = profile;
-        _userName = userName;
+        _userName = userName ?? appleUser?.name;
+        _appleUser = appleUser;
         _isLoading = false;
       });
+    }
+  }
+
+  Future<void> _handleLogin() async {
+    // Afficher un message de confirmation avant de se connecter
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Row(
+          children: [
+            Icon(Icons.apple, color: Colors.black),
+            SizedBox(width: 12),
+            Text('Se connecter'),
+          ],
+        ),
+        content: const Text(
+          'Connectez-vous avec votre Apple ID pour :\n\n'
+          '✅ Sauvegarder vos données de manière sécurisée\n'
+          '✅ Accéder à vos favoris depuis plusieurs appareils (futur)\n'
+          '✅ Synchroniser votre profil\n\n'
+          'Vos favoris et données actuels seront conservés.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Annuler'),
+          ),
+          ElevatedButton.icon(
+            onPressed: () => Navigator.pop(context, true),
+            icon: const Icon(Icons.apple),
+            label: const Text('Continuer'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.black,
+              foregroundColor: Colors.white,
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true && mounted) {
+      setState(() {
+        _isLoading = true;
+      });
+
+      final result = await AuthService.signInWithApple();
+
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+
+        if (result.success) {
+          // Connexion réussie - recharger le profil
+          await _loadProfile();
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Row(
+                children: [
+                  Icon(Icons.check_circle, color: Colors.white),
+                  SizedBox(width: 12),
+                  Text('Connecté avec succès !'),
+                ],
+              ),
+              backgroundColor: AppColors.scoreExcellent,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        } else if (!result.canceled) {
+          // Erreur (sauf annulation)
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(result.error ?? 'Erreur de connexion'),
+              backgroundColor: Colors.red,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        }
+      }
+    }
+  }
+
+  Future<void> _handleLogout() async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Se déconnecter'),
+        content: const Text(
+          'Êtes-vous sûr de vouloir vous déconnecter ?\n\nVous passerez en mode invité. Vos favoris et données locales seront conservés.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Annuler'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            child: const Text('Se déconnecter'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true && mounted) {
+      await AuthService.logout();
+
+      // Recharger le profil (mode invité)
+      await _loadProfile();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Déconnexion réussie - Mode invité activé'),
+          backgroundColor: AppColors.textSecondary,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
     }
   }
 
@@ -156,6 +278,46 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              // Message mode invité si pas connecté
+              if (_appleUser == null) ...[
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.orange.shade50,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: Colors.orange.shade200),
+                  ),
+                  child: Column(
+                    children: [
+                      const Icon(
+                        Icons.info_outline,
+                        color: Colors.orange,
+                        size: 32,
+                      ),
+                      const SizedBox(height: 12),
+                      const Text(
+                        'Mode Invité',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Connectez-vous pour sauvegarder vos données de manière sécurisée',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+              ],
+
               Container(
                 padding: const EdgeInsets.all(32),
                 decoration: BoxDecoration(
@@ -271,6 +433,56 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             const SizedBox(height: 16),
 
+            // Section compte - Invité ou Apple
+            _buildSection(
+              title: _appleUser != null ? 'Compte Apple' : 'Compte',
+              icon: _appleUser != null ? Icons.apple : Icons.person_outline,
+              children: [
+                if (_appleUser != null) ...[
+                  _buildInfoRow('Statut', '✅ Connecté avec Apple'),
+                  if (_appleUser!.email != null)
+                    _buildInfoRow('Email', _appleUser!.email!),
+                  if (_appleUser!.name != null)
+                    _buildInfoRow('Nom', _appleUser!.name!),
+                  _buildInfoRow(
+                    'ID utilisateur',
+                    _appleUser!.userId.substring(0, 20) + '...',
+                  ),
+                ] else ...[
+                  _buildInfoRow('Statut', '⚠️ Mode Invité'),
+                  const SizedBox(height: 8),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Row(
+                      children: [
+                        Icon(
+                          Icons.info_outline,
+                          color: AppColors.primary,
+                          size: 20,
+                        ),
+                        SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            'Connectez-vous pour sauvegarder vos données de manière sécurisée',
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ],
+            ),
+
+            const SizedBox(height: 16),
+
             // Section paramètres
             _buildSection(
               title: 'Paramètres',
@@ -326,6 +538,51 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ],
             ),
+
+            const SizedBox(height: 24),
+
+            // Bouton de connexion (si mode invité)
+            if (_appleUser == null)
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: _handleLogin,
+                  icon: const Icon(Icons.apple, size: 24),
+                  label: const Text(
+                    'Se connecter avec Apple',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                ),
+              )
+            else
+              // Bouton de déconnexion (si connecté avec Apple)
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: _handleLogout,
+                  icon: const Icon(Icons.logout),
+                  label: const Text(
+                    'Se déconnecter',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.red,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    side: const BorderSide(color: Colors.red, width: 2),
+                  ),
+                ),
+              ),
           ],
         ),
       ),
