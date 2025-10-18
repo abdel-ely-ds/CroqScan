@@ -3,7 +3,9 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../constants/app_colors.dart';
 import '../services/auth_service.dart';
+import '../services/profile_service.dart';
 import '../widgets/main_navigation.dart';
+import 'pet_onboarding_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -74,11 +76,22 @@ class _LoginScreenState extends State<LoginScreen>
       });
 
       if (result.success) {
-        // Connexion réussie - naviguer vers l'app
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const MainNavigation()),
-        );
+        // Connexion réussie - vérifier si profil existe
+        final profile = await ProfileService.loadProfile();
+        
+        if (profile == null) {
+          // Première connexion - aller vers onboarding
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const PetOnboardingScreen()),
+          );
+        } else {
+          // Profil existe - aller vers l'app
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const MainNavigation()),
+          );
+        }
       } else if (!result.canceled) {
         // Erreur de connexion (sauf si annulée par l'utilisateur)
         ScaffoldMessenger.of(context).showSnackBar(
@@ -137,19 +150,44 @@ class _LoginScreenState extends State<LoginScreen>
 
       // For now, continue to the app (like guest mode)
       await Future.delayed(const Duration(milliseconds: 500));
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const MainNavigation()),
-      );
+      
+      // Vérifier si profil existe
+      final profile = await ProfileService.loadProfile();
+      
+      if (profile == null) {
+        // Première connexion - aller vers onboarding
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const PetOnboardingScreen()),
+        );
+      } else {
+        // Profil existe - aller vers l'app
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const MainNavigation()),
+        );
+      }
     }
   }
 
   Future<void> _continueWithoutAccount() async {
     // Continuer sans compte (mode invité)
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const MainNavigation()),
-    );
+    // Vérifier si profil existe
+    final profile = await ProfileService.loadProfile();
+    
+    if (profile == null) {
+      // Première utilisation - aller vers onboarding
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const PetOnboardingScreen()),
+      );
+    } else {
+      // Profil existe - aller vers l'app
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const MainNavigation()),
+      );
+    }
   }
 
   @override

@@ -209,35 +209,48 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildHeader() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      padding: const EdgeInsets.fromLTRB(24, 16, 24, 24),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text(
-            'Profil',
-            style: TextStyle(
-              fontSize: 16,
-              color: AppColors.textSecondary,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Row(
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: Text(
-                  _profile != null
-                      ? '${_profile!.name} ${_getAnimalEmoji(_profile!.animalType)}'
-                      : 'Mon Compte',
-                  style: const TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
-                    letterSpacing: -0.5,
-                  ),
+              const Text(
+                'Profil',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: AppColors.textSecondary,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
-              if (_profile != null)
+              const SizedBox(height: 4),
+              Text(
+                _profile != null ? _profile!.name : 'Mon Compte',
+                style: const TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
+                  letterSpacing: -0.5,
+                ),
+              ),
+            ],
+          ),
+          if (_profile != null)
+            Row(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: IconButton(
+                    onPressed: _loadProfile,
+                    icon: const Icon(Icons.refresh_rounded, color: AppColors.primary),
+                    tooltip: 'Actualiser',
+                  ),
+                ),
+                const SizedBox(width: 8),
                 Container(
                   decoration: BoxDecoration(
                     color: AppColors.primary.withValues(alpha: 0.1),
@@ -379,51 +392,79 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Pet hero section
+            _buildPetHero(),
+            const SizedBox(height: 24),
+
+            // Stats cards grid
+            _buildStatsGrid(),
+
+            const SizedBox(height: 24),
+
             // Section informations animal
-            _buildSection(
-              title: 'Informations',
-              icon: Icons.pets,
-              children: [
-                _buildInfoRow('Nom', _profile!.name),
-                _buildInfoRow('Type', _getAnimalTypeName(_profile!.animalType)),
-                if (_profile!.breed != null)
-                  _buildInfoRow('Race', _profile!.breed!),
-                if (_profile!.ageYears != null)
-                  _buildInfoRow(
-                    'Âge',
-                    '${_profile!.ageYears} an${_profile!.ageYears! > 1 ? 's' : ''}',
-                  ),
-                if (_profile!.weightKg != null)
-                  _buildInfoRow('Poids', '${_profile!.weightKg} kg'),
-                if (_profile!.isNeutered != null)
-                  _buildInfoRow(
-                    'Stérilisé(e)',
-                    _profile!.isNeutered! ? 'Oui' : 'Non',
-                  ),
-              ],
-            ),
+            if (_profile!.breed != null || 
+                _profile!.ageYears != null || 
+                _profile!.weightKg != null || 
+                _profile!.isNeutered != null)
+              _buildInfoCard(
+                title: 'Informations détaillées',
+                icon: Icons.info_outline_rounded,
+                children: [
+                  if (_profile!.breed != null)
+                    _buildDetailRow(Icons.pets_rounded, 'Race', _profile!.breed!),
+                  if (_profile!.ageYears != null)
+                    _buildDetailRow(
+                      Icons.cake_rounded,
+                      'Âge',
+                      '${_profile!.ageYears} an${_profile!.ageYears! > 1 ? 's' : ''}',
+                    ),
+                  if (_profile!.weightKg != null)
+                    _buildDetailRow(
+                      Icons.monitor_weight_rounded,
+                      'Poids',
+                      '${_profile!.weightKg} kg',
+                    ),
+                  if (_profile!.isNeutered != null)
+                    _buildDetailRow(
+                      Icons.medical_services_rounded,
+                      'Stérilisé(e)',
+                      _profile!.isNeutered! ? 'Oui' : 'Non',
+                    ),
+                ],
+              ),
 
             const SizedBox(height: 16),
 
             // Section préférences
             if (_profile!.foodType != null ||
                 _profile!.allergies.isNotEmpty ||
-                _profile!.preferredBrand != null)
-              _buildSection(
+                _profile!.preferredBrand != null ||
+                _profile!.healthGoals.isNotEmpty)
+              _buildInfoCard(
                 title: 'Préférences alimentaires',
-                icon: Icons.restaurant,
+                icon: Icons.restaurant_rounded,
                 children: [
                   if (_profile!.foodType != null)
-                    _buildInfoRow(
+                    _buildDetailRow(
+                      Icons.fastfood_rounded,
                       'Type d\'alimentation',
                       _getFoodTypeName(_profile!.foodType!),
                     ),
                   if (_profile!.allergies.isNotEmpty)
-                    _buildInfoRow('Allergies', _profile!.allergies.join(', ')),
+                    _buildDetailRow(
+                      Icons.warning_amber_rounded,
+                      'Allergies',
+                      _profile!.allergies.join(', '),
+                    ),
                   if (_profile!.preferredBrand != null)
-                    _buildInfoRow('Marque préférée', _profile!.preferredBrand!),
+                    _buildDetailRow(
+                      Icons.favorite_rounded,
+                      'Marque préférée',
+                      _profile!.preferredBrand!,
+                    ),
                   if (_profile!.healthGoals.isNotEmpty)
-                    _buildInfoRow(
+                    _buildDetailRow(
+                      Icons.fitness_center_rounded,
                       'Objectifs santé',
                       _profile!.healthGoals.join(', '),
                     ),
@@ -433,70 +474,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
             const SizedBox(height: 16),
 
             // Section compte - Invité ou Apple
-            _buildSection(
-              title: _appleUser != null ? 'Compte Apple' : 'Compte',
-              icon: _appleUser != null ? Icons.apple : Icons.person_outline,
-              children: [
-                if (_appleUser != null) ...[
-                  _buildInfoRow('Statut', '✅ Connecté avec Apple'),
-                  if (_appleUser!.email != null)
-                    _buildInfoRow('Email', _appleUser!.email!),
-                  if (_appleUser!.name != null)
-                    _buildInfoRow('Nom', _appleUser!.name!),
-                  _buildInfoRow(
-                    'ID utilisateur',
-                    _appleUser!.userId.substring(0, 20) + '...',
-                  ),
-                ] else ...[
-                  _buildInfoRow('Statut', '⚠️ Mode Invité'),
-                  const SizedBox(height: 8),
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: AppColors.pastelYellow,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Row(
-                      children: [
-                        Icon(
-                          Icons.info_outline,
-                          color: AppColors.textPrimary,
-                          size: 20,
-                        ),
-                        SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            'Connectez-vous pour sauvegarder vos données de manière sécurisée',
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: AppColors.textPrimary,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ],
-            ),
+            _buildAccountCard(),
 
             const SizedBox(height: 16),
 
             // Section paramètres
-            _buildSection(
+            _buildInfoCard(
               title: 'Paramètres',
-              icon: Icons.settings,
+              icon: Icons.settings_rounded,
               children: [
                 _buildActionRow(
-                  icon: Icons.info_outline,
-                  title: 'À propos de PetScan',
+                  icon: Icons.info_outline_rounded,
+                  title: 'À propos de CroqScan',
                   subtitle: 'Version 1.0.0',
+                  color: AppColors.pastelMint,
                   onTap: () {
                     showAboutDialog(
                       context: context,
-                      applicationName: 'PetScan',
+                      applicationName: 'CroqScan',
                       applicationVersion: '1.0.0 (MVP)',
-                      applicationLegalese: '© 2025 PetScan',
+                      applicationLegalese: '© 2025 CroqScan',
                       children: const [
                         SizedBox(height: 16),
                         Text(
@@ -508,11 +505,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   },
                 ),
                 _buildActionRow(
-                  icon: Icons.help_outline,
+                  icon: Icons.help_outline_rounded,
                   title: 'Aide & Support',
                   subtitle: 'FAQ et contact',
+                  color: AppColors.pastelPeach,
                   onTap: () {
-                    // TODO: Navigation vers aide
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text('Fonctionnalité à venir'),
@@ -525,8 +522,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   icon: Icons.privacy_tip_outlined,
                   title: 'Confidentialité',
                   subtitle: 'Politique de confidentialité',
+                  color: AppColors.pastelLavender,
                   onTap: () {
-                    // TODO: Afficher politique de confidentialité
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text('Fonctionnalité à venir'),
@@ -542,8 +539,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             // Bouton de connexion (si mode invité)
             if (_appleUser == null)
-              SizedBox(
+              Container(
                 width: double.infinity,
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.1),
+                      blurRadius: 15,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
+                ),
                 child: ElevatedButton.icon(
                   onPressed: _handleLogin,
                   icon: const Icon(Icons.apple, size: 24),
@@ -554,7 +560,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    padding: const EdgeInsets.symmetric(vertical: 18),
+                    elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
@@ -567,23 +574,385 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 width: double.infinity,
                 child: OutlinedButton.icon(
                   onPressed: _handleLogout,
-                  icon: const Icon(Icons.logout),
+                  icon: const Icon(Icons.logout_rounded),
                   label: const Text(
                     'Se déconnecter',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.red,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    foregroundColor: Colors.red.shade400,
+                    padding: const EdgeInsets.symmetric(vertical: 18),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
-                    side: const BorderSide(color: Colors.red, width: 2),
+                    side: BorderSide(color: Colors.red.shade400, width: 2),
                   ),
                 ),
               ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildPetHero() {
+    final isDog = _profile!.animalType == 'dog';
+    final heroColor = isDog ? AppColors.dogColor : AppColors.catColor;
+    
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            heroColor.withValues(alpha: 0.15),
+            heroColor.withValues(alpha: 0.05),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(
+          color: heroColor.withValues(alpha: 0.2),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        children: [
+          // Pet illustration
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: heroColor.withValues(alpha: 0.2),
+                  blurRadius: 15,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Image.asset(
+              isDog
+                  ? 'assets/images/dog_illustration.png'
+                  : 'assets/images/cat_illustration.png',
+              width: 80,
+              height: 80,
+              fit: BoxFit.contain,
+            ),
+          ),
+          const SizedBox(width: 20),
+          // Pet info
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  _profile!.name,
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  '${_getAnimalEmoji(_profile!.animalType)} ${_getAnimalTypeName(_profile!.animalType)}',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: AppColors.textSecondary,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                if (_profile!.breed != null) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    _profile!.breed!,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: AppColors.textSecondary.withValues(alpha: 0.7),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Stats grid with key information
+  Widget _buildStatsGrid() {
+    return Row(
+      children: [
+        Expanded(
+          child: _buildStatCard(
+            icon: Icons.pets_rounded,
+            label: 'Type',
+            value: _getAnimalTypeName(_profile!.animalType),
+            color: _profile!.animalType == 'dog' 
+                ? AppColors.dogColor 
+                : AppColors.catColor,
+          ),
+        ),
+        const SizedBox(width: 12),
+        if (_profile!.ageYears != null)
+          Expanded(
+            child: _buildStatCard(
+              icon: Icons.cake_rounded,
+              label: 'Âge',
+              value: '${_profile!.ageYears} an${_profile!.ageYears! > 1 ? 's' : ''}',
+              color: AppColors.pastelPeach,
+            ),
+          ),
+        if (_profile!.ageYears == null)
+          Expanded(
+            child: _buildStatCard(
+              icon: Icons.favorite_rounded,
+              label: 'Statut',
+              value: _profile!.isNeutered == true ? 'Stérilisé' : 'Info',
+              color: AppColors.pastelMint,
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildStatCard({
+    required IconData icon,
+    required String label,
+    required String value,
+    required Color color,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: color.withValues(alpha: 0.3),
+          width: 1.5,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: color.withValues(alpha: 0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.15),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              icon,
+              color: color,
+              size: 24,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: AppColors.textPrimary,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 2),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              color: AppColors.textSecondary,
+              fontWeight: FontWeight.w500,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  // New info card design
+  Widget _buildInfoCard({
+    required String title,
+    required IconData icon,
+    required List<Widget> children,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 15,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, color: AppColors.primary, size: 22),
+              const SizedBox(width: 12),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          ...children,
+        ],
+      ),
+    );
+  }
+
+  // Detail row with icon
+  Widget _buildDetailRow(IconData icon, String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: AppColors.pastelLavender.withValues(alpha: 0.3),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(
+              icon,
+              size: 20,
+              color: AppColors.primary,
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    color: AppColors.textPrimary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Account card with special styling
+  Widget _buildAccountCard() {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: _appleUser != null
+              ? [
+                  Colors.black.withValues(alpha: 0.05),
+                  Colors.black.withValues(alpha: 0.02),
+                ]
+              : [
+                  AppColors.pastelYellow.withValues(alpha: 0.3),
+                  AppColors.pastelYellow.withValues(alpha: 0.1),
+                ],
+        ),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: _appleUser != null
+              ? Colors.black.withValues(alpha: 0.1)
+              : AppColors.pastelYellow.withValues(alpha: 0.5),
+          width: 1.5,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: _appleUser != null ? Colors.black : AppColors.pastelYellow,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  _appleUser != null ? Icons.apple : Icons.warning_amber_rounded,
+                  color: _appleUser != null ? Colors.white : AppColors.textPrimary,
+                  size: 22,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                _appleUser != null ? 'Compte Apple' : 'Mode Invité',
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          if (_appleUser != null) ...[
+            _buildDetailRow(Icons.check_circle_rounded, 'Statut', 'Connecté'),
+            if (_appleUser!.email != null)
+              _buildDetailRow(Icons.email_rounded, 'Email', _appleUser!.email!),
+            if (_appleUser!.name != null)
+              _buildDetailRow(Icons.person_rounded, 'Nom', _appleUser!.name!),
+          ] else ...[
+            _buildDetailRow(Icons.warning_rounded, 'Statut', 'Non connecté'),
+            const SizedBox(height: 8),
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Text(
+                'Connectez-vous pour sauvegarder vos données de manière sécurisée et accéder à vos favoris depuis plusieurs appareils.',
+                style: TextStyle(
+                  fontSize: 13,
+                  color: AppColors.textSecondary,
+                  height: 1.5,
+                ),
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }
@@ -679,15 +1048,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
     required String title,
     required String subtitle,
     required VoidCallback onTap,
+    required Color color,
   }) {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
+        padding: const EdgeInsets.symmetric(vertical: 4),
         child: Row(
           children: [
-            Icon(icon, color: AppColors.textSecondary, size: 24),
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.2),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(icon, color: color, size: 22),
+            ),
             const SizedBox(width: 16),
             Expanded(
               child: Column(

@@ -53,21 +53,18 @@ class _HomeScreenState extends State<HomeScreen> {
               // Clean header
               SliverToBoxAdapter(child: _buildHeader()),
 
-              // Welcome illustration
-              SliverToBoxAdapter(child: _buildWelcomeCard()),
+              // Main feature cards
+              SliverToBoxAdapter(child: _buildFeatureCards()),
 
-              // Streak tracker
-              SliverToBoxAdapter(child: _buildStreakTracker()),
+              // Encouraging message
+              SliverToBoxAdapter(child: _buildEncouragingMessage()),
 
-              // Quick actions cards
-              SliverToBoxAdapter(child: _buildQuickActions()),
+              // Pet illustration
+              SliverToBoxAdapter(child: _buildPetIllustration()),
 
               // Recent scans (if any)
               if (_recentScans.isNotEmpty)
                 SliverToBoxAdapter(child: _buildRecentScans()),
-
-              // Daily tip
-              SliverToBoxAdapter(child: _buildDailyTip()),
 
               // Pet profile prompt (if no profile)
               if (_animalProfile == null)
@@ -84,315 +81,234 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // Clean header with greeting
   Widget _buildHeader() {
-    final hour = DateTime.now().hour;
-    String greeting = 'Bonjour';
-    if (hour < 12) {
-      greeting = 'Bonjour';
-    } else if (hour < 18) {
-      greeting = 'Bon après-midi';
-    } else {
-      greeting = 'Bonsoir';
-    }
-
     return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 16, 24, 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+      child: Row(
         children: [
-          Text(
-            greeting,
-            style: const TextStyle(
-              fontSize: 16,
-              color: AppColors.textSecondary,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            _userName ?? 'Bienvenue',
-            style: const TextStyle(
-              fontSize: 32,
-              fontWeight: FontWeight.bold,
-              color: AppColors.textPrimary,
-              letterSpacing: -0.5,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Welcome card with cute illustration
-  Widget _buildWelcomeCard() {
-    return Container(
-      margin: const EdgeInsets.all(24),
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            AppColors.pastelLavender,
-            AppColors.pastelMint,
-          ],
-        ),
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.1),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          const Text(
-            '🐱',
-            style: TextStyle(fontSize: 80),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            _animalProfile != null
-                ? 'Prends soin de ${_animalProfile!.name} ! ✨'
-                : 'Scanne pour découvrir ! ✨',
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: AppColors.textPrimary,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'La meilleure alimentation pour ton compagnon',
-            style: TextStyle(
-              fontSize: 14,
-              color: AppColors.textSecondary,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Streak tracker with paw prints
-  Widget _buildStreakTracker() {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AppColors.pastelPeach,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              const Text(
-                '🔥',
-                style: TextStyle(fontSize: 24),
+          Expanded(
+            child: Text(
+              _animalProfile != null
+                  ? 'Bienvenue ${_animalProfile!.name} !'
+                  : 'Bienvenue !',
+              style: const TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+                letterSpacing: -0.5,
               ),
-              const SizedBox(width: 8),
-              Text(
-                '$_streakCount jours de suite',
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: List.generate(7, (index) {
-              final isCompleted = index < _streakCount;
-              return Column(
-                children: [
-                  Container(
-                    width: 36,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      color: isCompleted
-                          ? Colors.white
-                          : Colors.white.withValues(alpha: 0.5),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Center(
-                      child: Text(
-                        isCompleted ? '🐾' : '',
-                        style: const TextStyle(fontSize: 20),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    ['L', 'M', 'M', 'J', 'V', 'S', 'D'][index],
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: AppColors.textSecondary,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              );
-            }),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Quick actions - card based
-  Widget _buildQuickActions() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Actions rapides',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: AppColors.textPrimary,
             ),
           ),
-          const SizedBox(height: 16),
-          Column(
-            children: [
-              _buildActionCard(
-                title: 'Scanner un produit',
-                subtitle: 'Analyse instantanée',
-                emoji: '📷',
-                color: AppColors.pastelPeach,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ScannerScreen(),
-                      fullscreenDialog: true,
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 12),
-              _buildActionCard(
-                title: 'Rechercher',
-                subtitle: 'Explorer la base de données',
-                emoji: '🔍',
-                color: AppColors.pastelMint,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const SearchScreenNew(),
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 12),
-              _buildActionCard(
-                title: 'Mes favoris',
-                subtitle: 'Produits sauvegardés',
-                emoji: '💜',
+          GestureDetector(
+            onTap: _loadData,
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
                 color: AppColors.pastelLavender,
-                onTap: () {
-                  // Navigate to favorites (via navigation bar)
-                  DefaultTabController.of(context).animateTo(3);
-                },
+                borderRadius: BorderRadius.circular(10),
               ),
-            ],
+              child: const Icon(
+                Icons.refresh_rounded,
+                size: 20,
+                color: AppColors.primary,
+              ),
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildActionCard({
+  // Main feature cards
+  Widget _buildFeatureCards() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Column(
+        children: [
+          _buildFeatureCard(
+            title: 'Scanner un produit',
+            subtitle: 'Analyse instantanée de la qualité',
+            icon: Icons.qr_code_scanner_rounded,
+            color: AppColors.pastelPeach,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ScannerScreen(),
+                  fullscreenDialog: true,
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: 12),
+          _buildFeatureCard(
+            title: 'Rechercher',
+            subtitle: 'Explorer la base de données',
+            icon: Icons.search_rounded,
+            color: AppColors.pastelMint,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SearchScreenNew(),
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: 12),
+          _buildFeatureCard(
+            title: 'Mes Favoris',
+            subtitle: 'Produits sauvegardés',
+            icon: Icons.favorite_rounded,
+            color: AppColors.pastelLavender,
+            onTap: () {
+              // Navigate to favorites (via navigation bar)
+              DefaultTabController.of(context).animateTo(3);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFeatureCard({
     required String title,
     required String subtitle,
-    required String emoji,
+    required IconData icon,
     required Color color,
     required VoidCallback onTap,
   }) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
-        child: Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Row(
-            children: [
-              Container(
-                width: 56,
-                height: 56,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Center(
-                  child: Text(
-                    emoji,
-                    style: const TextStyle(fontSize: 28),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      subtitle,
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const Icon(
-                Icons.arrow_forward_ios,
-                color: AppColors.textSecondary,
-                size: 18,
-              ),
-            ],
-          ),
+    return _FeatureCardWithHover(
+      title: title,
+      subtitle: subtitle,
+      icon: icon,
+      color: color,
+      onTap: onTap,
+    );
+  }
+
+  // Encouraging message from pet
+  Widget _buildEncouragingMessage() {
+    return Center(
+      child: Container(
+        margin: const EdgeInsets.fromLTRB(24, 64, 24, 0),
+        constraints: const BoxConstraints(maxWidth: 250),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.03),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
+        child: Text(
+          'Merci de prendre soin de moi ! 🐾',
+          style: const TextStyle(
+            fontSize: 15,
+            color: AppColors.textSecondary,
+            fontWeight: FontWeight.w500,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
+  }
+
+  // Pet illustration with decorative wave background
+  Widget _buildPetIllustration() {
+    // Determine which image to show based on pet type
+    final String imagePath;
+    if (_animalProfile != null) {
+      imagePath = _animalProfile!.animalType == 'dog'
+          ? 'assets/images/dog_illustration.png'
+          : 'assets/images/cat_illustration.png';
+    } else {
+      imagePath = 'assets/images/cat_illustration.png'; // Default to cat
+    }
+
+    return Container(
+      margin: const EdgeInsets.fromLTRB(24, 8, 24, 32),
+      height: 280,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          // Wave/arc decorative elements (overlapping circles for wave effect)
+          // Left side wave
+          Positioned(
+            left: -60,
+            bottom: 20,
+            child: Container(
+              width: 180,
+              height: 180,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.secondary.withValues(alpha: 0.25),
+              ),
+            ),
+          ),
+          Positioned(
+            left: -20,
+            bottom: 50,
+            child: Container(
+              width: 150,
+              height: 150,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.secondary.withValues(alpha: 0.20),
+              ),
+            ),
+          ),
+          // Right side wave
+          Positioned(
+            right: -50,
+            bottom: 40,
+            child: Container(
+              width: 160,
+              height: 160,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.secondary.withValues(alpha: 0.25),
+              ),
+            ),
+          ),
+          Positioned(
+            right: -10,
+            bottom: 70,
+            child: Container(
+              width: 140,
+              height: 140,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.secondary.withValues(alpha: 0.18),
+              ),
+            ),
+          ),
+          // Top right accent
+          Positioned(
+            right: 20,
+            top: -20,
+            child: Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.secondary.withValues(alpha: 0.15),
+              ),
+            ),
+          ),
+          // Pet image on top (cat or dog based on profile)
+          Center(
+            child: Image.asset(
+              imagePath,
+              width: 200,
+              height: 200,
+              fit: BoxFit.contain,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -403,7 +319,7 @@ class _HomeScreenState extends State<HomeScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          padding: EdgeInsets.fromLTRB(24, 32, 24, 16),
           child: Text(
             'Récemment scannés',
             style: TextStyle(
@@ -526,128 +442,11 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Daily tip card
-  Widget _buildDailyTip() {
-    final tips = [
-      {
-        'title': 'Protéines',
-        'tip': 'Les animaux ont besoin de 25-35% de protéines dans leur alimentation.',
-        'emoji': '🥩',
-      },
-      {
-        'title': 'Hydratation',
-        'tip': 'Assure-toi que ton animal ait toujours accès à de l\'eau fraîche.',
-        'emoji': '💧',
-      },
-      {
-        'title': 'Céréales',
-        'tip': 'Les céréales en premier ingrédient peuvent indiquer une moindre qualité.',
-        'emoji': '🌾',
-      },
-      {
-        'title': 'Colorants',
-        'tip': 'Évite les produits avec des colorants artificiels.',
-        'emoji': '⚠️',
-      },
-    ];
-
-    final dayOfYear = DateTime.now().difference(DateTime(DateTime.now().year, 1, 1)).inDays;
-    final tip = tips[dayOfYear % tips.length];
-
-    return Container(
-      margin: const EdgeInsets.all(24),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AppColors.pastelYellow,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 56,
-            height: 56,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Center(
-              child: Text(
-                tip['emoji'] as String,
-                style: const TextStyle(fontSize: 28),
-              ),
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    const Text(
-                      '💡',
-                      style: TextStyle(fontSize: 14),
-                    ),
-                    const SizedBox(width: 4),
-                    const Text(
-                      'Astuce du jour',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: AppColors.textSecondary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  tip['title'] as String,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  tip['tip'] as String,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: AppColors.textSecondary,
-                    height: 1.4,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   // Pet profile prompt
   Widget _buildPetProfilePrompt() {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AppColors.pastelPink,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
+      margin: const EdgeInsets.fromLTRB(24, 32, 24, 16),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
@@ -656,52 +455,160 @@ class _HomeScreenState extends State<HomeScreen> {
             DefaultTabController.of(context).animateTo(4);
           },
           borderRadius: BorderRadius.circular(20),
-          child: Row(
-            children: [
-              Container(
-                width: 56,
-                height: 56,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: AppColors.pastelPink,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.04),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
                 ),
-                child: const Center(
-                  child: Text(
-                    '🐾',
-                    style: TextStyle(fontSize: 28),
+              ],
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.9),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: const Center(
+                    child: Icon(
+                      Icons.pets,
+                      color: AppColors.textPrimary,
+                      size: 24,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 16),
-              const Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Crée le profil de ton animal',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
+                const SizedBox(width: 16),
+                const Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Crée le profil de ton animal',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textPrimary,
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      'Pour des recommandations personnalisées',
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: AppColors.textSecondary,
+                      SizedBox(height: 2),
+                      Text(
+                        'Pour des recommandations personnalisées',
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: AppColors.textSecondary,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// Feature card with hover effect
+class _FeatureCardWithHover extends StatefulWidget {
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _FeatureCardWithHover({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  State<_FeatureCardWithHover> createState() => _FeatureCardWithHoverState();
+}
+
+class _FeatureCardWithHoverState extends State<_FeatureCardWithHover> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        transform: Matrix4.translationValues(0, _isHovered ? -2 : 0, 0),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: widget.onTap,
+            borderRadius: BorderRadius.circular(20),
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: widget.color,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: _isHovered ? 0.08 : 0.04),
+                    blurRadius: _isHovered ? 16 : 12,
+                    offset: Offset(0, _isHovered ? 6 : 4),
+                  ),
+                ],
               ),
-              const Icon(
-                Icons.arrow_forward_ios,
-                color: AppColors.textSecondary,
-                size: 18,
+              child: Row(
+                children: [
+                  Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.9),
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Icon(
+                      widget.icon,
+                      color: AppColors.textPrimary,
+                      size: 24,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.title,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          widget.subtitle,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),

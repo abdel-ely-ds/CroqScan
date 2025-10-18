@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 import '../services/auth_service.dart';
+import '../services/profile_service.dart';
 import '../widgets/main_navigation.dart';
 import 'login_screen.dart';
+import 'pet_onboarding_screen.dart';
 
 /// Écran de démarrage qui vérifie l'authentification
 class SplashScreen extends StatefulWidget {
@@ -27,14 +29,25 @@ class _SplashScreenState extends State<SplashScreen> {
 
     // Vérifier si l'utilisateur est déjà connecté
     final isLoggedIn = await AuthService.isLoggedIn();
+    final profile = await ProfileService.loadProfile();
 
     if (isLoggedIn) {
       print('✅ Utilisateur déjà connecté - Auto-login');
-      // Naviguer vers l'app
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const MainNavigation()),
-      );
+      
+      if (profile == null) {
+        // Connecté mais pas de profil - aller vers onboarding
+        print('ℹ️ Pas de profil - Redirection vers onboarding');
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const PetOnboardingScreen()),
+        );
+      } else {
+        // Connecté avec profil - aller vers l'app
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const MainNavigation()),
+        );
+      }
     } else {
       print('ℹ️ Utilisateur non connecté - Affichage login');
       // Naviguer vers l'écran de connexion

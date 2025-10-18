@@ -27,13 +27,13 @@ class _SearchScreenNewState extends State<SearchScreenNew> {
   int _totalResults = 0;
   bool _hasMoreResults = false;
 
-  // Catégories principales
+  // Catégories principales (uniquement chiens et chats)
   final Map<String, MainCategory> _mainCategories = {
     'dog-food': MainCategory(
       id: 'dog-food',
       name: 'Chiens',
       icon: '🐶',
-      color: Color(0xFF4A90E2),
+      color: AppColors.dogColor,
       subCategories: [
         SubCategory(tag: 'en:dry-dog-food', name: 'Croquettes'),
         SubCategory(tag: 'en:wet-dog-food', name: 'Pâtées'),
@@ -44,26 +44,12 @@ class _SearchScreenNewState extends State<SearchScreenNew> {
       id: 'cat-food',
       name: 'Chats',
       icon: '🐱',
-      color: Color(0xFFFF6B9D),
+      color: AppColors.catColor,
       subCategories: [
         SubCategory(tag: 'en:dry-cat-food', name: 'Croquettes'),
         SubCategory(tag: 'en:wet-cat-food', name: 'Pâtées'),
         SubCategory(tag: 'en:cat-treats', name: 'Friandises'),
       ],
-    ),
-    'bird-food': MainCategory(
-      id: 'bird-food',
-      name: 'Oiseaux',
-      icon: '🦜',
-      color: Colors.orange,
-      subCategories: [SubCategory(tag: 'en:bird-food', name: 'Graines')],
-    ),
-    'small-animal-food': MainCategory(
-      id: 'small-animal-food',
-      name: 'Petits animaux',
-      icon: '🐰',
-      color: Colors.brown,
-      subCategories: [SubCategory(tag: 'en:rabbit-food', name: 'Lapins')],
     ),
   };
 
@@ -770,8 +756,26 @@ class _SearchScreenNewState extends State<SearchScreenNew> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('🔍', style: TextStyle(fontSize: 64)),
-            SizedBox(height: 16),
+            Container(
+              padding: EdgeInsets.all(28),
+              decoration: BoxDecoration(
+                color: AppColors.pastelLavender.withValues(alpha: 0.3),
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.pastelLavender.withValues(alpha: 0.2),
+                    blurRadius: 20,
+                    offset: Offset(0, 8),
+                  ),
+                ],
+              ),
+              child: Icon(
+                Icons.search_rounded,
+                size: 48,
+                color: AppColors.primary,
+              ),
+            ),
+            SizedBox(height: 24),
             Text(
               'Prêt à rechercher',
               style: TextStyle(

@@ -113,13 +113,13 @@ class _MainNavigationState extends State<MainNavigation> {
       ),
       child: SafeArea(
         child: Container(
-          height: 72,
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          height: 68,
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildNavItem(
-                icon: Icons.home_rounded,
+              _buildNavItemWithImage(
+                imagePath: 'assets/icons/pet_house.png',
                 label: 'Accueil',
                 index: 0,
               ),
@@ -153,6 +153,20 @@ class _MainNavigationState extends State<MainNavigation> {
   }) {
     return _NavItemWithHover(
       icon: icon,
+      label: label,
+      index: index,
+      currentIndex: _currentIndex,
+      onTap: () => _onTabTapped(index),
+    );
+  }
+
+  Widget _buildNavItemWithImage({
+    required String imagePath,
+    required String label,
+    required int index,
+  }) {
+    return _NavItemWithImage(
+      imagePath: imagePath,
       label: label,
       index: index,
       currentIndex: _currentIndex,
@@ -232,56 +246,175 @@ class _NavItemWithHoverState extends State<_NavItemWithHover>
           behavior: HitTestBehavior.opaque,
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 250),
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+            padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
             decoration: BoxDecoration(
-              color: isActive
-                  ? AppColors.primary.withValues(alpha: 0.1)
-                  : (_isHovered
-                      ? AppColors.primary.withValues(alpha: 0.05)
-                      : Colors.transparent),
-              borderRadius: BorderRadius.circular(16),
+              color: _isHovered && !isActive
+                  ? AppColors.primary.withValues(alpha: 0.05)
+                  : Colors.transparent,
+              borderRadius: BorderRadius.circular(14),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 250),
-                  padding: EdgeInsets.all(isActive ? 8 : 6),
-                  decoration: BoxDecoration(
-                    color: isActive
-                        ? AppColors.primary
-                        : Colors.transparent,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Icon(
-                    widget.icon,
-                    size: 24,
-                    color: isActive
-                        ? Colors.white
-                        : (_isHovered
-                            ? AppColors.primary
-                            : AppColors.navInactive),
-                  ),
-                ),
-                const SizedBox(height: 4),
-                FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(
-                    widget.label,
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: isActive
-                          ? FontWeight.w700
-                          : FontWeight.w500,
+                Flexible(
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 250),
+                    padding: const EdgeInsets.all(4),
+                    child: Icon(
+                      widget.icon,
+                      size: 20,
                       color: isActive
                           ? AppColors.primary
                           : (_isHovered
                               ? AppColors.primary
                               : AppColors.navInactive),
                     ),
-                    maxLines: 1,
-                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Flexible(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      widget.label,
+                      style: TextStyle(
+                        fontSize: 9,
+                        fontWeight: isActive
+                            ? FontWeight.w700
+                            : FontWeight.w500,
+                        color: isActive
+                            ? AppColors.primary
+                            : (_isHovered
+                                ? AppColors.primary
+                                : AppColors.navInactive),
+                      ),
+                      maxLines: 1,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// Nav item with image instead of icon
+class _NavItemWithImage extends StatefulWidget {
+  final String imagePath;
+  final String label;
+  final int index;
+  final int currentIndex;
+  final VoidCallback onTap;
+
+  const _NavItemWithImage({
+    required this.imagePath,
+    required this.label,
+    required this.index,
+    required this.currentIndex,
+    required this.onTap,
+  });
+
+  @override
+  State<_NavItemWithImage> createState() => _NavItemWithImageState();
+}
+
+class _NavItemWithImageState extends State<_NavItemWithImage>
+    with SingleTickerProviderStateMixin {
+  bool _isHovered = false;
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.15).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final screenIndex = widget.index > 2 ? widget.index - 1 : widget.index;
+    final bool isActive = widget.currentIndex == screenIndex;
+
+    return Expanded(
+      child: MouseRegion(
+        onEnter: (_) {
+          setState(() => _isHovered = true);
+          _controller.forward();
+        },
+        onExit: (_) {
+          setState(() => _isHovered = false);
+          _controller.reverse();
+        },
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(
+          onTap: widget.onTap,
+          behavior: HitTestBehavior.opaque,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 250),
+            padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
+            decoration: BoxDecoration(
+              color: _isHovered && !isActive
+                  ? AppColors.primary.withValues(alpha: 0.05)
+                  : Colors.transparent,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Flexible(
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 250),
+                    padding: const EdgeInsets.all(4),
+                    child: Image.asset(
+                      widget.imagePath,
+                      width: 20,
+                      height: 20,
+                      color: isActive
+                          ? AppColors.primary
+                          : (_isHovered
+                              ? AppColors.primary
+                              : AppColors.navInactive),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Flexible(
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      widget.label,
+                      style: TextStyle(
+                        fontSize: 9,
+                        fontWeight: isActive
+                            ? FontWeight.w700
+                            : FontWeight.w500,
+                        color: isActive
+                            ? AppColors.primary
+                            : (_isHovered
+                                ? AppColors.primary
+                                : AppColors.navInactive),
+                      ),
+                      maxLines: 1,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ),
               ],
