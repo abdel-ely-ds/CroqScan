@@ -1322,17 +1322,14 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
               ),
             ),
             const SizedBox(height: 12),
-            Wrap(
-              spacing: 12,
-              runSpacing: 12,
+            Row(
               children: [
-                _buildAnimalTypeChip('dog', '🐕 Chien', AppColors.dogColor),
-                _buildAnimalTypeChip('cat', '🐈 Chat', AppColors.catColor),
-                _buildAnimalTypeChip('bird', '🦜 Oiseau', AppColors.birdColor),
-                _buildAnimalTypeChip(
-                  'rabbit',
-                  '🐰 Lapin',
-                  AppColors.otherPetColor,
+                Expanded(
+                  child: _buildAnimalTypeChip('dog', '🐕 Chien', AppColors.dogColor),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: _buildAnimalTypeChip('cat', '🐈 Chat', AppColors.catColor),
                 ),
               ],
             ),

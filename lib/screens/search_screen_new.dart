@@ -471,88 +471,30 @@ class _SearchScreenNewState extends State<SearchScreenNew> {
 
                   SizedBox(height: 12),
 
-                  // Catégories principales (horizontal scroll)
-                  SizedBox(
-                    height: 50,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: _mainCategories.entries.map((entry) {
-                        final isSelected = _selectedMainCategory == entry.key;
-                        final cat = entry.value;
+                  // Catégories principales (full width buttons)
+                  Row(
+                    children: _mainCategories.entries.map((entry) {
+                      final isSelected = _selectedMainCategory == entry.key;
+                      final cat = entry.value;
 
-                        return Padding(
-                          padding: EdgeInsets.only(right: 8),
-                          child: InkWell(
-                            onTap: () {
-                              setState(() {
-                                if (isSelected) {
-                                  _selectedMainCategory = null;
-                                  _selectedSubCategory = null;
-                                } else {
-                                  _selectedMainCategory = entry.key;
-                                  _selectedSubCategory = null;
-                                }
-                              });
-                            },
-                            borderRadius: BorderRadius.circular(25),
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 8,
-                              ),
-                              decoration: BoxDecoration(
-                                gradient: isSelected
-                                    ? LinearGradient(
-                                        colors: [
-                                          cat.color,
-                                          cat.color.withOpacity(0.7),
-                                        ],
-                                      )
-                                    : null,
-                                color: isSelected
-                                    ? null
-                                    : cat.color.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(25),
-                                border: Border.all(
-                                  color: isSelected
-                                      ? cat.color
-                                      : cat.color.withOpacity(0.3),
-                                  width: isSelected ? 2 : 1,
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    cat.icon,
-                                    style: TextStyle(fontSize: 20),
-                                  ),
-                                  SizedBox(width: 6),
-                                  Text(
-                                    cat.name,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: isSelected
-                                          ? Colors.white
-                                          : cat.color,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                  if (isSelected) ...[
-                                    SizedBox(width: 6),
-                                    Icon(
-                                      Icons.check,
-                                      color: Colors.white,
-                                      size: 16,
-                                    ),
-                                  ],
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    ),
+                      return Expanded(
+                        child: _CategoryButton(
+                          category: cat,
+                          isSelected: isSelected,
+                          onTap: () {
+                            setState(() {
+                              if (isSelected) {
+                                _selectedMainCategory = null;
+                                _selectedSubCategory = null;
+                              } else {
+                                _selectedMainCategory = entry.key;
+                                _selectedSubCategory = null;
+                              }
+                            });
+                          },
+                        ),
+                      );
+                    }).toList(),
                   ),
 
                   // Sous-catégories si une catégorie principale est sélectionnée
@@ -935,4 +877,111 @@ class SubCategory {
   final String name;
 
   SubCategory({required this.tag, required this.name});
+}
+
+// Category button with hover effect
+class _CategoryButton extends StatefulWidget {
+  final MainCategory category;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _CategoryButton({
+    required this.category,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  State<_CategoryButton> createState() => _CategoryButtonState();
+}
+
+class _CategoryButtonState extends State<_CategoryButton> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      child: MouseRegion(
+        onEnter: (_) => setState(() => _isHovered = true),
+        onExit: (_) => setState(() => _isHovered = false),
+        child: InkWell(
+          onTap: widget.onTap,
+          borderRadius: BorderRadius.circular(16),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            height: 100,
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              gradient: widget.isSelected
+                  ? LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        widget.category.color,
+                        widget.category.color.withOpacity(0.7),
+                      ],
+                    )
+                  : null,
+              color: widget.isSelected
+                  ? null
+                  : (_isHovered
+                      ? widget.category.color.withOpacity(0.25)
+                      : widget.category.color.withOpacity(0.15)),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: widget.isSelected
+                    ? widget.category.color
+                    : (_isHovered
+                        ? widget.category.color.withOpacity(0.6)
+                        : widget.category.color.withOpacity(0.4)),
+                width: widget.isSelected ? 2.5 : (_isHovered ? 2 : 1.5),
+              ),
+              boxShadow: widget.isSelected || _isHovered
+                  ? [
+                      BoxShadow(
+                        color: widget.category.color.withOpacity(0.3),
+                        blurRadius: widget.isSelected ? 12 : 8,
+                        offset: Offset(0, widget.isSelected ? 4 : 2),
+                      ),
+                    ]
+                  : null,
+            ),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    widget.category.icon,
+                    style: const TextStyle(fontSize: 32),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    widget.category.name,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: widget.isSelected
+                          ? Colors.white
+                          : widget.category.color,
+                      fontSize: 15,
+                    ),
+                  ),
+                  if (widget.isSelected) ...[
+                    const SizedBox(height: 2),
+                    const Icon(
+                      Icons.check_circle,
+                      color: Colors.white,
+                      size: 16,
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

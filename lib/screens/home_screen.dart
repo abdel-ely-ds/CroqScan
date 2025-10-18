@@ -86,16 +86,37 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Row(
         children: [
           Expanded(
-            child: Text(
-              _animalProfile != null
-                  ? 'Bienvenue ${_animalProfile!.name} !'
-                  : 'Bienvenue !',
-              style: const TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
-                letterSpacing: -0.5,
-              ),
+            child: Row(
+              children: [
+                Flexible(
+                  child: Text(
+                    _animalProfile != null
+                        ? 'Coucou ${_animalProfile!.name}'
+                        : 'Coucou',
+                    style: const TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                if (_animalProfile != null)
+                  Image.asset(
+                  _animalProfile!.animalType == 'dog'
+                      ? 'assets/icons/dog_illustration.png'
+                      : 'assets/images/cat_illustration.png',
+                    width: 32,
+                    height: 32,
+                    fit: BoxFit.contain,
+                  )
+                else
+                  const Text(
+                    '🐾',
+                    style: TextStyle(fontSize: 24),
+                  ),
+              ],
             ),
           ),
           GestureDetector(
@@ -190,7 +211,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildEncouragingMessage() {
     return Center(
       child: Container(
-        margin: const EdgeInsets.fromLTRB(24, 64, 24, 0),
+        margin: const EdgeInsets.fromLTRB(24, 48, 24, 0),
         constraints: const BoxConstraints(maxWidth: 250),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         decoration: BoxDecoration(
@@ -204,14 +225,31 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
-        child: Text(
-          'Merci de prendre soin de moi ! 🐾',
-          style: const TextStyle(
-            fontSize: 15,
-            color: AppColors.textSecondary,
-            fontWeight: FontWeight.w500,
-          ),
-          textAlign: TextAlign.center,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(
+              child: Text(
+                'Merci de prendre soin de moi',
+                style: const TextStyle(
+                  fontSize: 15,
+                  color: AppColors.textSecondary,
+                  fontWeight: FontWeight.w500,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            if (_animalProfile != null)
+              Padding(
+                padding: const EdgeInsets.only(left: 8),
+                child: Image.asset('assets/icons/heart.png',
+                  width: 20,
+                  height: 20,
+                  fit: BoxFit.contain,
+                ),
+              ),
+          ],
         ),
       ),
     );
@@ -230,7 +268,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     return Container(
-      margin: const EdgeInsets.fromLTRB(24, 8, 24, 32),
+      margin: const EdgeInsets.fromLTRB(24, 0, 24, 32),
       height: 280,
       child: Stack(
         clipBehavior: Clip.none,
@@ -303,8 +341,8 @@ class _HomeScreenState extends State<HomeScreen> {
           Center(
             child: Image.asset(
               imagePath,
-              width: 200,
-              height: 200,
+              width: 150,
+              height: 150,
               fit: BoxFit.contain,
             ),
           ),
