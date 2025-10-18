@@ -105,16 +105,16 @@ class _MainNavigationState extends State<MainNavigation> {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, -2),
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 20,
+            offset: const Offset(0, -4),
           ),
         ],
       ),
       child: SafeArea(
         child: Container(
-          height: 68,
-          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+          height: 72,
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -231,80 +231,60 @@ class _NavItemWithHoverState extends State<_NavItemWithHover>
           onTap: widget.onTap,
           behavior: HitTestBehavior.opaque,
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
+            duration: const Duration(milliseconds: 250),
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
             decoration: BoxDecoration(
-              gradient: _isHovered && !isActive
-                  ? LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        AppColors.primary.withValues(alpha: 0.08),
-                        AppColors.primary.withValues(alpha: 0.02),
-                      ],
-                    )
-                  : null,
-              borderRadius: BorderRadius.circular(12),
+              color: isActive
+                  ? AppColors.primary.withValues(alpha: 0.1)
+                  : (_isHovered
+                      ? AppColors.primary.withValues(alpha: 0.05)
+                      : Colors.transparent),
+              borderRadius: BorderRadius.circular(16),
             ),
-            child: ScaleTransition(
-              scale: _scaleAnimation,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TweenAnimationBuilder<Color?>(
-                    duration: const Duration(milliseconds: 200),
-                    tween: ColorTween(
-                      begin: isActive
-                          ? AppColors.navActive
-                          : AppColors.navInactive,
-                      end: isActive
-                          ? AppColors.navActive
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 250),
+                  padding: EdgeInsets.all(isActive ? 8 : 6),
+                  decoration: BoxDecoration(
+                    color: isActive
+                        ? AppColors.primary
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    widget.icon,
+                    size: 24,
+                    color: isActive
+                        ? Colors.white
+                        : (_isHovered
+                            ? AppColors.primary
+                            : AppColors.navInactive),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    widget.label,
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: isActive
+                          ? FontWeight.w700
+                          : FontWeight.w500,
+                      color: isActive
+                          ? AppColors.primary
                           : (_isHovered
                               ? AppColors.primary
                               : AppColors.navInactive),
                     ),
-                    builder: (context, color, child) {
-                      return Icon(
-                        widget.icon,
-                        size: 24,
-                        color: color,
-                      );
-                    },
+                    maxLines: 1,
+                    textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 3),
-                  FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: TweenAnimationBuilder<Color?>(
-                      duration: const Duration(milliseconds: 200),
-                      tween: ColorTween(
-                        begin: isActive
-                            ? AppColors.navActive
-                            : AppColors.navInactive,
-                        end: isActive
-                            ? AppColors.navActive
-                            : (_isHovered
-                                ? AppColors.primary
-                                : AppColors.navInactive),
-                      ),
-                      builder: (context, color, child) {
-                        return Text(
-                          widget.label,
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: isActive || _isHovered
-                                ? FontWeight.w600
-                                : FontWeight.normal,
-                            color: color,
-                          ),
-                          maxLines: 1,
-                          textAlign: TextAlign.center,
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
@@ -365,32 +345,26 @@ class _ScannerButtonWithHoverState extends State<_ScannerButtonWithHover>
         child: ScaleTransition(
           scale: _scaleAnimation,
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
+            duration: const Duration(milliseconds: 250),
             width: 56,
             height: 56,
             margin: const EdgeInsets.symmetric(horizontal: 8),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: _isHovered
-                    ? [
-                        AppColors.primary,
-                        AppColors.accent,
-                        AppColors.secondary,
-                      ]
-                    : [
-                        AppColors.primary,
-                        AppColors.accent,
-                      ],
+                colors: [
+                  AppColors.primary,
+                  AppColors.accent,
+                ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(18),
               boxShadow: [
                 BoxShadow(
                   color: AppColors.primary.withValues(
-                    alpha: _isHovered ? 0.6 : 0.4,
+                    alpha: _isHovered ? 0.4 : 0.25,
                   ),
-                  blurRadius: _isHovered ? 16 : 12,
+                  blurRadius: _isHovered ? 20 : 12,
                   offset: Offset(0, _isHovered ? 6 : 4),
                 ),
               ],

@@ -209,61 +209,48 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildHeader() {
     return Padding(
-      padding: const EdgeInsets.all(24),
-      child: Row(
+      padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  AppColors.primary.withValues(alpha: 0.2),
-                  AppColors.accent.withValues(alpha: 0.1),
-                ],
-              ),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Icon(
-              _profile != null
-                  ? _getAnimalIcon(_profile!.animalType)
-                  : Icons.person,
-              color: AppColors.primary,
-              size: 28,
+          const Text(
+            'Profil',
+            style: TextStyle(
+              fontSize: 16,
+              color: AppColors.textSecondary,
+              fontWeight: FontWeight.w500,
             ),
           ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
                   _profile != null
-                      ? 'Profil de ${_profile!.name} ${_getAnimalEmoji(_profile!.animalType)}'
-                      : 'Mon Profil',
+                      ? '${_profile!.name} ${_getAnimalEmoji(_profile!.animalType)}'
+                      : 'Mon Compte',
                   style: const TextStyle(
-                    fontSize: 24,
+                    fontSize: 32,
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary,
+                    letterSpacing: -0.5,
                   ),
                 ),
-                Text(
-                  _profile != null
-                      ? 'Informations de ton compagnon'
-                      : 'Crée le profil de ton animal',
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: AppColors.textSecondary,
+              ),
+              if (_profile != null)
+                Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: IconButton(
+                    onPressed: _editProfile,
+                    icon: const Icon(Icons.edit_rounded, color: AppColors.primary),
+                    tooltip: 'Modifier',
                   ),
                 ),
-              ],
-            ),
+            ],
           ),
-          if (_profile != null)
-            IconButton(
-              onPressed: _editProfile,
-              icon: const Icon(Icons.edit, color: AppColors.primary),
-              tooltip: 'Modifier',
-            ),
         ],
       ),
     );
@@ -283,19 +270,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Container(
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: Colors.orange.shade50,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: Colors.orange.shade200),
-                  ),
-                  child: Column(
-                    children: [
-                      const Icon(
-                        Icons.info_outline,
-                        color: Colors.orange,
-                        size: 32,
+                    color: AppColors.pastelPeach,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.05),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
                       ),
-                      const SizedBox(height: 12),
-                      const Text(
+                    ],
+                  ),
+                  child: const Column(
+                    children: [
+                      Text(
+                        '⚠️',
+                        style: TextStyle(fontSize: 32),
+                      ),
+                      SizedBox(height: 12),
+                      Text(
                         'Mode Invité',
                         style: TextStyle(
                           fontSize: 18,
@@ -303,8 +295,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           color: AppColors.textPrimary,
                         ),
                       ),
-                      const SizedBox(height: 8),
-                      const Text(
+                      SizedBox(height: 8),
+                      Text(
                         'Connectez-vous pour sauvegarder vos données de manière sécurisée',
                         textAlign: TextAlign.center,
                         style: TextStyle(
@@ -319,10 +311,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ],
 
               Container(
-                padding: const EdgeInsets.all(32),
+                padding: const EdgeInsets.all(40),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.1),
+                  color: AppColors.pastelPeach,
                   shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.accent.withValues(alpha: 0.2),
+                      blurRadius: 20,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
                 ),
                 child: const Text('🐾', style: TextStyle(fontSize: 80)),
               ),
@@ -454,14 +453,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.1),
+                      color: AppColors.pastelYellow,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Row(
                       children: [
                         Icon(
                           Icons.info_outline,
-                          color: AppColors.primary,
+                          color: AppColors.textPrimary,
                           size: 20,
                         ),
                         SizedBox(width: 12),
@@ -598,11 +597,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 15,
             offset: const Offset(0, 4),
           ),
         ],
@@ -613,12 +612,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(10),
+                  color: AppColors.pastelLavender,
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(icon, color: AppColors.primary, size: 20),
+                child: Icon(icon, color: AppColors.primary, size: 22),
               ),
               const SizedBox(width: 12),
               Text(
