@@ -11,11 +11,16 @@ class MainNavigation extends StatefulWidget {
   const MainNavigation({super.key});
 
   @override
-  State<MainNavigation> createState() => _MainNavigationState();
+  State<MainNavigation> createState() => MainNavigationState();
 }
 
-class _MainNavigationState extends State<MainNavigation> {
+class MainNavigationState extends State<MainNavigation> {
   int _currentIndex = 0;
+
+  // Make method accessible to children
+  void navigateToTab(int index) {
+    _onTabTapped(index);
+  }
 
   // Clé pour forcer le rebuild de FavoritesScreen
   Key _favoritesKey = UniqueKey();

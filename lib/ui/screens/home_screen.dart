@@ -3,7 +3,7 @@ import '../../core/constants/app_colors.dart';
 import '../../core/services/scan_history_service.dart';
 import '../../core/services/profile_service.dart';
 import 'scanner_screen.dart';
-import 'search_screen_new.dart';
+import '../widgets/main_navigation.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -158,12 +158,12 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icons.search_rounded,
             color: AppColors.pastelMint,
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SearchScreenNew(),
-                ),
-              );
+              // Ouvrir l'onglet recherche dans la navigation principale
+              final mainNav = context
+                  .findAncestorStateOfType<MainNavigationState>();
+              if (mainNav != null) {
+                mainNav.navigateToTab(1); // Index 1 = Search
+              }
             },
           ),
           const SizedBox(height: 12),

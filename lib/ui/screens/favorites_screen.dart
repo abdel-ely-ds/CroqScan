@@ -7,8 +7,8 @@ import '../../core/services/favorites_service.dart';
 import '../../core/services/openpetfoodfacts_service.dart';
 import '../../core/models/product.dart';
 import 'scanner_screen.dart';
-import 'search_screen_new.dart';
 import 'product_details_screen.dart';
+import '../widgets/main_navigation.dart';
 
 class FavoritesScreen extends StatefulWidget {
   const FavoritesScreen({super.key});
@@ -146,41 +146,25 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 8),
-          Row(
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Colors.red.shade100, Colors.red.shade50],
-                  ),
-                  borderRadius: BorderRadius.circular(16),
+              Text(
+                'Mes Favoris ❤️', // AppLocalizations not available in sliver header
+                style: const TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
                 ),
-                child: const Icon(Icons.favorite, color: Colors.red, size: 28),
               ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Mes Favoris ❤️', // AppLocalizations not available in sliver header
-                      style: const TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    Text(
-                      favoriteProducts.isEmpty
-                          ? 'Tes coups de cœur ici 💕'
-                          : '${favoriteProducts.length} produit${favoriteProducts.length > 1 ? 's' : ''} sauvegardé${favoriteProducts.length > 1 ? 's' : ''}',
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  ],
+              const SizedBox(height: 8),
+              Text(
+                favoriteProducts.isEmpty
+                    ? 'Sauvegarde tes produits préférés'
+                    : '${favoriteProducts.length} produit${favoriteProducts.length > 1 ? 's' : ''} sauvegardé${favoriteProducts.length > 1 ? 's' : ''}',
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: AppColors.textSecondary,
                 ),
               ),
             ],
@@ -294,12 +278,11 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                 width: double.infinity,
                 child: OutlinedButton.icon(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const SearchScreenNew(),
-                      ),
-                    );
+                    // Ouvrir l'onglet recherche dans la navigation principale
+                    final mainNav = context.findAncestorStateOfType<MainNavigationState>();
+                    if (mainNav != null) {
+                      mainNav.navigateToTab(1); // Index 1 = Search
+                    }
                   },
                   icon: const Icon(Icons.explore, size: 20),
                   label: Text(
