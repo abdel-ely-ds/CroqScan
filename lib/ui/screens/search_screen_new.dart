@@ -439,234 +439,247 @@ class _SearchScreenNewState extends State<SearchScreenNew> {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
-        child: Column(
-          children: [
+        child: CustomScrollView(
+          controller: _scrollController,
+          slivers: [
             // Header avec titre et reset
-            Container(
-              color: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Row(
-                children: [
-                  const Text(
-                    'Rechercher',
-                    style: TextStyle(
-                      color: AppColors.textPrimary,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
-                  ),
-                  const Spacer(),
-                  if (_selectedMainCategory != null ||
-                      _selectedSubCategory != null ||
-                      _searchController.text.isNotEmpty)
-                    IconButton(
-                      icon: const Icon(
-                        Icons.refresh,
+            SliverToBoxAdapter(
+              child: Container(
+                color: Colors.white,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                child: Row(
+                  children: [
+                    const Text(
+                      'Rechercher',
+                      style: TextStyle(
                         color: AppColors.textPrimary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
                       ),
-                      onPressed: () {
-                        setState(() {
-                          _searchController.clear();
-                          _selectedMainCategory = null;
-                          _selectedSubCategory = null;
-                          _searchResults = [];
-                          _totalResults = 0;
-                        });
-                      },
-                      tooltip: 'Réinitialiser',
                     ),
-                ],
+                    const Spacer(),
+                    if (_selectedMainCategory != null ||
+                        _selectedSubCategory != null ||
+                        _searchController.text.isNotEmpty)
+                      IconButton(
+                        icon: const Icon(
+                          Icons.refresh,
+                          color: AppColors.textPrimary,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _searchController.clear();
+                            _selectedMainCategory = null;
+                            _selectedSubCategory = null;
+                            _searchResults = [];
+                            _totalResults = 0;
+                          });
+                        },
+                        tooltip: 'Réinitialiser',
+                      ),
+                  ],
+                ),
               ),
             ),
             // Barre de recherche et filtres COMPACTS
-            Container(
-              color: Colors.white,
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Barre de recherche
-                  TextField(
-                    controller: _searchController,
-                    decoration: InputDecoration(
-                      hintText: 'Nom, marque ou mot-clé...',
-                      hintStyle: TextStyle(fontSize: 15),
-                      prefixIcon: Icon(Icons.search, color: AppColors.primary),
-                      suffixIcon: _searchController.text.isNotEmpty
-                          ? IconButton(
-                              icon: Icon(Icons.clear, size: 20),
-                              onPressed: () =>
-                                  setState(() => _searchController.clear()),
-                            )
-                          : null,
-                      filled: true,
-                      fillColor: AppColors.background,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        borderSide: BorderSide.none,
-                      ),
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                      isDense: true,
-                    ),
-                  ),
-
-                  SizedBox(height: 12),
-
-                  // Catégories principales (full width buttons)
-                  Row(
-                    children: _mainCategories.entries.map((entry) {
-                      final isSelected = _selectedMainCategory == entry.key;
-                      final cat = entry.value;
-
-                      return Expanded(
-                        child: _CategoryButton(
-                          category: cat,
-                          isSelected: isSelected,
-                          onTap: () {
-                            setState(() {
-                              if (isSelected) {
-                                _selectedMainCategory = null;
-                                _selectedSubCategory = null;
-                              } else {
-                                _selectedMainCategory = entry.key;
-                                _selectedSubCategory = null;
-                              }
-                            });
-                          },
+            SliverToBoxAdapter(
+              child: Container(
+                color: Colors.white,
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Barre de recherche
+                    TextField(
+                      controller: _searchController,
+                      decoration: InputDecoration(
+                        hintText: 'Nom, marque ou mot-clé...',
+                        hintStyle: TextStyle(fontSize: 15),
+                        prefixIcon: Icon(
+                          Icons.search,
+                          color: AppColors.primary,
                         ),
-                      );
-                    }).toList(),
-                  ),
+                        suffixIcon: _searchController.text.isNotEmpty
+                            ? IconButton(
+                                icon: Icon(Icons.clear, size: 20),
+                                onPressed: () =>
+                                    setState(() => _searchController.clear()),
+                              )
+                            : null,
+                        filled: true,
+                        fillColor: AppColors.background,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide.none,
+                        ),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                        isDense: true,
+                      ),
+                    ),
 
-                  // Sous-catégories si une catégorie principale est sélectionnée
-                  if (_selectedMainCategory != null &&
-                      _mainCategories.containsKey(_selectedMainCategory)) ...[
-                    SizedBox(height: 8),
-                    SizedBox(
-                      height: 36,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        children:
-                            (_mainCategories[_selectedMainCategory]
-                                        ?.subCategories ??
-                                    [])
-                                .map((subCat) {
-                                  final isSelected =
-                                      _selectedSubCategory == subCat.tag;
-                                  final color =
-                                      _mainCategories[_selectedMainCategory]
-                                          ?.color ??
-                                      AppColors.primary;
+                    SizedBox(height: 12),
 
-                                  return Padding(
-                                    padding: EdgeInsets.only(right: 6),
-                                    child: InkWell(
-                                      onTap: () {
-                                        setState(() {
-                                          // Une seule sous-catégorie à la fois
-                                          if (isSelected) {
-                                            _selectedSubCategory = null;
-                                          } else {
-                                            _selectedSubCategory = subCat.tag;
-                                          }
-                                        });
-                                      },
-                                      borderRadius: BorderRadius.circular(18),
-                                      child: Container(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 12,
-                                          vertical: 6,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: isSelected
-                                              ? color
-                                              : color.withValues(alpha: 0.1),
-                                          borderRadius: BorderRadius.circular(
-                                            18,
+                    // Catégories principales (full width buttons)
+                    Row(
+                      children: _mainCategories.entries.map((entry) {
+                        final isSelected = _selectedMainCategory == entry.key;
+                        final cat = entry.value;
+
+                        return Expanded(
+                          child: _CategoryButton(
+                            category: cat,
+                            isSelected: isSelected,
+                            onTap: () {
+                              setState(() {
+                                if (isSelected) {
+                                  _selectedMainCategory = null;
+                                  _selectedSubCategory = null;
+                                } else {
+                                  _selectedMainCategory = entry.key;
+                                  _selectedSubCategory = null;
+                                }
+                              });
+                            },
+                          ),
+                        );
+                      }).toList(),
+                    ),
+
+                    // Sous-catégories si une catégorie principale est sélectionnée
+                    if (_selectedMainCategory != null &&
+                        _mainCategories.containsKey(_selectedMainCategory)) ...[
+                      SizedBox(height: 8),
+                      SizedBox(
+                        height: 36,
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          children:
+                              (_mainCategories[_selectedMainCategory]
+                                          ?.subCategories ??
+                                      [])
+                                  .map((subCat) {
+                                    final isSelected =
+                                        _selectedSubCategory == subCat.tag;
+                                    final color =
+                                        _mainCategories[_selectedMainCategory]
+                                            ?.color ??
+                                        AppColors.primary;
+
+                                    return Padding(
+                                      padding: EdgeInsets.only(right: 6),
+                                      child: InkWell(
+                                        onTap: () {
+                                          setState(() {
+                                            // Une seule sous-catégorie à la fois
+                                            if (isSelected) {
+                                              _selectedSubCategory = null;
+                                            } else {
+                                              _selectedSubCategory = subCat.tag;
+                                            }
+                                          });
+                                        },
+                                        borderRadius: BorderRadius.circular(18),
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 12,
+                                            vertical: 6,
                                           ),
-                                          border: Border.all(
+                                          decoration: BoxDecoration(
                                             color: isSelected
                                                 ? color
-                                                : color.withValues(alpha: 0.4),
+                                                : color.withValues(alpha: 0.1),
+                                            borderRadius: BorderRadius.circular(
+                                              18,
+                                            ),
+                                            border: Border.all(
+                                              color: isSelected
+                                                  ? color
+                                                  : color.withValues(
+                                                      alpha: 0.4,
+                                                    ),
+                                            ),
+                                          ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text(
+                                                subCat.name,
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: isSelected
+                                                      ? Colors.white
+                                                      : color,
+                                                ),
+                                              ),
+                                              if (isSelected) ...[
+                                                SizedBox(width: 4),
+                                                Icon(
+                                                  Icons.check,
+                                                  color: Colors.white,
+                                                  size: 12,
+                                                ),
+                                              ],
+                                            ],
                                           ),
                                         ),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text(
-                                              subCat.name,
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w600,
-                                                color: isSelected
-                                                    ? Colors.white
-                                                    : color,
-                                              ),
-                                            ),
-                                            if (isSelected) ...[
-                                              SizedBox(width: 4),
-                                              Icon(
-                                                Icons.check,
-                                                color: Colors.white,
-                                                size: 12,
-                                              ),
-                                            ],
-                                          ],
-                                        ),
                                       ),
-                                    ),
-                                  );
-                                })
-                                .toList(),
+                                    );
+                                  })
+                                  .toList(),
+                        ),
+                      ),
+                    ],
+
+                    SizedBox(height: 12),
+
+                    // Bouton de recherche
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: _isLoading ? null : _performSearch,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: Colors.white,
+                          padding: EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 2,
+                        ),
+                        child: _isLoading
+                            ? SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation(
+                                    Colors.white,
+                                  ),
+                                ),
+                              )
+                            : Text(
+                                'Rechercher',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                       ),
                     ),
                   ],
-
-                  SizedBox(height: 12),
-
-                  // Bouton de recherche
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _isLoading ? null : _performSearch,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        foregroundColor: Colors.white,
-                        padding: EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        elevation: 2,
-                      ),
-                      child: _isLoading
-                          ? SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                valueColor: AlwaysStoppedAnimation(
-                                  Colors.white,
-                                ),
-                              ),
-                            )
-                          : Text(
-                              'Rechercher',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
 
-            // Résultats (prend tout l'espace restant)
-            Expanded(child: _buildResults()),
+            // Résultats
+            _buildResults(),
           ],
         ),
       ),
@@ -679,115 +692,122 @@ class _SearchScreenNewState extends State<SearchScreenNew> {
     }
 
     if (_searchResults.isEmpty && _isLoading) {
-      return Center(child: CircularProgressIndicator());
+      return const SliverFillRemaining(
+        child: Center(child: CircularProgressIndicator()),
+      );
     }
 
-    return Column(
-      children: [
-        // Header résultats
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          color: Colors.white,
-          child: Row(
-            children: [
-              Icon(Icons.inventory_2, color: AppColors.primary, size: 20),
-              SizedBox(width: 8),
-              Text(
-                '$_totalResults produit${_totalResults > 1 ? 's' : ''} trouvé${_totalResults > 1 ? 's' : ''}',
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textPrimary,
+    return SliverList(
+      delegate: SliverChildBuilderDelegate((context, index) {
+        if (index == 0) {
+          // Header résultats
+          return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            color: Colors.white,
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.inventory_2,
+                  color: AppColors.primary,
+                  size: 20,
                 ),
-              ),
-            ],
-          ),
-        ),
+                const SizedBox(width: 8),
+                Text(
+                  '$_totalResults produit${_totalResults > 1 ? 's' : ''} trouvé${_totalResults > 1 ? 's' : ''}',
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
 
-        // Liste scrollable
-        Expanded(
-          child: ListView.builder(
-            controller: _scrollController,
-            padding: EdgeInsets.all(16),
-            itemCount: _searchResults.length + (_hasMoreResults ? 1 : 0),
-            itemBuilder: (context, index) {
-              if (index == _searchResults.length) {
-                // Indicateur de chargement en bas
-                return Center(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 20),
-                    child: Column(
-                      children: [
-                        CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation(AppColors.primary),
-                        ),
-                        SizedBox(height: 12),
-                        Text(
-                          'Chargement...',
-                          style: TextStyle(
-                            color: AppColors.textSecondary,
-                            fontSize: 13,
-                          ),
-                        ),
-                      ],
+        final productIndex = index - 1;
+
+        if (productIndex == _searchResults.length) {
+          // Indicateur de chargement en bas
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              child: Column(
+                children: [
+                  const CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation(AppColors.primary),
+                  ),
+                  const SizedBox(height: 12),
+                  const Text(
+                    'Chargement...',
+                    style: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 13,
                     ),
                   ),
-                );
-              }
-              return _buildProductCard(_searchResults[index]);
-            },
-          ),
-        ),
-      ],
+                ],
+              ),
+            ),
+          );
+        }
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: _buildProductCard(_searchResults[productIndex]),
+        );
+      }, childCount: 1 + _searchResults.length + (_hasMoreResults ? 1 : 0)),
     );
   }
 
   Widget _buildEmptyState() {
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.all(32),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: EdgeInsets.all(28),
-              decoration: BoxDecoration(
-                color: AppColors.pastelLavender.withValues(alpha: 0.3),
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.pastelLavender.withValues(alpha: 0.2),
-                    blurRadius: 20,
-                    offset: Offset(0, 8),
-                  ),
-                ],
+    return SliverFillRemaining(
+      hasScrollBody: false,
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: EdgeInsets.all(28),
+                decoration: BoxDecoration(
+                  color: AppColors.pastelLavender.withValues(alpha: 0.3),
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.pastelLavender.withValues(alpha: 0.2),
+                      blurRadius: 20,
+                      offset: Offset(0, 8),
+                    ),
+                  ],
+                ),
+                child: Icon(
+                  Icons.search_rounded,
+                  size: 48,
+                  color: AppColors.primary,
+                ),
               ),
-              child: Icon(
-                Icons.search_rounded,
-                size: 48,
-                color: AppColors.primary,
+              SizedBox(height: 24),
+              Text(
+                'Prêt à rechercher',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
+                ),
               ),
-            ),
-            SizedBox(height: 24),
-            Text(
-              'Prêt à rechercher',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
+              SizedBox(height: 8),
+              Text(
+                'Sélectionnez une catégorie ou\nsaisissez un mot-clé',
+                style: TextStyle(
+                  fontSize: 15,
+                  color: AppColors.textSecondary,
+                  height: 1.4,
+                ),
+                textAlign: TextAlign.center,
               ),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'Sélectionnez une catégorie ou\nsaisissez un mot-clé',
-              style: TextStyle(
-                fontSize: 15,
-                color: AppColors.textSecondary,
-                height: 1.4,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

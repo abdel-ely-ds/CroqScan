@@ -8,6 +8,7 @@ import '../widgets/product_details/nutritional_values_card.dart';
 import '../widgets/product_details/ingredients_card.dart';
 import '../widgets/product_details/product_analysis_card.dart';
 import '../widgets/product_details/product_action_bar.dart';
+import 'image_fullscreen_screen.dart';
 
 /// Product details screen - refactored for modularity
 class ProductDetailsScreen extends StatefulWidget {
@@ -99,49 +100,19 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   void _showImagePopup() {
     if (widget.product.imageUrl.isEmpty) return;
 
-    showDialog(
-      context: context,
-      builder: (context) => Dialog(
-        backgroundColor: Colors.transparent,
-        insetPadding: const EdgeInsets.all(20),
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            InteractiveViewer(
-              minScale: 0.5,
-              maxScale: 4.0,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: Image.network(
-                  widget.product.imageUrl,
-                  fit: BoxFit.contain,
-                ),
-              ),
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            ImageFullscreenScreen(
+              imageUrl: widget.product.imageUrl,
+              heroTag: 'product_image_${widget.product.barcode}',
             ),
-            Positioned(
-              top: 0,
-              right: 0,
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: GestureDetector(
-                  onTap: () => Navigator.pop(context),
-                  child: Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.close,
-                      color: AppColors.textPrimary,
-                      size: 24,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
+        opaque: false, // Permet de voir l'écran précédent pendant la transition
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          // Fade in du fond noir
+          return FadeTransition(opacity: animation, child: child);
+        },
       ),
     );
   }

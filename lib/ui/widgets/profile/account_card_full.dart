@@ -101,35 +101,6 @@ class AccountCardFull extends StatelessWidget {
               ),
             ),
           ],
-          const SizedBox(height: 16),
-          if (appleUser != null)
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed: onLogout,
-                icon: const Icon(Icons.logout_rounded),
-                label: const Text('Se déconnecter'),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.red,
-                  side: const BorderSide(color: Colors.red),
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                ),
-              ),
-            )
-          else
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: onLogin,
-                icon: const Icon(Icons.apple),
-                label: const Text('Se connecter avec Apple'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                ),
-              ),
-            ),
         ],
       ),
     );
