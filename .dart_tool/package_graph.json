@@ -10,10 +10,13 @@
         "camera",
         "cupertino_icons",
         "flutter",
+        "flutter_localizations",
         "flutter_secure_storage",
         "font_awesome_flutter",
         "http",
         "image_picker",
+        "intl",
+        "logger",
         "mobile_scanner",
         "path",
         "path_provider",
@@ -57,6 +60,13 @@
       "version": "10.11.0",
       "dependencies": [
         "flutter"
+      ]
+    },
+    {
+      "name": "logger",
+      "version": "2.6.2",
+      "dependencies": [
+        "meta"
       ]
     },
     {
@@ -184,6 +194,24 @@
       "name": "cupertino_icons",
       "version": "1.0.8",
       "dependencies": []
+    },
+    {
+      "name": "intl",
+      "version": "0.20.2",
+      "dependencies": [
+        "clock",
+        "meta",
+        "path"
+      ]
+    },
+    {
+      "name": "flutter_localizations",
+      "version": "0.0.0",
+      "dependencies": [
+        "flutter",
+        "intl",
+        "path"
+      ]
     },
     {
       "name": "flutter",

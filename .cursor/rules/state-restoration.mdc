@@ -1,0 +1,179 @@
+---
+description: State restoration and keys best practices
+alwaysApply: true
+---
+
+# State Restoration & Keys Best Practices
+
+## Use Keys for Dynamic Widgets
+
+Keys help Flutter identify widgets across rebuilds:
+
+```dart
+// ✅ GOOD: Use ValueKey for list items
+ListView.builder(
+  itemCount: items.length,
+  itemBuilder: (context, index) {
+    final item = items[index];
+    return ListTile(
+      key: ValueKey(item.id), // Unique identifier
+      title: Text(item.title),
+    );
+  },
+)
+
+// ✅ GOOD: Use ObjectKey for complex objects
+ListView(
+  children: items.map((item) {
+    return MyWidget(
+      key: ObjectKey(item), // Uses object's == and hashCode
+      data: item,
+    );
+  }).toList(),
+)
+
+// ✅ GOOD: Use UniqueKey for widgets that should always rebuild
+MyWidget(
+  key: UniqueKey(), // Forces new widget on each rebuild
+)
+```
+
+## When to Use Keys
+
+1. **List items** with reorderable or removable elements
+2. **Dynamic children** that can change order
+3. **Form fields** that maintain state
+4. **Widgets with animations** that should preserve animation state
+5. **Stateful widgets** in lists or grids
+
+## State Restoration Pattern
+
+Use RestorationMixin to preserve state across app restarts:
+
+```dart
+class _MyScreenState extends State<MyScreen> with RestorationMixin {
+  // Restoration ID must be unique within parent scope
+  @override
+  String? get restorationId => 'my_screen';
+
+  // Restorable properties
+  final RestorableInt _counter = RestorableInt(0);
+  final RestorableTextEditingController _textController =
+      RestorableTextEditingController();
+
+  @override
+  void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
+    // Register all restorable properties
+    registerForRestoration(_counter, 'counter');
+    registerForRestoration(_textController, 'text');
+  }
+
+  @override
+  void dispose() {
+    _counter.dispose();
+    _textController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text('Counter: ${_counter.value}'),
+        ElevatedButton(
+          onPressed: () => setState(() => _counter.value++),
+          child: const Text('Increment'),
+        ),
+        TextField(
+          controller: _textController.value,
+        ),
+      ],
+    );
+  }
+}
+```
+
+## Persist User Preferences
+
+```dart
+// ✅ GOOD: Persist preferences at startup
+class PreferencesService {
+  static const _themeKey = 'theme_mode';
+  static const _localeKey = 'locale';
+
+  Future<void> saveThemeMode(ThemeMode mode) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_themeKey, mode.name);
+  }
+
+  Future<ThemeMode> getThemeMode() async {
+    final prefs = await SharedPreferences.getInstance();
+    final value = prefs.getString(_themeKey);
+    return ThemeMode.values.firstWhere(
+      (e) => e.name == value,
+      orElse: () => ThemeMode.system,
+    );
+  }
+
+  Future<void> saveLocale(Locale locale) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_localeKey, locale.languageCode);
+  }
+
+  Future<Locale?> getLocale() async {
+    final prefs = await SharedPreferences.getInstance();
+    final languageCode = prefs.getString(_localeKey);
+    return languageCode != null ? Locale(languageCode) : null;
+  }
+}
+```
+
+## Restore at App Startup
+
+```dart
+class MyApp extends StatefulWidget {
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  ThemeMode _themeMode = ThemeMode.system;
+  Locale? _locale;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPreferences();
+  }
+
+  Future<void> _loadPreferences() async {
+    final prefs = PreferencesService();
+    final themeMode = await prefs.getThemeMode();
+    final locale = await prefs.getLocale();
+
+    if (mounted) {
+      setState(() {
+        _themeMode = themeMode;
+        _locale = locale;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      themeMode: _themeMode,
+      locale: _locale,
+      // ...
+    );
+  }
+}
+```
+
+## Key Types Reference
+
+- **ValueKey** - Uses a primitive value (String, int, etc.)
+- **ObjectKey** - Uses an object's == and hashCode
+- **UniqueKey** - Always generates a new unique key
+- **GlobalKey** - Maintains state across tree restructuring (use sparingly)
+- **PageStorageKey** - Preserves scroll position in lists

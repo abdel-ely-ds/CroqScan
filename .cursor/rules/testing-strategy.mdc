@@ -1,0 +1,64 @@
+---
+description: Testing strategy including unit, widget, integration, and lifecycle tests
+alwaysApply: true
+---
+
+# Testing Strategy
+
+## Test Types
+
+- **Unit tests** for pure logic, services, and providers
+- **Widget tests** for UI and user interactions
+- **Integration tests** for full app workflows
+- **Golden tests** for visual regression
+- **Lifecycle tests** for StatefulWidgets (mount, dispose, rapid navigation)
+- Use mockito or mocktail for dependency mocking
+- Keep tests deterministic and isolated
+- Maintain at least 80% coverage for core modules
+
+## External SDK Testing
+
+**Principle**: "Test your code, not third-party SDKs"
+
+For external SDK calls (AdMob, Firebase, etc.):
+
+- Test behavior logic **without real SDK calls**
+- Use mocks or stubs for external dependencies
+- Verify state changes and counters
+- Allow timeouts in test environment (non-critical)
+- **Focus on app logic, not SDK implementation**
+
+Example:
+
+```dart
+// ❌ BAD: Testing SDK implementation
+test('AdMob loads ad', () async {
+  await AdManager.initialize(); // Will timeout in tests
+  expect(AdManager.isInitialized, isTrue);
+});
+
+// ✅ GOOD: Testing app logic
+test('Should show interstitial after X conversions', () {
+  AdManager.reset();
+  for (int i = 0; i < AdManager.conversionsBeforeAd; i++) {
+    AdManager.shouldShowInterstitial(isPremium: false);
+  }
+  expect(AdManager.shouldShowInterstitial(isPremium: false), isTrue);
+});
+```
+
+## Lifecycle Testing
+
+- Test dispose() behavior to catch context access errors
+- Test listener cleanup to prevent memory leaks
+- Test rapid navigation scenarios to catch timing issues
+- Verify no "deactivated widget" errors
+- Check that resources are properly released
+
+## Golden Testing
+
+1. Create golden tests for key screens and reusable widgets
+2. Generate templates automatically for new screens/widgets
+3. Update golden images only if changes are intentional
+4. Stabilize animations, fonts, and device size during tests
+5. Organize golden images under `test/goldens/`

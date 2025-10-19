@@ -1,0 +1,92 @@
+---
+description: "Animations"
+alwaysApply: true
+---
+
+# Animations Best Practices
+
+## Prefer Implicit Animations
+
+Use implicit animations for simple transitions:
+
+```dart
+// ✅ GOOD: Implicit animation
+AnimatedContainer(
+  duration: const Duration(milliseconds: 300),
+  curve: Curves.easeInOut,
+  width: isExpanded ? 200 : 100,
+  height: isExpanded ? 200 : 100,
+  color: isExpanded ? Colors.blue : Colors.red,
+)
+
+AnimatedOpacity(
+  duration: const Duration(milliseconds: 200),
+  opacity: isVisible ? 1.0 : 0.0,
+  child: MyWidget(),
+)
+```
+
+## Complex Animations with AnimationController
+
+For complex transitions, use AnimationController:
+
+```dart
+class _MyAnimatedWidgetState extends State<MyWidget>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose(); // ⚠️ ALWAYS dispose!
+    super.dispose();
+  }
+}
+```
+
+## Accessibility: Respect Reduced Motion
+
+Always respect user's reduced motion preferences:
+
+```dart
+// ✅ GOOD: Check reduced motion preference
+class _MyWidgetState extends State<MyWidget> {
+  Duration get animationDuration {
+    final mediaQuery = MediaQuery.of(context);
+    final disableAnimations = mediaQuery.disableAnimations;
+    return disableAnimations
+      ? Duration.zero
+      : const Duration(milliseconds: 300);
+  }
+}
+```
+
+## Performance Guidelines
+
+1. **Use const constructors** for animated children when possible
+2. **Avoid expensive operations** in animation callbacks
+3. **Use RepaintBoundary** for complex animated widgets
+4. **Dispose controllers** in dispose() method
+5. **Target 60 FPS** - keep animations smooth
+
+## Common Implicit Animations
+
+- `AnimatedContainer` - size, color, padding, etc.
+- `AnimatedOpacity` - fade in/out
+- `AnimatedPositioned` - position changes
+- `AnimatedAlign` - alignment changes
+- `AnimatedCrossFade` - cross-fade between widgets
+- `AnimatedSwitcher` - switch between widgets with transition

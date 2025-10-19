@@ -1,0 +1,58 @@
+---
+description: Critical widget lifecycle safety patterns to prevent crashes
+alwaysApply: true
+---
+
+# 🚨 CRITICAL: Widget Lifecycle Safety
+
+⚠️ **NEVER access BuildContext in dispose() method**
+
+This will cause "Looking up a deactivated widget's ancestor is unsafe" errors.
+
+## Safe Lifecycle Pattern
+
+```dart
+class _MyWidgetState extends State<MyWidget> {
+  MyProvider? _provider;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _provider = context.read<MyProvider>();
+      _provider!.addListener(_onChanged);
+    });
+  }
+
+  void _onChanged() {
+    if (!mounted) return;
+    try {
+      // Safe context access
+      final data = context.read<OtherProvider>();
+    } catch (e) {
+      // Widget is being disposed, ignore
+    }
+  }
+
+  @override
+  void dispose() {
+    _provider?.removeListener(_onChanged);
+    _provider = null;
+    super.dispose();
+  }
+}
+```
+
+## Best Practices
+
+- Store provider references in initState/didChangeDependencies, **NOT in dispose**
+- Use try-catch in listener callbacks that access context
+- Check mounted flag before async operations complete
+- Remove listeners before disposing to prevent memory leaks
+- Save references to providers as instance variables if needed in dispose
+
+## Required Tests
+
+- Write lifecycle tests (mount, dispose, rapid navigation) for StatefulWidgets
+- Test that listeners are properly cleaned up on dispose
+- Test rapid navigation scenarios to catch timing issues

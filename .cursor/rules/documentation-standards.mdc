@@ -1,0 +1,59 @@
+---
+description: Documentation and markdown file management standards
+alwaysApply: true
+---
+
+# Documentation Standards
+
+- Maintain README with setup, build, test, and localization steps
+- Document architecture and data flow
+- Maintain CHANGELOG and architecture overview for clarity
+
+# MD File Management & Minimalism
+
+1. Only generate or update Markdown files that are **essential to the project**
+
+   Essential files include:
+
+   - README.md (or README_COMPLET.md)
+   - CHANGELOG.md
+   - ARCHITECTURE.md
+   - UX_DESIGN_GUIDE.md (merge vision, implementation, and plan)
+   - USER_GUIDE.md
+   - APP_STORE_GUIDE.md (optional)
+   - PERFORMANCE_OPTIMIZATION.md (optional)
+
+2. **Avoid creating redundant summary, index, or "all_docs" Markdown files**
+
+   Examples to avoid:
+
+   - ALL_DOCS.md
+   - COMPLETE_OVERVIEW.md
+   - MASTER_SUMMARY.md
+   - DOCUMENTATION_INDEX.md
+   - INDEX.md
+   - READING_PATH.md
+   - ULTIMATE_SUMMARY.md
+
+3. If multiple Markdown files cover the same topic, **merge them into a single file**
+
+4. Organize Markdown files:
+
+   - `docs/` for user and UX guides
+   - `docs/tech/` for architecture or technical documentation
+
+5. When generating new features or prompts:
+
+   - Only create a Markdown file if it serves a **lasting purpose**
+   - Do not generate temporary or session-only notes
+
+6. Always update existing Markdown files rather than creating duplicates
+
+7. Ensure all generated Markdown is concise, clear, and follows existing project formatting conventions
+
+# Developer Experience
+
+- Include scripts for test, format, and localization generation
+- Provide .env.example for configuration
+- Include demo/seed data for testing and previews
+- Provide template tests (unit, widget, localization) as examples

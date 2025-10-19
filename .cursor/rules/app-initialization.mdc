@@ -1,0 +1,51 @@
+---
+description: App initialization, monitoring, and analytics setup
+alwaysApply: true
+---
+
+# App Initialization & Readiness
+
+1. The application must remain in the splash screen until all critical services are fully initialized
+
+   Critical services may include:
+
+   - Dependency injection container (get_it / Riverpod)
+   - API clients and network connectivity
+   - Local storage (SharedPreferences, Hive, or SQLite)
+   - Authentication / session management
+   - Analytics & monitoring services
+
+2. Use a centralized AppInitializer or Bootstrapper class to orchestrate service startup
+
+3. Display a loading indicator or animated splash during initialization; avoid blocking the main thread
+
+4. Ensure that the UI is only accessible after all required services are ready
+
+5. Implement timeout/fallback handling for services that fail to start, with graceful error reporting
+
+6. Generate automated tests to verify that the app does not leave uninitialized services running before UI access
+
+7. Maintain clear logs of service initialization steps for debugging and QA
+
+# Monitoring & Analytics
+
+1. Integrate a monitoring system such as Firebase Crashlytics or Sentry
+
+2. Capture all uncaught exceptions and asynchronous errors:
+
+   - FlutterError.onError for Flutter framework errors
+   - PlatformDispatcher.instance.onError for platform errors
+   - runZonedGuarded for async errors
+
+3. Track critical app events for analytics:
+
+   - Navigation
+   - Conversions
+   - Errors
+   - Key interactions
+
+4. Generate dashboards and reports for QA and product insights
+
+5. Ensure monitoring is non-blocking and does not impact app performance
+
+6. Respect user privacy: comply with GDPR/CCPA for any tracking
