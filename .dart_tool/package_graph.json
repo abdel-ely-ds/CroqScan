@@ -16,6 +16,7 @@
         "http",
         "image_picker",
         "intl",
+        "logger",
         "mobile_scanner",
         "path",
         "path_provider",
@@ -59,6 +60,13 @@
       "version": "10.11.0",
       "dependencies": [
         "flutter"
+      ]
+    },
+    {
+      "name": "logger",
+      "version": "2.6.2",
+      "dependencies": [
+        "meta"
       ]
     },
     {

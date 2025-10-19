@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import '../../l10n/app_localizations.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/services/openpetfoodfacts_service.dart';
 import '../../core/services/scan_history_service.dart';
@@ -122,7 +123,7 @@ class _ScannerScreenState extends State<ScannerScreen>
           children: [
             Icon(Icons.info_outline, color: AppColors.scoreMediocre),
             const SizedBox(width: 12),
-            Text('Produit Non Trouvé'),
+            Text(l10n.productNotFound),
           ],
         ),
         content: Text(
@@ -133,14 +134,14 @@ class _ScannerScreenState extends State<ScannerScreen>
             onPressed: () {
               Navigator.pop(context); // Close dialog
             },
-            child: const Text('Essayer un Autre'),
+            child: Text(l10n.tryAnother),
           ),
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context); // Close dialog
               Navigator.pop(context); // Go back to home screen
             },
-            child: const Text('Retour'),
+            child: Text(l10n.back),
           ),
         ],
       ),
@@ -149,6 +150,8 @@ class _ScannerScreenState extends State<ScannerScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return WillPopScope(
       onWillPop: () async {
         // Arrêter la caméra avant de quitter

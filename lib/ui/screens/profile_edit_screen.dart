@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/services/profile_service.dart';
 
@@ -85,6 +86,8 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
   Future<void> _saveProfile() async {
     if (!_formKey.currentState!.validate()) return;
 
+    final l10n = AppLocalizations.of(context)!;
+
     final profile = AnimalProfile(
       name: _nameController.text.trim(),
       animalType: _selectedAnimalType,
@@ -107,12 +110,12 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
     if (mounted) {
       Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Row(
             children: [
-              Icon(Icons.check_circle, color: Colors.white),
-              SizedBox(width: 12),
-              Text('Profil sauvegardé !'),
+              const Icon(Icons.check_circle, color: Colors.white),
+              const SizedBox(width: 12),
+              Text(l10n.profileSaved),
             ],
           ),
           backgroundColor: AppColors.scoreExcellent,
@@ -124,6 +127,8 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(

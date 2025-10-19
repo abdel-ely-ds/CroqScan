@@ -47,41 +47,46 @@ class _ProductCardState extends State<ProductCard>
 
   @override
   Widget build(BuildContext context) {
-    return ScaleTransition(
-      scale: _scaleAnimation,
-      child: Card(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        elevation: _isPressed ? 4 : 2,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        child: InkWell(
-          onTap: widget.onTap,
-          onTapDown: (_) {
-            setState(() => _isPressed = true);
-            _controller.forward();
-          },
-          onTapUp: (_) {
-            setState(() => _isPressed = false);
-            _controller.reverse();
-          },
-          onTapCancel: () {
-            setState(() => _isPressed = false);
-            _controller.reverse();
-          },
-          borderRadius: BorderRadius.circular(20),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.white,
-                  AppColors.primary.withValues(alpha: 0.02),
-                ],
+    return Semantics(
+      button: true,
+      label: 'Produit ${widget.product.name} de ${widget.product.brand}',
+      hint: 'Appuyer pour voir les détails. Score santé: ${widget.product.healthScore}',
+      excludeSemantics: true,
+      child: ScaleTransition(
+        scale: _scaleAnimation,
+        child: Card(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          elevation: _isPressed ? 4 : 2,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          child: InkWell(
+            onTap: widget.onTap,
+            onTapDown: (_) {
+              setState(() => _isPressed = true);
+              _controller.forward();
+            },
+            onTapUp: (_) {
+              setState(() => _isPressed = false);
+              _controller.reverse();
+            },
+            onTapCancel: () {
+              setState(() => _isPressed = false);
+              _controller.reverse();
+            },
+            borderRadius: BorderRadius.circular(20),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Colors.white,
+                    AppColors.primary.withValues(alpha: 0.02),
+                  ],
+                ),
               ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
               child: Row(
                 children: [
                   // Product Image with gradient background
@@ -183,6 +188,7 @@ class _ProductCardState extends State<ProductCard>
                 ],
               ),
             ),
+          ),
           ),
         ),
       ),

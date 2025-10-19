@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/services/profile_service.dart';
 import '../../core/services/auth_service.dart';
@@ -47,15 +48,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _handleLogin() async {
+    final l10n = AppLocalizations.of(context)!;
+
     // Afficher un message de confirmation avant de se connecter
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Row(
+        title: Row(
           children: [
-            Icon(Icons.apple, color: Colors.black),
-            SizedBox(width: 12),
-            Text('Se connecter'),
+            const Icon(Icons.apple, color: Colors.black),
+            const SizedBox(width: 12),
+            Text(l10n.signIn),
           ],
         ),
         content: const Text(
@@ -73,7 +76,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ElevatedButton.icon(
             onPressed: () => Navigator.pop(context, true),
             icon: const Icon(Icons.apple),
-            label: const Text('Continuer'),
+            label: Text(l10n.continueButton),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.black,
               foregroundColor: Colors.white,
@@ -100,12 +103,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           await _loadProfile();
 
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
+            SnackBar(
               content: Row(
                 children: [
-                  Icon(Icons.check_circle, color: Colors.white),
-                  SizedBox(width: 12),
-                  Text('Connecté avec succès !'),
+                  const Icon(Icons.check_circle, color: Colors.white),
+                  const SizedBox(width: 12),
+                  Text(l10n.loginSuccess),
                 ],
               ),
               backgroundColor: AppColors.scoreExcellent,
@@ -127,10 +130,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _handleLogout() async {
+    final l10n = AppLocalizations.of(context)!;
+
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Se déconnecter'),
+        title: Text(l10n.logout),
         content: const Text(
           'Êtes-vous sûr de vouloir vous déconnecter ?\n\nVous passerez en mode invité. Vos favoris et données locales seront conservés.',
         ),
@@ -142,7 +147,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('Se déconnecter'),
+            child: Text(l10n.logout),
           ),
         ],
       ),
@@ -155,8 +160,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       await _loadProfile();
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Déconnexion réussie - Mode invité activé'),
+        SnackBar(
+          content: Text(l10n.logoutSuccess),
           backgroundColor: AppColors.textSecondary,
           behavior: SnackBarBehavior.floating,
         ),
@@ -181,6 +186,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     if (_isLoading) {
       return const Scaffold(
         backgroundColor: AppColors.background,
@@ -226,4 +233,3 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 }
-

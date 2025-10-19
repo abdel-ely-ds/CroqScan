@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../l10n/app_localizations.dart';
 import '../../core/constants/app_colors.dart';
 import '../widgets/product_card.dart';
 import '../../core/services/favorites_service.dart';
@@ -109,6 +110,8 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -162,9 +165,9 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Mes Favoris ❤️',
-                      style: TextStyle(
+                    Text(
+                      'Mes Favoris ❤️', // AppLocalizations not available in sliver header
+                      style: const TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
                         color: AppColors.textPrimary,
@@ -215,6 +218,8 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
 
   // État vide avec illustration et CTAs
   Widget _buildEmptyState() {
+    final l10n = AppLocalizations.of(context)!;
+
     return SliverFillRemaining(
       hasScrollBody: false,
       child: Center(
@@ -233,9 +238,9 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                 child: const Text('🐶🧺', style: TextStyle(fontSize: 80)),
               ),
               const SizedBox(height: 24),
-              const Text(
-                'Aucun favori pour le moment',
-                style: TextStyle(
+              Text(
+                l10n.noFavoritesYet,
+                style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
                   color: AppColors.textPrimary,
@@ -243,10 +248,10 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 12),
-              const Text(
-                'Tu n\'as encore rien ajouté aux favoris !\nScanne un produit ou explore pour commencer 🐾',
+              Text(
+                l10n.noFavoritesDescription,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 15,
                   color: AppColors.textSecondary,
                   height: 1.6,
@@ -267,9 +272,12 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                     );
                   },
                   icon: const Icon(Icons.qr_code_scanner, size: 22),
-                  label: const Text(
-                    'Scanner un produit',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  label: Text(
+                    l10n.scanAProduct,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
@@ -296,9 +304,12 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                     );
                   },
                   icon: const Icon(Icons.explore, size: 20),
-                  label: const Text(
-                    'Explorer les catégories',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  label: Text(
+                    l10n.exploreCategories,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppColors.primary,

@@ -184,6 +184,153 @@
   
   "authError": "Erreur d'authentification",
   "networkError": "Erreur réseau",
-  "unknownError": "Erreur inconnue"
+  "unknownError": "Erreur inconnue",
+  
+  "dailyStreak": "{count} jours",
+  "@dailyStreak": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  
+  "premiumFeatureComingSoon": "✨ Fonctionnalité Premium à venir",
+  "recommendedForYou": "Recommandé pour vous",
+  "newProducts": "Nouveaux produits",
+  "createProfile": "Créer un profil",
+  "editProfile": "Modifier le profil",
+  "petName": "Nom de l'animal",
+  "petBreed": "Race",
+  "petWeight": "Poids",
+  "years": "ans",
+  "sterilized": "Stérilisé",
+  "accountSettings": "Paramètres du compte",
+  "about": "À propos",
+  "searchHint": "Rechercher par nom ou marque...",
+  "scanBarcode": "Scanner un code-barres",
+  "ingredientsList": "Liste des ingrédients",
+  "swipeToDelete": "Glisser pour supprimer",
+  
+  "dailyStreak": "{count} jours",
+  "@dailyStreak": {
+    "description": "Nombre de jours consécutifs",
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  
+  "premiumFeatureComingSoon": "✨ Fonctionnalité Premium à venir",
+  "recommendedForYou": "Recommandé pour vous",
+  "newProducts": "Nouveaux produits",
+  "popularProducts": "Produits populaires",
+  "recentScans": "Scans récents",
+  "viewAll": "Voir tout",
+  
+  "createProfile": "Créer un profil",
+  "editProfile": "Modifier le profil",
+  "saveProfile": "Enregistrer le profil",
+  "profileSaved": "Profil enregistré",
+  "profileDeleted": "Profil supprimé",
+  
+  "petName": "Nom de l'animal",
+  "petType": "Type d'animal",
+  "petBreed": "Race",
+  "petAge": "Âge",
+  "petWeight": "Poids",
+  "petNeutered": "Stérilisé",
+  "petFoodType": "Type d'alimentation",
+  
+  "selectBreed": "Sélectionner une race",
+  "selectAge": "Sélectionner l'âge",
+  "selectWeight": "Sélectionner le poids",
+  
+  "years": "ans",
+  "months": "mois",
+  "kg": "kg",
+  
+  "sterilized": "Stérilisé",
+  "notSterilized": "Non stérilisé",
+  
+  "mixedFood": "Mixte",
+  
+  "accountSettings": "Paramètres du compte",
+  "appVersion": "Version de l'app",
+  "about": "À propos",
+  "help": "Aide",
+  "terms": "Conditions d'utilisation",
+  "privacy": "Politique de confidentialité",
+  
+  "deleteAccountConfirm": "Êtes-vous sûr de vouloir supprimer votre compte ?",
+  "deleteAccountWarning": "Cette action est irréversible",
+  "accountDeleted": "Compte supprimé",
+  
+  "notConnectedMessage": "Connectez-vous pour synchroniser vos données",
+  "connectNow": "Se connecter maintenant",
+  
+  "searchHint": "Rechercher par nom ou marque...",
+  "filterByCategory": "Filtrer par catégorie",
+  "mainCategory": "Catégorie principale",
+  "subCategory": "Sous-catégorie",
+  "allCategories": "Toutes les catégories",
+  
+  "loadingProducts": "Chargement des produits...",
+  "loadMore": "Charger plus",
+  "noMoreProducts": "Fin des résultats",
+  
+  "scanBarcode": "Scanner un code-barres",
+  "scanInProgress": "Scan en cours...",
+  "productScanned": "Produit scanné",
+  "scanError": "Erreur de scan",
+  "barcodeNotFound": "Code-barres introuvable",
+  
+  "pointsPositifs": "Points positifs",
+  "pointsAttention": "Points d'attention",
+  "ingredientsList": "Liste des ingrédients",
+  "ingredientsAnalysis": "Analyse des ingrédients",
+  
+  "categoriesAndOrigin": "Catégories et origine",
+  "productOrigin": "Origine du produit",
+  "productCategories": "Catégories",
+  
+  "similarProducts": "Produits similaires",
+  "contributeData": "Contribuer aux données",
+  "reportProblem": "Signaler un problème",
+  
+  "swipeToDelete": "Glisser pour supprimer",
+  "deleted": "Supprimé",
+  "undo": "Annuler",
+  
+  "pullToRefreshList": "Tirer pour actualiser",
+  "refreshing": "Actualisation...",
+  "updated": "Mis à jour",
+  
+  "errorLoadingData": "Erreur lors du chargement",
+  "errorSavingData": "Erreur lors de la sauvegarde",
+  "errorNetworkUnavailable": "Réseau indisponible",
+  "errorTimeout": "Délai d'attente dépassé",
+  
+  "tryAgain": "Réessayer",
+  "close": "Fermer",
+  "ok": "OK",
+  
+  "required": "Requis",
+  "optional": "Optionnel",
+  "pleaseEnter": "Veuillez entrer {field}",
+  "@pleaseEnter": {
+    "placeholders": {
+      "field": {"type": "String"}
+    }
+  },
+  
+  "signIn": "Se connecter",
+  "continueButton": "Continuer",
+  "loginSuccess": "Connecté avec succès !",
+  "logoutSuccess": "Déconnexion réussie - Mode invité activé",
+  "productNotFound": "Produit Non Trouvé",
+  "tryAnother": "Essayer un Autre",
+  "back": "Retour",
+  "profileSaved": "Profil sauvegardé !",
+  "googleSignInComingSoon": "Google Sign-In sera bientôt disponible !",
+  "selectSearchCriteria": "Sélectionnez au moins un critère de recherche",
+  "connectionError": "Erreur de connexion"
 }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../../l10n/app_localizations.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/services/auth_service.dart';
 import '../../core/services/profile_service.dart';
@@ -31,10 +32,7 @@ class _LoginScreenState extends State<LoginScreen>
     );
 
     _scaleAnimation = Tween<double>(begin: 0.5, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.elasticOut,
-      ),
+      CurvedAnimation(parent: _animationController, curve: Curves.elasticOut),
     );
 
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
@@ -44,15 +42,13 @@ class _LoginScreenState extends State<LoginScreen>
       ),
     );
 
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.3),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.easeOutQuart,
-      ),
-    );
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: Curves.easeOutQuart,
+          ),
+        );
 
     _animationController.forward();
   }
@@ -78,12 +74,14 @@ class _LoginScreenState extends State<LoginScreen>
       if (result.success) {
         // Connexion réussie - vérifier si profil existe
         final profile = await ProfileService.loadProfile();
-        
+
         if (profile == null) {
           // Première connexion - aller vers onboarding
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const PetOnboardingScreen()),
+            MaterialPageRoute(
+              builder: (context) => const PetOnboardingScreen(),
+            ),
           );
         } else {
           // Profil existe - aller vers l'app
@@ -127,6 +125,8 @@ class _LoginScreenState extends State<LoginScreen>
         _isLoading = false;
       });
 
+      final l10n = AppLocalizations.of(context)!;
+
       // Show a message that Google Sign-In is not yet implemented
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -134,9 +134,7 @@ class _LoginScreenState extends State<LoginScreen>
             children: [
               const Icon(Icons.info_outline, color: Colors.white),
               const SizedBox(width: 12),
-              const Expanded(
-                child: Text('Google Sign-In sera bientôt disponible !'),
-              ),
+              Expanded(child: Text(l10n.googleSignInComingSoon)),
             ],
           ),
           backgroundColor: AppColors.primary,
@@ -150,10 +148,10 @@ class _LoginScreenState extends State<LoginScreen>
 
       // For now, continue to the app (like guest mode)
       await Future.delayed(const Duration(milliseconds: 500));
-      
+
       // Vérifier si profil existe
       final profile = await ProfileService.loadProfile();
-      
+
       if (profile == null) {
         // Première connexion - aller vers onboarding
         Navigator.pushReplacement(
@@ -174,7 +172,7 @@ class _LoginScreenState extends State<LoginScreen>
     // Continuer sans compte (mode invité)
     // Vérifier si profil existe
     final profile = await ProfileService.loadProfile();
-    
+
     if (profile == null) {
       // Première utilisation - aller vers onboarding
       Navigator.pushReplacement(
@@ -192,6 +190,8 @@ class _LoginScreenState extends State<LoginScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -222,10 +222,7 @@ class _LoginScreenState extends State<LoginScreen>
                       padding: const EdgeInsets.all(32),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [
-                            AppColors.primary,
-                            AppColors.accent,
-                          ],
+                          colors: [AppColors.primary, AppColors.accent],
                         ),
                         shape: BoxShape.circle,
                         boxShadow: [
@@ -414,9 +411,13 @@ class _LoginScreenState extends State<LoginScreen>
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w500,
-                            color: AppColors.textSecondary.withValues(alpha: 0.7),
+                            color: AppColors.textSecondary.withValues(
+                              alpha: 0.7,
+                            ),
                             decoration: TextDecoration.underline,
-                            decorationColor: AppColors.textSecondary.withValues(alpha: 0.4),
+                            decorationColor: AppColors.textSecondary.withValues(
+                              alpha: 0.4,
+                            ),
                           ),
                         ),
                       ),

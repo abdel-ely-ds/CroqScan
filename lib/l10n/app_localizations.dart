@@ -781,13 +781,13 @@ abstract class AppLocalizations {
   /// No description provided for @logoutSuccess.
   ///
   /// In fr, this message translates to:
-  /// **'Déconnexion réussie'**
+  /// **'Déconnexion réussie - Mode invité activé'**
   String get logoutSuccess;
 
   /// Message de succès de connexion
   ///
   /// In fr, this message translates to:
-  /// **'Connexion réussie ! Bienvenue {name}'**
+  /// **'Connecté avec succès !'**
   String loginSuccess(String name);
 
   /// No description provided for @authError.
@@ -807,6 +807,522 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Erreur inconnue'**
   String get unknownError;
+
+  /// Nombre de jours consécutifs
+  ///
+  /// In fr, this message translates to:
+  /// **'{count} jours'**
+  String dailyStreak(int count);
+
+  /// No description provided for @premiumFeatureComingSoon.
+  ///
+  /// In fr, this message translates to:
+  /// **'✨ Fonctionnalité Premium à venir'**
+  String get premiumFeatureComingSoon;
+
+  /// No description provided for @recommendedForYou.
+  ///
+  /// In fr, this message translates to:
+  /// **'Recommandé pour vous'**
+  String get recommendedForYou;
+
+  /// No description provided for @newProducts.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveaux produits'**
+  String get newProducts;
+
+  /// No description provided for @createProfile.
+  ///
+  /// In fr, this message translates to:
+  /// **'Créer un profil'**
+  String get createProfile;
+
+  /// No description provided for @editProfile.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier le profil'**
+  String get editProfile;
+
+  /// No description provided for @petName.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom de l\'animal'**
+  String get petName;
+
+  /// No description provided for @petBreed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Race'**
+  String get petBreed;
+
+  /// No description provided for @petWeight.
+  ///
+  /// In fr, this message translates to:
+  /// **'Poids'**
+  String get petWeight;
+
+  /// No description provided for @years.
+  ///
+  /// In fr, this message translates to:
+  /// **'ans'**
+  String get years;
+
+  /// No description provided for @sterilized.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stérilisé'**
+  String get sterilized;
+
+  /// No description provided for @accountSettings.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paramètres du compte'**
+  String get accountSettings;
+
+  /// No description provided for @about.
+  ///
+  /// In fr, this message translates to:
+  /// **'À propos'**
+  String get about;
+
+  /// No description provided for @searchHint.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher par nom ou marque...'**
+  String get searchHint;
+
+  /// No description provided for @scanBarcode.
+  ///
+  /// In fr, this message translates to:
+  /// **'Scanner un code-barres'**
+  String get scanBarcode;
+
+  /// No description provided for @ingredientsList.
+  ///
+  /// In fr, this message translates to:
+  /// **'Liste des ingrédients'**
+  String get ingredientsList;
+
+  /// No description provided for @swipeToDelete.
+  ///
+  /// In fr, this message translates to:
+  /// **'Glisser pour supprimer'**
+  String get swipeToDelete;
+
+  /// No description provided for @popularProducts.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produits populaires'**
+  String get popularProducts;
+
+  /// No description provided for @recentScans.
+  ///
+  /// In fr, this message translates to:
+  /// **'Scans récents'**
+  String get recentScans;
+
+  /// No description provided for @viewAll.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir tout'**
+  String get viewAll;
+
+  /// No description provided for @saveProfile.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer le profil'**
+  String get saveProfile;
+
+  /// No description provided for @profileSaved.
+  ///
+  /// In fr, this message translates to:
+  /// **'Profil sauvegardé !'**
+  String get profileSaved;
+
+  /// No description provided for @profileDeleted.
+  ///
+  /// In fr, this message translates to:
+  /// **'Profil supprimé'**
+  String get profileDeleted;
+
+  /// No description provided for @petType.
+  ///
+  /// In fr, this message translates to:
+  /// **'Type d\'animal'**
+  String get petType;
+
+  /// No description provided for @petAge.
+  ///
+  /// In fr, this message translates to:
+  /// **'Âge'**
+  String get petAge;
+
+  /// No description provided for @petNeutered.
+  ///
+  /// In fr, this message translates to:
+  /// **'Stérilisé'**
+  String get petNeutered;
+
+  /// No description provided for @petFoodType.
+  ///
+  /// In fr, this message translates to:
+  /// **'Type d\'alimentation'**
+  String get petFoodType;
+
+  /// No description provided for @selectBreed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sélectionner une race'**
+  String get selectBreed;
+
+  /// No description provided for @selectAge.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sélectionner l\'âge'**
+  String get selectAge;
+
+  /// No description provided for @selectWeight.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sélectionner le poids'**
+  String get selectWeight;
+
+  /// No description provided for @months.
+  ///
+  /// In fr, this message translates to:
+  /// **'mois'**
+  String get months;
+
+  /// No description provided for @kg.
+  ///
+  /// In fr, this message translates to:
+  /// **'kg'**
+  String get kg;
+
+  /// No description provided for @notSterilized.
+  ///
+  /// In fr, this message translates to:
+  /// **'Non stérilisé'**
+  String get notSterilized;
+
+  /// No description provided for @mixedFood.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mixte'**
+  String get mixedFood;
+
+  /// No description provided for @appVersion.
+  ///
+  /// In fr, this message translates to:
+  /// **'Version de l\'app'**
+  String get appVersion;
+
+  /// No description provided for @help.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aide'**
+  String get help;
+
+  /// No description provided for @terms.
+  ///
+  /// In fr, this message translates to:
+  /// **'Conditions d\'utilisation'**
+  String get terms;
+
+  /// No description provided for @privacy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Politique de confidentialité'**
+  String get privacy;
+
+  /// No description provided for @deleteAccountConfirm.
+  ///
+  /// In fr, this message translates to:
+  /// **'Êtes-vous sûr de vouloir supprimer votre compte ?'**
+  String get deleteAccountConfirm;
+
+  /// No description provided for @deleteAccountWarning.
+  ///
+  /// In fr, this message translates to:
+  /// **'Cette action est irréversible'**
+  String get deleteAccountWarning;
+
+  /// No description provided for @accountDeleted.
+  ///
+  /// In fr, this message translates to:
+  /// **'Compte supprimé'**
+  String get accountDeleted;
+
+  /// No description provided for @notConnectedMessage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Connectez-vous pour synchroniser vos données'**
+  String get notConnectedMessage;
+
+  /// No description provided for @connectNow.
+  ///
+  /// In fr, this message translates to:
+  /// **'Se connecter maintenant'**
+  String get connectNow;
+
+  /// No description provided for @filterByCategory.
+  ///
+  /// In fr, this message translates to:
+  /// **'Filtrer par catégorie'**
+  String get filterByCategory;
+
+  /// No description provided for @mainCategory.
+  ///
+  /// In fr, this message translates to:
+  /// **'Catégorie principale'**
+  String get mainCategory;
+
+  /// No description provided for @subCategory.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sous-catégorie'**
+  String get subCategory;
+
+  /// No description provided for @allCategories.
+  ///
+  /// In fr, this message translates to:
+  /// **'Toutes les catégories'**
+  String get allCategories;
+
+  /// No description provided for @loadingProducts.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chargement des produits...'**
+  String get loadingProducts;
+
+  /// No description provided for @loadMore.
+  ///
+  /// In fr, this message translates to:
+  /// **'Charger plus'**
+  String get loadMore;
+
+  /// No description provided for @noMoreProducts.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fin des résultats'**
+  String get noMoreProducts;
+
+  /// No description provided for @scanInProgress.
+  ///
+  /// In fr, this message translates to:
+  /// **'Scan en cours...'**
+  String get scanInProgress;
+
+  /// No description provided for @productScanned.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produit scanné'**
+  String get productScanned;
+
+  /// No description provided for @scanError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Erreur de scan'**
+  String get scanError;
+
+  /// No description provided for @barcodeNotFound.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code-barres introuvable'**
+  String get barcodeNotFound;
+
+  /// No description provided for @pointsPositifs.
+  ///
+  /// In fr, this message translates to:
+  /// **'Points positifs'**
+  String get pointsPositifs;
+
+  /// No description provided for @pointsAttention.
+  ///
+  /// In fr, this message translates to:
+  /// **'Points d\'attention'**
+  String get pointsAttention;
+
+  /// No description provided for @ingredientsAnalysis.
+  ///
+  /// In fr, this message translates to:
+  /// **'Analyse des ingrédients'**
+  String get ingredientsAnalysis;
+
+  /// No description provided for @categoriesAndOrigin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Catégories et origine'**
+  String get categoriesAndOrigin;
+
+  /// No description provided for @productOrigin.
+  ///
+  /// In fr, this message translates to:
+  /// **'Origine du produit'**
+  String get productOrigin;
+
+  /// No description provided for @productCategories.
+  ///
+  /// In fr, this message translates to:
+  /// **'Catégories'**
+  String get productCategories;
+
+  /// No description provided for @similarProducts.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produits similaires'**
+  String get similarProducts;
+
+  /// No description provided for @contributeData.
+  ///
+  /// In fr, this message translates to:
+  /// **'Contribuer aux données'**
+  String get contributeData;
+
+  /// No description provided for @reportProblem.
+  ///
+  /// In fr, this message translates to:
+  /// **'Signaler un problème'**
+  String get reportProblem;
+
+  /// No description provided for @deleted.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimé'**
+  String get deleted;
+
+  /// No description provided for @undo.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annuler'**
+  String get undo;
+
+  /// No description provided for @pullToRefreshList.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tirer pour actualiser'**
+  String get pullToRefreshList;
+
+  /// No description provided for @refreshing.
+  ///
+  /// In fr, this message translates to:
+  /// **'Actualisation...'**
+  String get refreshing;
+
+  /// No description provided for @updated.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mis à jour'**
+  String get updated;
+
+  /// No description provided for @errorLoadingData.
+  ///
+  /// In fr, this message translates to:
+  /// **'Erreur lors du chargement'**
+  String get errorLoadingData;
+
+  /// No description provided for @errorSavingData.
+  ///
+  /// In fr, this message translates to:
+  /// **'Erreur lors de la sauvegarde'**
+  String get errorSavingData;
+
+  /// No description provided for @errorNetworkUnavailable.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réseau indisponible'**
+  String get errorNetworkUnavailable;
+
+  /// No description provided for @errorTimeout.
+  ///
+  /// In fr, this message translates to:
+  /// **'Délai d\'attente dépassé'**
+  String get errorTimeout;
+
+  /// No description provided for @tryAgain.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réessayer'**
+  String get tryAgain;
+
+  /// No description provided for @close.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fermer'**
+  String get close;
+
+  /// No description provided for @ok.
+  ///
+  /// In fr, this message translates to:
+  /// **'OK'**
+  String get ok;
+
+  /// No description provided for @required.
+  ///
+  /// In fr, this message translates to:
+  /// **'Requis'**
+  String get required;
+
+  /// No description provided for @optional.
+  ///
+  /// In fr, this message translates to:
+  /// **'Optionnel'**
+  String get optional;
+
+  /// No description provided for @pleaseEnter.
+  ///
+  /// In fr, this message translates to:
+  /// **'Veuillez entrer {field}'**
+  String pleaseEnter(String field);
+
+  /// No description provided for @signIn.
+  ///
+  /// In fr, this message translates to:
+  /// **'Se connecter'**
+  String get signIn;
+
+  /// No description provided for @continueButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Continuer'**
+  String get continueButton;
+
+  /// No description provided for @productNotFound.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produit Non Trouvé'**
+  String get productNotFound;
+
+  /// No description provided for @tryAnother.
+  ///
+  /// In fr, this message translates to:
+  /// **'Essayer un Autre'**
+  String get tryAnother;
+
+  /// No description provided for @back.
+  ///
+  /// In fr, this message translates to:
+  /// **'Retour'**
+  String get back;
+
+  /// No description provided for @googleSignInComingSoon.
+  ///
+  /// In fr, this message translates to:
+  /// **'Google Sign-In sera bientôt disponible !'**
+  String get googleSignInComingSoon;
+
+  /// No description provided for @selectSearchCriteria.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sélectionnez au moins un critère de recherche'**
+  String get selectSearchCriteria;
+
+  /// No description provided for @connectionError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Erreur de connexion'**
+  String get connectionError;
 }
 
 class _AppLocalizationsDelegate

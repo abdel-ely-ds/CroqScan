@@ -1,22 +1,29 @@
 import 'package:flutter/material.dart';
 import 'app.dart';
 import 'core/app_initializer.dart';
+import 'core/utils/error_handler.dart';
 
 /// Application entry point
 /// Initializes services and launches the app
 void main() async {
-  // Initialize Flutter bindings
-  WidgetsFlutterBinding.ensureInitialized();
+  // Initialize error handlers FIRST
+  initializeErrorHandlers();
 
-  // Initialize all critical services
-  final initialized = await AppInitializer.initialize();
+  // Run app with error handling zone
+  runAppWithErrorHandling(() async {
+    // Initialize Flutter bindings
+    WidgetsFlutterBinding.ensureInitialized();
 
-  if (!initialized) {
-    debugPrint(
-      '❌ Failed to initialize app - some services may not work correctly',
-    );
-  }
+    // Initialize all critical services
+    final initialized = await AppInitializer.initialize();
 
-  // Launch the app
-  runApp(const PetScanApp());
+    if (!initialized) {
+      logWarning(
+        '❌ Failed to initialize app - some services may not work correctly',
+      );
+    }
+
+    // Launch the app
+    runApp(const PetScanApp());
+  });
 }

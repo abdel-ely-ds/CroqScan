@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
-import '../../core/models/product.dart';
 import '../../core/services/scan_history_service.dart';
 import '../../core/services/profile_service.dart';
+import '../widgets/score_badge.dart';
+import '../widgets/product_card.dart';
 import 'scanner_screen.dart';
 import 'search_screen_new.dart';
-import 'product_details_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -17,8 +17,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   List<Map<String, dynamic>> _recentScans = [];
   AnimalProfile? _animalProfile;
-  String? _userName;
-  int _streakCount = 3; // TODO: Implement real streak tracking
 
   @override
   void initState() {
@@ -29,13 +27,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _loadData() async {
     final scans = await ScanHistoryService.getRecentScans(5);
     final profile = await ProfileService.loadProfile();
-    final userName = await ProfileService.loadUserName();
-    
+
     if (mounted) {
       setState(() {
         _recentScans = scans;
         _animalProfile = profile;
-        _userName = userName;
       });
     }
   }
@@ -104,18 +100,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(width: 8),
                 if (_animalProfile != null)
                   Image.asset(
-                  _animalProfile!.animalType == 'dog'
-                      ? 'assets/icons/dog_illustration.png'
-                      : 'assets/images/cat_illustration.png',
+                    _animalProfile!.animalType == 'dog'
+                        ? 'assets/icons/dog_illustration.png'
+                        : 'assets/images/cat_illustration.png',
                     width: 32,
                     height: 32,
                     fit: BoxFit.contain,
                   )
                 else
-                  const Text(
-                    '🐾',
-                    style: TextStyle(fontSize: 24),
-                  ),
+                  const Text('🐾', style: TextStyle(fontSize: 24)),
               ],
             ),
           ),
@@ -243,7 +236,8 @@ class _HomeScreenState extends State<HomeScreen> {
             if (_animalProfile != null)
               Padding(
                 padding: const EdgeInsets.only(left: 8),
-                child: Image.asset('assets/icons/heart.png',
+                child: Image.asset(
+                  'assets/icons/heart.png',
                   width: 20,
                   height: 20,
                   fit: BoxFit.contain,
@@ -418,7 +412,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: 80,
                 color: AppColors.background,
                 child: Center(
-                  child: scan['imageUrl'] != null &&
+                  child:
+                      scan['imageUrl'] != null &&
                           (scan['imageUrl'] as String).isNotEmpty
                       ? Image.network(
                           scan['imageUrl'],
@@ -426,7 +421,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           width: 70,
                           fit: BoxFit.contain,
                           errorBuilder: (context, error, stackTrace) {
-                            return const Text('🐾', style: TextStyle(fontSize: 32));
+                            return const Text(
+                              '🐾',
+                              style: TextStyle(fontSize: 32),
+                            );
                           },
                         )
                       : const Text('🐾', style: TextStyle(fontSize: 32)),
@@ -479,7 +477,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
 
   // Pet profile prompt
   Widget _buildPetProfilePrompt() {
@@ -599,7 +596,9 @@ class _FeatureCardWithHoverState extends State<_FeatureCardWithHover> {
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: _isHovered ? 0.08 : 0.04),
+                    color: Colors.black.withValues(
+                      alpha: _isHovered ? 0.08 : 0.04,
+                    ),
                     blurRadius: _isHovered ? 16 : 12,
                     offset: Offset(0, _isHovered ? 6 : 4),
                   ),

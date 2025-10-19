@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import '../../l10n/app_localizations.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/models/product.dart';
 import '../widgets/score_badge.dart';
@@ -85,9 +86,7 @@ class _SearchScreenNewState extends State<SearchScreenNew> {
             children: [
               Icon(Icons.info_outline, color: Colors.white),
               SizedBox(width: 12),
-              Expanded(
-                child: Text('Sélectionnez au moins un critère de recherche'),
-              ),
+              Expanded(child: Text(l10n.selectSearchCriteria)),
             ],
           ),
           backgroundColor: AppColors.scoreMediocre,
@@ -112,24 +111,24 @@ class _SearchScreenNewState extends State<SearchScreenNew> {
   /// Charger les résultats depuis l'API
   Future<void> _loadResults() async {
     try {
-      print('🔍 Recherche OpenPetFoodFacts');
-      print('   ━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      debugPrint('🔍 Recherche OpenPetFoodFacts');
+      debugPrint('   ━━━━━━━━━━━━━━━━━━━━━━━━━━━');
       if (_searchController.text.isNotEmpty) {
-        print('   🔤 Recherche textuelle: "${_searchController.text}"');
-        print(
+        debugPrint('   🔤 Recherche textuelle: "${_searchController.text}"');
+        debugPrint(
           '      → Paramètre API: search_terms="${_searchController.text}"',
         );
       }
 
       if (_selectedMainCategory != null) {
-        print('   🏷️  Catégorie principale: $_selectedMainCategory');
+        debugPrint('   🏷️  Catégorie principale: $_selectedMainCategory');
       }
       if (_selectedSubCategory != null) {
         final cleanedTag = _selectedSubCategory!.replaceFirst('en:', '');
-        print('   🏷️  Sous-catégorie: $cleanedTag');
+        debugPrint('   🏷️  Sous-catégorie: $cleanedTag');
       }
 
-      print('   📄 Page: $_currentPage / 20 produits par page');
+      debugPrint('   📄 Page: $_currentPage / 20 produits par page');
 
       // Construire l'URL
       final baseUrl = 'https://world.openpetfoodfacts.org/api/v2/search';
@@ -243,7 +242,7 @@ class _SearchScreenNewState extends State<SearchScreenNew> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Erreur de connexion'),
+            content: Text(l10n.connectionError),
             backgroundColor: Colors.red,
           ),
         );
@@ -304,42 +303,58 @@ class _SearchScreenNewState extends State<SearchScreenNew> {
 
       // Calculate score based on nutritional values
       double score = 50.0;
-      
+
       // Protein scoring (up to 30 points)
-      if (nutritionalInfo.protein >= 35) score += 30;
-      else if (nutritionalInfo.protein >= 30) score += 27;
-      else if (nutritionalInfo.protein >= 25) score += 22;
-      else if (nutritionalInfo.protein >= 20) score += 17;
-      else if (nutritionalInfo.protein >= 15) score += 12;
-      else if (nutritionalInfo.protein >= 10) score += 7;
-      else score += 2;
-      
+      if (nutritionalInfo.protein >= 35)
+        score += 30;
+      else if (nutritionalInfo.protein >= 30)
+        score += 27;
+      else if (nutritionalInfo.protein >= 25)
+        score += 22;
+      else if (nutritionalInfo.protein >= 20)
+        score += 17;
+      else if (nutritionalInfo.protein >= 15)
+        score += 12;
+      else if (nutritionalInfo.protein >= 10)
+        score += 7;
+      else
+        score += 2;
+
       // Fat scoring (up to 15 points)
-      if (nutritionalInfo.fat >= 10 && nutritionalInfo.fat <= 20) score += 15;
-      else if (nutritionalInfo.fat >= 8 && nutritionalInfo.fat < 10 || 
-               nutritionalInfo.fat > 20 && nutritionalInfo.fat <= 25) score += 10;
-      else if (nutritionalInfo.fat >= 5 && nutritionalInfo.fat < 8 || 
-               nutritionalInfo.fat > 25 && nutritionalInfo.fat <= 30) score += 5;
-      
+      if (nutritionalInfo.fat >= 10 && nutritionalInfo.fat <= 20)
+        score += 15;
+      else if (nutritionalInfo.fat >= 8 && nutritionalInfo.fat < 10 ||
+          nutritionalInfo.fat > 20 && nutritionalInfo.fat <= 25)
+        score += 10;
+      else if (nutritionalInfo.fat >= 5 && nutritionalInfo.fat < 8 ||
+          nutritionalInfo.fat > 25 && nutritionalInfo.fat <= 30)
+        score += 5;
+
       // Fiber scoring (up to 10 points)
-      if (nutritionalInfo.fiber >= 2 && nutritionalInfo.fiber <= 5) score += 10;
-      else if (nutritionalInfo.fiber >= 1 && nutritionalInfo.fiber < 2 || 
-               nutritionalInfo.fiber > 5 && nutritionalInfo.fiber <= 8) score += 5;
-      
+      if (nutritionalInfo.fiber >= 2 && nutritionalInfo.fiber <= 5)
+        score += 10;
+      else if (nutritionalInfo.fiber >= 1 && nutritionalInfo.fiber < 2 ||
+          nutritionalInfo.fiber > 5 && nutritionalInfo.fiber <= 8)
+        score += 5;
+
       // Ingredient quality (up to 20 points)
       final lowerIng = ingredientsText.toLowerCase();
       int goodIng = 0;
-      if (lowerIng.contains('poulet') || lowerIng.contains('chicken')) goodIng++;
+      if (lowerIng.contains('poulet') || lowerIng.contains('chicken'))
+        goodIng++;
       if (lowerIng.contains('saumon') || lowerIng.contains('salmon')) goodIng++;
       if (lowerIng.contains('viande') || lowerIng.contains('meat')) goodIng++;
       if (lowerIng.contains('bio') || lowerIng.contains('organic')) goodIng++;
       score += (goodIng * 3).clamp(0, 20);
-      
+
       // Penalties for bad ingredients
-      if (lowerIng.contains('sous-produit') || lowerIng.contains('by-product')) score -= 5;
-      if (lowerIng.contains('colorant') || RegExp(r'e1[0-9]{2}').hasMatch(lowerIng)) score -= 5;
+      if (lowerIng.contains('sous-produit') || lowerIng.contains('by-product'))
+        score -= 5;
+      if (lowerIng.contains('colorant') ||
+          RegExp(r'e1[0-9]{2}').hasMatch(lowerIng))
+        score -= 5;
       if (lowerIng.contains('sucre') || lowerIng.contains('sugar')) score -= 5;
-      
+
       int finalScore = score.clamp(0, 100).round();
 
       return Product(
@@ -392,6 +407,8 @@ class _SearchScreenNewState extends State<SearchScreenNew> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -498,77 +515,85 @@ class _SearchScreenNewState extends State<SearchScreenNew> {
                   ),
 
                   // Sous-catégories si une catégorie principale est sélectionnée
-                  if (_selectedMainCategory != null && _mainCategories.containsKey(_selectedMainCategory)) ...[
+                  if (_selectedMainCategory != null &&
+                      _mainCategories.containsKey(_selectedMainCategory)) ...[
                     SizedBox(height: 8),
                     SizedBox(
                       height: 36,
                       child: ListView(
                         scrollDirection: Axis.horizontal,
-                        children: (_mainCategories[_selectedMainCategory]?.subCategories ?? [])
-                            .map((subCat) {
-                              final isSelected =
-                                  _selectedSubCategory == subCat.tag;
-                              final color =
-                                  _mainCategories[_selectedMainCategory]?.color ?? AppColors.primary;
+                        children:
+                            (_mainCategories[_selectedMainCategory]
+                                        ?.subCategories ??
+                                    [])
+                                .map((subCat) {
+                                  final isSelected =
+                                      _selectedSubCategory == subCat.tag;
+                                  final color =
+                                      _mainCategories[_selectedMainCategory]
+                                          ?.color ??
+                                      AppColors.primary;
 
-                              return Padding(
-                                padding: EdgeInsets.only(right: 6),
-                                child: InkWell(
-                                  onTap: () {
-                                    setState(() {
-                                      // Une seule sous-catégorie à la fois
-                                      if (isSelected) {
-                                        _selectedSubCategory = null;
-                                      } else {
-                                        _selectedSubCategory = subCat.tag;
-                                      }
-                                    });
-                                  },
-                                  borderRadius: BorderRadius.circular(18),
-                                  child: Container(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 12,
-                                      vertical: 6,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: isSelected
-                                          ? color
-                                          : color.withOpacity(0.1),
+                                  return Padding(
+                                    padding: EdgeInsets.only(right: 6),
+                                    child: InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          // Une seule sous-catégorie à la fois
+                                          if (isSelected) {
+                                            _selectedSubCategory = null;
+                                          } else {
+                                            _selectedSubCategory = subCat.tag;
+                                          }
+                                        });
+                                      },
                                       borderRadius: BorderRadius.circular(18),
-                                      border: Border.all(
-                                        color: isSelected
-                                            ? color
-                                            : color.withOpacity(0.4),
-                                      ),
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          subCat.name,
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w600,
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                          vertical: 6,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: isSelected
+                                              ? color
+                                              : color.withOpacity(0.1),
+                                          borderRadius: BorderRadius.circular(
+                                            18,
+                                          ),
+                                          border: Border.all(
                                             color: isSelected
-                                                ? Colors.white
-                                                : color,
+                                                ? color
+                                                : color.withOpacity(0.4),
                                           ),
                                         ),
-                                        if (isSelected) ...[
-                                          SizedBox(width: 4),
-                                          Icon(
-                                            Icons.check,
-                                            color: Colors.white,
-                                            size: 12,
-                                          ),
-                                        ],
-                                      ],
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              subCat.name,
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w600,
+                                                color: isSelected
+                                                    ? Colors.white
+                                                    : color,
+                                              ),
+                                            ),
+                                            if (isSelected) ...[
+                                              SizedBox(width: 4),
+                                              Icon(
+                                                Icons.check,
+                                                color: Colors.white,
+                                                size: 12,
+                                              ),
+                                            ],
+                                          ],
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ),
-                              );
-                            })
-                            .toList(),
+                                  );
+                                })
+                                .toList(),
                       ),
                     ),
                   ],
@@ -925,15 +950,15 @@ class _CategoryButtonState extends State<_CategoryButton> {
               color: widget.isSelected
                   ? null
                   : (_isHovered
-                      ? widget.category.color.withOpacity(0.25)
-                      : widget.category.color.withOpacity(0.15)),
+                        ? widget.category.color.withOpacity(0.25)
+                        : widget.category.color.withOpacity(0.15)),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
                 color: widget.isSelected
                     ? widget.category.color
                     : (_isHovered
-                        ? widget.category.color.withOpacity(0.6)
-                        : widget.category.color.withOpacity(0.4)),
+                          ? widget.category.color.withOpacity(0.6)
+                          : widget.category.color.withOpacity(0.4)),
                 width: widget.isSelected ? 2.5 : (_isHovered ? 2 : 1.5),
               ),
               boxShadow: widget.isSelected || _isHovered

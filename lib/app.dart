@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-// TODO: Uncomment after running `flutter pub get` to generate l10n files
-// import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'l10n/app_localizations.dart';
 import 'core/constants/app_colors.dart';
 import 'ui/screens/splash_screen.dart';
 
@@ -16,9 +15,9 @@ class PetScanApp extends StatelessWidget {
       title: 'PetScan',
       debugShowCheckedModeBanner: false,
 
-      // Localization (uncomment AppLocalizations.delegate after generation)
+      // Localization
       localizationsDelegates: const [
-        // AppLocalizations.delegate, // TODO: Uncomment after gen-l10n
+        AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
