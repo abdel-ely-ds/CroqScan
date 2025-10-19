@@ -1,0 +1,3 @@
+# Ignore old images directory - use screens/images/ and widgets/images/ instead
+/images/
+
