@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/services/scan_history_service.dart';
 import '../../core/services/profile_service.dart';
-import '../widgets/score_badge.dart';
-import '../widgets/product_card.dart';
 import 'scanner_screen.dart';
 import 'search_screen_new.dart';
 

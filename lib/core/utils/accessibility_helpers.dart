@@ -2,6 +2,7 @@
 ///
 /// This file provides helpers to make widgets accessible with minimal code changes.
 /// All interactive elements should use these wrappers.
+library;
 
 import 'package:flutter/material.dart';
 

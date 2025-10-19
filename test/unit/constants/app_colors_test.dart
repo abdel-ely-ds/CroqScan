@@ -6,7 +6,7 @@ void main() {
   group('AppColors Tests', () {
     test('primary color is defined', () {
       expect(AppColors.primary, isA<Color>());
-      expect(AppColors.primary.value, 0xFF9B7EDE);
+      expect(AppColors.primary, const Color(0xFF9B7EDE));
     });
 
     test('score colors are defined', () {

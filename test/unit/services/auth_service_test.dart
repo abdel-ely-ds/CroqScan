@@ -6,12 +6,10 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('AuthService', () {
-    late FlutterSecureStorage mockStorage;
-
     setUp(() {
       // Note: In a real app, we would mock FlutterSecureStorage
       // For now, we test the logic without real storage
-      mockStorage = const FlutterSecureStorage();
+      const FlutterSecureStorage();
     });
 
     test('isLoggedIn returns false when no user ID stored', () async {

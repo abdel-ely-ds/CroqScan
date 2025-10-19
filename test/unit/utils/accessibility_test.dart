@@ -67,7 +67,7 @@ void main() {
             body: AccessibleContainer(
               label: 'Card label',
               hint: 'Tap to open',
-              child: Container(width: 200, height: 100),
+              child: const SizedBox(width: 200, height: 100),
             ),
           ),
         ),

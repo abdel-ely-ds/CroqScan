@@ -2,6 +2,7 @@
 ///
 /// This file provides global error handling following Flutter best practices.
 /// All errors are logged and can be sent to crash reporting services.
+library;
 
 import 'dart:async';
 import 'package:flutter/foundation.dart';
@@ -16,7 +17,7 @@ final logger = Logger(
     lineLength: 120,
     colors: true,
     printEmojis: true,
-    printTime: true,
+    dateTimeFormat: DateTimeFormat.onlyTimeAndSinceStart,
   ),
 );
 

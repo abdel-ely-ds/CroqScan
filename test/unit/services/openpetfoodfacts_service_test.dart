@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:croq_scan/core/services/openpetfoodfacts_service.dart';
-import 'package:croq_scan/core/models/product.dart';
 
 void main() {
   group('OpenPetFoodFactsService', () {

@@ -6,7 +6,10 @@ import 'package:croq_scan/core/services/profile_service.dart';
 void main() {
   group('ProfileHeader Widget Tests', () {
     testWidgets('displays title when no profile', (tester) async {
+      // Variables not verified yet - test incomplete
+      // ignore: unused_local_variable
       bool refreshCalled = false;
+      // ignore: unused_local_variable
       bool editCalled = false;
 
       await tester.pumpWidget(

@@ -362,7 +362,7 @@ class OpenPetFoodFactsService {
     String ingredientsText,
   ) {
     if (ingredientsText.isNotEmpty && ingredientsText.length > 50) {
-      return ingredientsText.substring(0, 150) + '...';
+      return '${ingredientsText.substring(0, 150)}...';
     }
     return categories.isNotEmpty ? categories : 'Produit pour animaux';
   }

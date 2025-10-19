@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../l10n/app_localizations.dart';
 import '../../core/constants/app_colors.dart';
@@ -74,6 +73,8 @@ class _LoginScreenState extends State<LoginScreen>
       if (result.success) {
         // Connexion réussie - vérifier si profil existe
         final profile = await ProfileService.loadProfile();
+
+        if (!mounted) return;
 
         if (profile == null) {
           // Première connexion - aller vers onboarding
@@ -152,6 +153,8 @@ class _LoginScreenState extends State<LoginScreen>
       // Vérifier si profil existe
       final profile = await ProfileService.loadProfile();
 
+      if (!mounted) return;
+
       if (profile == null) {
         // Première connexion - aller vers onboarding
         Navigator.pushReplacement(
@@ -173,6 +176,8 @@ class _LoginScreenState extends State<LoginScreen>
     // Vérifier si profil existe
     final profile = await ProfileService.loadProfile();
 
+    if (!mounted) return;
+
     if (profile == null) {
       // Première utilisation - aller vers onboarding
       Navigator.pushReplacement(
@@ -190,8 +195,6 @@ class _LoginScreenState extends State<LoginScreen>
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(

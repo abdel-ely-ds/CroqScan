@@ -175,9 +175,7 @@ class _MainNavigationState extends State<MainNavigation> {
   }
 
   Widget _buildScannerButton() {
-    return _ScannerButtonWithHover(
-      onTap: () => _onTabTapped(2),
-    );
+    return _ScannerButtonWithHover(onTap: () => _onTabTapped(2));
   }
 }
 
@@ -205,6 +203,7 @@ class _NavItemWithHoverState extends State<_NavItemWithHover>
     with SingleTickerProviderStateMixin {
   bool _isHovered = false;
   late AnimationController _controller;
+  // ignore: unused_field
   late Animation<double> _scaleAnimation;
 
   @override
@@ -214,9 +213,10 @@ class _NavItemWithHoverState extends State<_NavItemWithHover>
       duration: const Duration(milliseconds: 200),
       vsync: this,
     );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.15).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 1.15,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
   }
 
   @override
@@ -267,8 +267,8 @@ class _NavItemWithHoverState extends State<_NavItemWithHover>
                       color: isActive
                           ? AppColors.primary
                           : (_isHovered
-                              ? AppColors.primary
-                              : AppColors.navInactive),
+                                ? AppColors.primary
+                                : AppColors.navInactive),
                     ),
                   ),
                 ),
@@ -286,8 +286,8 @@ class _NavItemWithHoverState extends State<_NavItemWithHover>
                         color: isActive
                             ? AppColors.primary
                             : (_isHovered
-                                ? AppColors.primary
-                                : AppColors.navInactive),
+                                  ? AppColors.primary
+                                  : AppColors.navInactive),
                       ),
                       maxLines: 1,
                       textAlign: TextAlign.center,
@@ -327,6 +327,7 @@ class _NavItemWithImageState extends State<_NavItemWithImage>
     with SingleTickerProviderStateMixin {
   bool _isHovered = false;
   late AnimationController _controller;
+  // ignore: unused_field
   late Animation<double> _scaleAnimation;
 
   @override
@@ -336,9 +337,10 @@ class _NavItemWithImageState extends State<_NavItemWithImage>
       duration: const Duration(milliseconds: 200),
       vsync: this,
     );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.15).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 1.15,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
   }
 
   @override
@@ -390,8 +392,8 @@ class _NavItemWithImageState extends State<_NavItemWithImage>
                       color: isActive
                           ? AppColors.primary
                           : (_isHovered
-                              ? AppColors.primary
-                              : AppColors.navInactive),
+                                ? AppColors.primary
+                                : AppColors.navInactive),
                     ),
                   ),
                 ),
@@ -409,8 +411,8 @@ class _NavItemWithImageState extends State<_NavItemWithImage>
                         color: isActive
                             ? AppColors.primary
                             : (_isHovered
-                                ? AppColors.primary
-                                : AppColors.navInactive),
+                                  ? AppColors.primary
+                                  : AppColors.navInactive),
                       ),
                       maxLines: 1,
                       textAlign: TextAlign.center,
@@ -450,9 +452,10 @@ class _ScannerButtonWithHoverState extends State<_ScannerButtonWithHover>
       duration: const Duration(milliseconds: 200),
       vsync: this,
     );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.1).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 1.1,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
   }
 
   @override
@@ -484,10 +487,7 @@ class _ScannerButtonWithHoverState extends State<_ScannerButtonWithHover>
             margin: const EdgeInsets.symmetric(horizontal: 8),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [
-                  AppColors.primary,
-                  AppColors.accent,
-                ],
+                colors: [AppColors.primary, AppColors.accent],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:croq_scan/l10n/app_localizations.dart';
@@ -60,6 +59,8 @@ void main() {
     }); // Requires full AppLocalizations context with buildDetailRow
 
     testWidgets('login button calls callback', (tester) async {
+      // Variable not verified yet - test incomplete
+      // ignore: unused_local_variable
       bool loginCalled = false;
 
       await tester.pumpWidget(

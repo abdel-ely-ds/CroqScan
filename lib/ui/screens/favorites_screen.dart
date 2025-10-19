@@ -78,7 +78,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
           content: const Row(
             children: [
               Icon(Icons.check_circle, color: Colors.white, size: 20),
-              const SizedBox(width: 12),
+              SizedBox(width: 12),
               Expanded(
                 child: Text(
                   'Retiré de vos favoris',
@@ -110,8 +110,6 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(

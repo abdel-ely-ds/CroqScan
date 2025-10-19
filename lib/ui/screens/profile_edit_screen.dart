@@ -127,8 +127,6 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -254,7 +252,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
             ),
             const SizedBox(height: 8),
             DropdownButtonFormField<String>(
-              value: _selectedBreed,
+              initialValue: _selectedBreed,
               decoration: InputDecoration(
                 hintText: 'Sélectionner',
                 filled: true,
@@ -292,7 +290,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
               children: [
                 Expanded(
                   child: DropdownButtonFormField<int>(
-                    value: _ageYears,
+                    initialValue: _ageYears,
                     decoration: InputDecoration(
                       hintText: 'Années',
                       filled: true,
@@ -320,7 +318,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: DropdownButtonFormField<int>(
-                    value: _ageMonths,
+                    initialValue: _ageMonths,
                     decoration: InputDecoration(
                       hintText: 'Mois',
                       filled: true,
@@ -405,7 +403,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                         _isNeutered = value;
                       });
                     },
-                    activeColor: AppColors.scoreExcellent,
+                    activeThumbColor: AppColors.scoreExcellent,
                   ),
                 ],
               ),

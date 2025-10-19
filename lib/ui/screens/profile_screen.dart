@@ -102,6 +102,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           // Connexion réussie - recharger le profil
           await _loadProfile();
 
+          if (!mounted) return;
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Row(
@@ -159,6 +161,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       // Recharger le profil (mode invité)
       await _loadProfile();
 
+      if (!mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(l10n.logoutSuccess),
@@ -186,8 +190,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
     if (_isLoading) {
       return const Scaffold(
         backgroundColor: AppColors.background,

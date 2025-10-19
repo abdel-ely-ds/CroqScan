@@ -89,6 +89,8 @@ class _ScannerScreenState extends State<ScannerScreen>
         product.healthScore,
       );
 
+      if (!mounted) return;
+
       // Marquer l'écran comme inactif pour arrêter les scans
       _isScreenActive = false;
 
@@ -152,14 +154,14 @@ class _ScannerScreenState extends State<ScannerScreen>
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
-    return WillPopScope(
-      onWillPop: () async {
-        // Arrêter la caméra avant de quitter
-        _isScreenActive = false;
-        await cameraController.stop();
-        return true;
+    return PopScope(
+      canPop: true,
+      onPopInvokedWithResult: (bool didPop, dynamic result) async {
+        if (didPop) {
+          // Arrêter la caméra avant de quitter
+          _isScreenActive = false;
+          await cameraController.stop();
+        }
       },
       child: Scaffold(
         backgroundColor: Colors.black,

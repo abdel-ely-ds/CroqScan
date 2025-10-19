@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../l10n/app_localizations.dart';
@@ -17,6 +18,7 @@ class SearchScreenNew extends StatefulWidget {
 class _SearchScreenNewState extends State<SearchScreenNew> {
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  Timer? _debounce;
 
   // État de la recherche
   String? _selectedMainCategory;
@@ -62,6 +64,7 @@ class _SearchScreenNewState extends State<SearchScreenNew> {
 
   @override
   void dispose() {
+    _debounce?.cancel();
     _searchController.dispose();
     _scrollController.dispose();
     super.dispose();
@@ -173,10 +176,10 @@ class _SearchScreenNewState extends State<SearchScreenNew> {
       }
 
       final uri = Uri.parse(baseUrl).replace(queryParameters: params);
-      print('   ━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-      print('   📡 URL construite:');
-      print('   $uri');
-      print('   ━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      debugPrint('   ━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      debugPrint('   📡 URL construite:');
+      debugPrint('   $uri');
+      debugPrint('   ━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
       final response = await http.get(uri);
 
@@ -185,11 +188,11 @@ class _SearchScreenNewState extends State<SearchScreenNew> {
         final List<dynamic> products = data['products'] ?? [];
         final int count = data['count'] ?? 0;
 
-        print('');
-        print('✅ Réponse de l\'API:');
-        print('   📦 ${products.length} produits reçus sur cette page');
-        print('   📊 Total dans la base: $count produits');
-        print('   📄 Page actuelle: $_currentPage');
+        debugPrint('');
+        debugPrint('✅ Réponse de l\'API:');
+        debugPrint('   📦 ${products.length} produits reçus sur cette page');
+        debugPrint('   📊 Total dans la base: $count produits');
+        debugPrint('   📄 Page actuelle: $_currentPage');
 
         final List<Product> parsedProducts = [];
         for (var productData in products) {
@@ -203,10 +206,10 @@ class _SearchScreenNewState extends State<SearchScreenNew> {
           }
         }
 
-        print('');
-        print('📦 Parsing des produits:');
-        print('   ✅ ${parsedProducts.length} produits parsés avec succès');
-        print(
+        debugPrint('');
+        debugPrint('📦 Parsing des produits:');
+        debugPrint('   ✅ ${parsedProducts.length} produits parsés avec succès');
+        debugPrint(
           '   📋 Ajout à la liste existante: ${_searchResults.length} produits',
         );
 
@@ -222,20 +225,20 @@ class _SearchScreenNewState extends State<SearchScreenNew> {
           _isLoadingMore = false;
         });
 
-        print('');
-        print('✅ RÉSULTAT FINAL:');
-        print('   📊 ${_searchResults.length} produits dans la liste');
-        print('   🔄 Plus de résultats disponibles: $_hasMoreResults');
-        print('   ━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+        debugPrint('');
+        debugPrint('✅ RÉSULTAT FINAL:');
+        debugPrint('   📊 ${_searchResults.length} produits dans la liste');
+        debugPrint('   🔄 Plus de résultats disponibles: $_hasMoreResults');
+        debugPrint('   ━━━━━━━━━━━━━━━━━━━━━━━━━━━');
       } else {
-        print('❌ Erreur HTTP: ${response.statusCode}');
+        debugPrint('❌ Erreur HTTP: ${response.statusCode}');
         setState(() {
           _isLoading = false;
           _isLoadingMore = false;
         });
       }
     } catch (e) {
-      print('❌ Erreur: $e');
+      debugPrint('❌ Erreur: $e');
       setState(() {
         _isLoading = false;
         _isLoadingMore = false;
@@ -255,13 +258,13 @@ class _SearchScreenNewState extends State<SearchScreenNew> {
 
   Future<void> _loadMore() async {
     if (!_hasMoreResults || _isLoadingMore) {
-      print(
+      debugPrint(
         '⏸️ Chargement ignoré: hasMore=$_hasMoreResults, isLoadingMore=$_isLoadingMore',
       );
       return;
     }
 
-    print('📥 Chargement de la page suivante...');
+    debugPrint('📥 Chargement de la page suivante...');
     setState(() {
       _currentPage++;
       _isLoadingMore = true;
@@ -308,55 +311,70 @@ class _SearchScreenNewState extends State<SearchScreenNew> {
       double score = 50.0;
 
       // Protein scoring (up to 30 points)
-      if (nutritionalInfo.protein >= 35)
+      if (nutritionalInfo.protein >= 35) {
         score += 30;
-      else if (nutritionalInfo.protein >= 30)
+      } else if (nutritionalInfo.protein >= 30) {
         score += 27;
-      else if (nutritionalInfo.protein >= 25)
+      } else if (nutritionalInfo.protein >= 25) {
         score += 22;
-      else if (nutritionalInfo.protein >= 20)
+      } else if (nutritionalInfo.protein >= 20) {
         score += 17;
-      else if (nutritionalInfo.protein >= 15)
+      } else if (nutritionalInfo.protein >= 15) {
         score += 12;
-      else if (nutritionalInfo.protein >= 10)
+      } else if (nutritionalInfo.protein >= 10) {
         score += 7;
-      else
+      } else {
         score += 2;
+      }
 
       // Fat scoring (up to 15 points)
-      if (nutritionalInfo.fat >= 10 && nutritionalInfo.fat <= 20)
+      if (nutritionalInfo.fat >= 10 && nutritionalInfo.fat <= 20) {
         score += 15;
-      else if (nutritionalInfo.fat >= 8 && nutritionalInfo.fat < 10 ||
-          nutritionalInfo.fat > 20 && nutritionalInfo.fat <= 25)
+      } else if (nutritionalInfo.fat >= 8 && nutritionalInfo.fat < 10 ||
+          nutritionalInfo.fat > 20 && nutritionalInfo.fat <= 25) {
         score += 10;
-      else if (nutritionalInfo.fat >= 5 && nutritionalInfo.fat < 8 ||
-          nutritionalInfo.fat > 25 && nutritionalInfo.fat <= 30)
+      } else if (nutritionalInfo.fat >= 5 && nutritionalInfo.fat < 8 ||
+          nutritionalInfo.fat > 25 && nutritionalInfo.fat <= 30) {
         score += 5;
+      }
 
       // Fiber scoring (up to 10 points)
-      if (nutritionalInfo.fiber >= 2 && nutritionalInfo.fiber <= 5)
+      if (nutritionalInfo.fiber >= 2 && nutritionalInfo.fiber <= 5) {
         score += 10;
-      else if (nutritionalInfo.fiber >= 1 && nutritionalInfo.fiber < 2 ||
-          nutritionalInfo.fiber > 5 && nutritionalInfo.fiber <= 8)
+      } else if (nutritionalInfo.fiber >= 1 && nutritionalInfo.fiber < 2 ||
+          nutritionalInfo.fiber > 5 && nutritionalInfo.fiber <= 8) {
         score += 5;
+      }
 
       // Ingredient quality (up to 20 points)
       final lowerIng = ingredientsText.toLowerCase();
       int goodIng = 0;
-      if (lowerIng.contains('poulet') || lowerIng.contains('chicken'))
+      if (lowerIng.contains('poulet') || lowerIng.contains('chicken')) {
         goodIng++;
-      if (lowerIng.contains('saumon') || lowerIng.contains('salmon')) goodIng++;
-      if (lowerIng.contains('viande') || lowerIng.contains('meat')) goodIng++;
-      if (lowerIng.contains('bio') || lowerIng.contains('organic')) goodIng++;
+      }
+      if (lowerIng.contains('saumon') || lowerIng.contains('salmon')) {
+        goodIng++;
+      }
+      if (lowerIng.contains('viande') || lowerIng.contains('meat')) {
+        goodIng++;
+      }
+      if (lowerIng.contains('bio') || lowerIng.contains('organic')) {
+        goodIng++;
+      }
       score += (goodIng * 3).clamp(0, 20);
 
       // Penalties for bad ingredients
-      if (lowerIng.contains('sous-produit') || lowerIng.contains('by-product'))
+      if (lowerIng.contains('sous-produit') ||
+          lowerIng.contains('by-product')) {
         score -= 5;
+      }
       if (lowerIng.contains('colorant') ||
-          RegExp(r'e1[0-9]{2}').hasMatch(lowerIng))
+          RegExp(r'e1[0-9]{2}').hasMatch(lowerIng)) {
         score -= 5;
-      if (lowerIng.contains('sucre') || lowerIng.contains('sugar')) score -= 5;
+      }
+      if (lowerIng.contains('sucre') || lowerIng.contains('sugar')) {
+        score -= 5;
+      }
 
       int finalScore = score.clamp(0, 100).round();
 
@@ -379,8 +397,12 @@ class _SearchScreenNewState extends State<SearchScreenNew> {
   }
 
   double _parseNutrient(dynamic value) {
-    if (value == null) return 0.0;
-    if (value is num) return value.toDouble();
+    if (value == null) {
+      return 0.0;
+    }
+    if (value is num) {
+      return value.toDouble();
+    }
     if (value is String) {
       try {
         return double.parse(value);
@@ -396,22 +418,24 @@ class _SearchScreenNewState extends State<SearchScreenNew> {
     final allTags = tags.join(' ').toLowerCase();
     final lowerCat = categories.toLowerCase();
 
-    if (allTags.contains('cat-food') || lowerCat.contains('chat'))
+    if (allTags.contains('cat-food') || lowerCat.contains('chat')) {
       types.add(PetType.cat);
-    if (allTags.contains('dog-food') || lowerCat.contains('chien'))
+    }
+    if (allTags.contains('dog-food') || lowerCat.contains('chien')) {
       types.add(PetType.dog);
-    if (allTags.contains('bird-food') || lowerCat.contains('oiseau'))
+    }
+    if (allTags.contains('bird-food') || lowerCat.contains('oiseau')) {
       types.add(PetType.bird);
-    if (allTags.contains('rabbit-food') || lowerCat.contains('lapin'))
+    }
+    if (allTags.contains('rabbit-food') || lowerCat.contains('lapin')) {
       types.add(PetType.rabbit);
+    }
 
     return types.isEmpty ? [PetType.other] : types;
   }
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -559,14 +583,14 @@ class _SearchScreenNewState extends State<SearchScreenNew> {
                                         decoration: BoxDecoration(
                                           color: isSelected
                                               ? color
-                                              : color.withOpacity(0.1),
+                                              : color.withValues(alpha: 0.1),
                                           borderRadius: BorderRadius.circular(
                                             18,
                                           ),
                                           border: Border.all(
                                             color: isSelected
                                                 ? color
-                                                : color.withOpacity(0.4),
+                                                : color.withValues(alpha: 0.4),
                                           ),
                                         ),
                                         child: Row(
@@ -838,7 +862,7 @@ class _SearchScreenNewState extends State<SearchScreenNew> {
                             vertical: 2,
                           ),
                           decoration: BoxDecoration(
-                            color: _getPetColor(pet).withOpacity(0.15),
+                            color: _getPetColor(pet).withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text(
@@ -858,7 +882,7 @@ class _SearchScreenNewState extends State<SearchScreenNew> {
 
               Icon(
                 Icons.chevron_right,
-                color: AppColors.textSecondary.withOpacity(0.4),
+                color: AppColors.textSecondary.withValues(alpha: 0.4),
               ),
             ],
           ),
@@ -946,28 +970,28 @@ class _CategoryButtonState extends State<_CategoryButton> {
                       end: Alignment.bottomRight,
                       colors: [
                         widget.category.color,
-                        widget.category.color.withOpacity(0.7),
+                        widget.category.color.withValues(alpha: 0.7),
                       ],
                     )
                   : null,
               color: widget.isSelected
                   ? null
                   : (_isHovered
-                        ? widget.category.color.withOpacity(0.25)
-                        : widget.category.color.withOpacity(0.15)),
+                        ? widget.category.color.withValues(alpha: 0.25)
+                        : widget.category.color.withValues(alpha: 0.15)),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
                 color: widget.isSelected
                     ? widget.category.color
                     : (_isHovered
-                          ? widget.category.color.withOpacity(0.6)
-                          : widget.category.color.withOpacity(0.4)),
+                          ? widget.category.color.withValues(alpha: 0.6)
+                          : widget.category.color.withValues(alpha: 0.4)),
                 width: widget.isSelected ? 2.5 : (_isHovered ? 2 : 1.5),
               ),
               boxShadow: widget.isSelected || _isHovered
                   ? [
                       BoxShadow(
-                        color: widget.category.color.withOpacity(0.3),
+                        color: widget.category.color.withValues(alpha: 0.3),
                         blurRadius: widget.isSelected ? 12 : 8,
                         offset: Offset(0, widget.isSelected ? 4 : 2),
                       ),
