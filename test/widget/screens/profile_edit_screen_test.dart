@@ -9,7 +9,7 @@ void main() {
   group('ProfileEditScreen Widget Tests', () {
     testWidgets('displays form fields', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(home: ProfileEditScreen(profile: null)),
+        MaterialApp(home: ProfileEditScreen(profile: null, onSaved: () {})),
       );
 
       await tester.pumpAndSettle();
@@ -21,7 +21,7 @@ void main() {
 
     testWidgets('displays save button', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(home: ProfileEditScreen(profile: null)),
+        MaterialApp(home: ProfileEditScreen(profile: null, onSaved: () {})),
       );
 
       await tester.pumpAndSettle();
@@ -37,7 +37,7 @@ void main() {
       );
 
       await tester.pumpWidget(
-        MaterialApp(home: ProfileEditScreen(profile: profile)),
+        MaterialApp(home: ProfileEditScreen(profile: profile, onSaved: () {})),
       );
 
       await tester.pumpAndSettle();

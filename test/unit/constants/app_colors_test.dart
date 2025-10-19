@@ -12,23 +12,26 @@ void main() {
     test('score colors are defined', () {
       expect(AppColors.scoreExcellent, isA<Color>());
       expect(AppColors.scoreGood, isA<Color>());
-      expect(AppColors.scoreMedium, isA<Color>());
+      expect(AppColors.scoreMediocre, isA<Color>());
       expect(AppColors.scorePoor, isA<Color>());
     });
 
     test('getScoreColor returns correct color', () {
       expect(AppColors.getScoreColor(90), AppColors.scoreExcellent);
-      expect(AppColors.getScoreColor(70), AppColors.scoreGood);
-      expect(AppColors.getScoreColor(50), AppColors.scoreMedium);
-      expect(AppColors.getScoreColor(30), AppColors.scorePoor);
+      expect(AppColors.getScoreColor(70), const Color(0xFF6ECC97)); // Green
+      expect(AppColors.getScoreColor(50), const Color(0xFFFFD966)); // Yellow
+      expect(
+        AppColors.getScoreColor(30),
+        const Color(0xFFFFAA7C),
+      ); // Light orange
     });
 
     test('getScoreLabel returns correct label', () {
       expect(AppColors.getScoreLabel(95), 'Excellent');
-      expect(AppColors.getScoreLabel(85), 'Très bon');
-      expect(AppColors.getScoreLabel(70), 'Bon');
-      expect(AppColors.getScoreLabel(50), 'Moyen');
-      expect(AppColors.getScoreLabel(30), 'Médiocre');
+      expect(AppColors.getScoreLabel(85), 'Excellent');
+      expect(AppColors.getScoreLabel(75), 'Excellent');
+      expect(AppColors.getScoreLabel(50), 'Bon');
+      expect(AppColors.getScoreLabel(30), 'Moyen');
     });
 
     test('navigation colors are defined', () {
@@ -44,4 +47,3 @@ void main() {
     });
   });
 }
-

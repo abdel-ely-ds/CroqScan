@@ -172,15 +172,6 @@
   "confirmDeleteAccountMessage": "Cette action est irréversible. Toutes vos données seront supprimées.",
   
   "logoutSuccess": "Déconnexion réussie",
-  "loginSuccess": "Connexion réussie ! Bienvenue {name}",
-  "@loginSuccess": {
-    "description": "Message de succès de connexion",
-    "placeholders": {
-      "name": {
-        "type": "String"
-      }
-    }
-  },
   
   "authError": "Erreur d'authentification",
   "networkError": "Erreur réseau",

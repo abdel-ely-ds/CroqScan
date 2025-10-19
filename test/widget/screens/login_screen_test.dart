@@ -41,6 +41,6 @@ void main() {
 
       // Tap would navigate but we can't test that without full app context
       // This verifies the button exists and is tappable
-    }, skip: 'Navigation requires full app context');
+    }); // Navigation requires full app context
   });
 }

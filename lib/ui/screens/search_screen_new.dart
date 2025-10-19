@@ -76,6 +76,8 @@ class _SearchScreenNewState extends State<SearchScreenNew> {
 
   /// Lancer la recherche
   Future<void> _performSearch() async {
+    final l10n = AppLocalizations.of(context)!;
+
     // Vérifier qu'au moins un critère est sélectionné
     if (_searchController.text.isEmpty &&
         _selectedMainCategory == null &&
@@ -84,8 +86,8 @@ class _SearchScreenNewState extends State<SearchScreenNew> {
         SnackBar(
           content: Row(
             children: [
-              Icon(Icons.info_outline, color: Colors.white),
-              SizedBox(width: 12),
+              const Icon(Icons.info_outline, color: Colors.white),
+              const SizedBox(width: 12),
               Expanded(child: Text(l10n.selectSearchCriteria)),
             ],
           ),
@@ -240,6 +242,7 @@ class _SearchScreenNewState extends State<SearchScreenNew> {
       });
 
       if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(l10n.connectionError),

@@ -784,12 +784,6 @@ abstract class AppLocalizations {
   /// **'Déconnexion réussie - Mode invité activé'**
   String get logoutSuccess;
 
-  /// Message de succès de connexion
-  ///
-  /// In fr, this message translates to:
-  /// **'Connecté avec succès !'**
-  String loginSuccess(String name);
-
   /// No description provided for @authError.
   ///
   /// In fr, this message translates to:
@@ -1287,6 +1281,12 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Continuer'**
   String get continueButton;
+
+  /// No description provided for @loginSuccess.
+  ///
+  /// In fr, this message translates to:
+  /// **'Connecté avec succès !'**
+  String get loginSuccess;
 
   /// No description provided for @productNotFound.
   ///

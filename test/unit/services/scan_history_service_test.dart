@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:croq_scan/core/services/scan_history_service.dart';
 
 void main() {
@@ -6,10 +7,8 @@ void main() {
 
   group('ScanHistoryService', () {
     setUp(() async {
-      // Clear history before each test
-      final history = await ScanHistoryService.getHistory();
-      // History is stored as list, we need to clear it
-      // For now, we'll work with what's there
+      // Mock SharedPreferences
+      SharedPreferences.setMockInitialValues({});
     });
 
     test('addToHistory adds a product scan', () async {
@@ -22,7 +21,7 @@ void main() {
       );
 
       final history = await ScanHistoryService.getHistory();
-      
+
       expect(history, isNotEmpty);
       final recentItem = history.first;
       expect(recentItem['barcode'], '1234567890123');
@@ -44,13 +43,13 @@ void main() {
       }
 
       final recent = await ScanHistoryService.getRecentScans(5);
-      
+
       expect(recent.length, lessThanOrEqualTo(5));
     });
 
     test('addToHistory removes duplicates', () async {
       const testBarcode = '1234567890123';
-      
+
       // Add same product twice
       await ScanHistoryService.addToHistory(
         testBarcode,
@@ -59,7 +58,7 @@ void main() {
         '',
         75,
       );
-      
+
       await ScanHistoryService.addToHistory(
         testBarcode,
         'Test Product Updated',
@@ -69,10 +68,10 @@ void main() {
       );
 
       final history = await ScanHistoryService.getHistory();
-      final matchingItems = history.where((item) => 
-        item['barcode'] == testBarcode
-      ).toList();
-      
+      final matchingItems = history
+          .where((item) => item['barcode'] == testBarcode)
+          .toList();
+
       // Should only have one entry for this barcode
       expect(matchingItems.length, equals(1));
       // Should have the updated info
@@ -84,9 +83,9 @@ void main() {
       // This test verifies the error handling in getHistory
       // Even if data is corrupted, it should return an empty list
       // instead of throwing an exception
-      
+
       final history = await ScanHistoryService.getHistory();
-      
+
       expect(history, isA<List<Map<String, dynamic>>>());
     });
 
@@ -103,7 +102,7 @@ void main() {
       }
 
       final history = await ScanHistoryService.getHistory();
-      
+
       // Should not exceed 50 items
       expect(history.length, lessThanOrEqualTo(50));
     });
@@ -129,4 +128,3 @@ void main() {
     });
   });
 }
-

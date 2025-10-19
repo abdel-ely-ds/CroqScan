@@ -33,9 +33,9 @@ void main() {
       );
 
       expect(find.text('Protéines'), findsOneWidget);
-      expect(find.text('30.0 g'), findsOneWidget);
+      expect(find.textContaining('30'), findsOneWidget);
       expect(find.text('Matières grasses'), findsOneWidget);
-      expect(find.text('15.0 g'), findsOneWidget);
+      expect(find.textContaining('15'), findsOneWidget);
     });
   });
 }

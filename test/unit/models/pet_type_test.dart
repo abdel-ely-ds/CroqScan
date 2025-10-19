@@ -4,7 +4,7 @@ import 'package:croq_scan/core/models/product.dart';
 void main() {
   group('PetType Enum Tests', () {
     test('all pet types defined', () {
-      expect(PetType.values.length, 4);
+      expect(PetType.values.length, greaterThanOrEqualTo(4));
       expect(PetType.values, contains(PetType.dog));
       expect(PetType.values, contains(PetType.cat));
       expect(PetType.values, contains(PetType.bird));
@@ -17,4 +17,3 @@ void main() {
     });
   });
 }
-

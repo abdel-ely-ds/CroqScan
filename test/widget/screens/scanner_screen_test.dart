@@ -6,26 +6,18 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('ScannerScreen Widget Tests', () {
-    testWidgets(
-      'displays scanner UI elements',
-      (tester) async {
-        await tester.pumpWidget(const MaterialApp(home: ScannerScreen()));
+    testWidgets('displays scanner UI elements', (tester) async {
+      await tester.pumpWidget(const MaterialApp(home: ScannerScreen()));
 
-        // Scanner screen should display
-        expect(find.byType(ScannerScreen), findsOneWidget);
-      },
-      skip: 'Camera permission required for full test',
-    );
+      // Scanner screen should display
+      expect(find.byType(ScannerScreen), findsOneWidget);
+    });
 
-    testWidgets(
-      'has back gesture support',
-      (tester) async {
-        await tester.pumpWidget(const MaterialApp(home: ScannerScreen()));
+    testWidgets('has back gesture support', (tester) async {
+      await tester.pumpWidget(const MaterialApp(home: ScannerScreen()));
 
-        // Verify GestureDetector exists for swipe-to-go-back
-        expect(find.byType(GestureDetector), findsWidgets);
-      },
-      skip: 'Gesture testing complex without full integration',
-    );
+      // Verify GestureDetector exists for swipe-to-go-back
+      expect(find.byType(GestureDetector), findsWidgets);
+    });
   });
 }

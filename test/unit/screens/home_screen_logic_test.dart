@@ -1,10 +1,15 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:croq_scan/core/services/scan_history_service.dart';
 import 'package:croq_scan/core/services/profile_service.dart';
 
 /// Tests de logique pour HomeScreen
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+
+  setUp(() async {
+    SharedPreferences.setMockInitialValues({});
+  });
 
   group('HomeScreen Logic Tests', () {
     test('ScanHistoryService can load recent scans', () async {
@@ -20,11 +25,10 @@ void main() {
     test('home screen data loads correctly', () async {
       final scans = await ScanHistoryService.getRecentScans(5);
       final profile = await ProfileService.loadProfile();
-      
+
       // Data should load without errors
       expect(scans, isNotNull);
       expect(profile, isA<AnimalProfile?>());
     });
   });
 }
-

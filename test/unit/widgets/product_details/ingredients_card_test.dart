@@ -28,7 +28,11 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
-          home: Scaffold(body: IngredientsCard(product: product)),
+          home: Scaffold(
+            body: IngredientsCard(
+              ingredientsText: product.ingredients.join(', '),
+            ),
+          ),
         ),
       );
 

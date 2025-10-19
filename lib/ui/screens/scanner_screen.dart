@@ -115,13 +115,15 @@ class _ScannerScreenState extends State<ScannerScreen>
   }
 
   Future<void> _showProductNotFound(String barcode) async {
+    final l10n = AppLocalizations.of(context)!;
+
     await showDialog(
       context: context,
       barrierDismissible: false, // Prevent dismissing by tapping outside
       builder: (context) => AlertDialog(
-        title: const Row(
+        title: Row(
           children: [
-            Icon(Icons.info_outline, color: AppColors.scoreMediocre),
+            const Icon(Icons.info_outline, color: AppColors.scoreMediocre),
             const SizedBox(width: 12),
             Text(l10n.productNotFound),
           ],

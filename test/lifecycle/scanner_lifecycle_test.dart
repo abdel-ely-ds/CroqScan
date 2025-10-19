@@ -9,9 +9,7 @@ void main() {
 
   group('ScannerScreen Lifecycle Tests', () {
     testWidgets('properly disposes resources', (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(home: ScannerScreen()),
-      );
+      await tester.pumpWidget(const MaterialApp(home: ScannerScreen()));
 
       // Navigate away
       await tester.pumpWidget(
@@ -20,14 +18,12 @@ void main() {
 
       // Should not throw errors
       await tester.pumpAndSettle();
-    }, skip: 'Camera permissions required');
+    });
 
     testWidgets('handles rapid navigation', (tester) async {
       // Rapid enter/exit
       for (int i = 0; i < 3; i++) {
-        await tester.pumpWidget(
-          const MaterialApp(home: ScannerScreen()),
-        );
+        await tester.pumpWidget(const MaterialApp(home: ScannerScreen()));
 
         await tester.pump();
 
@@ -40,7 +36,6 @@ void main() {
 
       // Should not leak memory or throw errors
       expect(tester.takeException(), isNull);
-    }, skip: 'Camera permissions required');
+    });
   });
 }
-

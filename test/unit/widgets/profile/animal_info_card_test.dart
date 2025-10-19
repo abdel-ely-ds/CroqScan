@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:croq_scan/ui/widgets/profile/animal_info_card_full.dart';
 import 'package:croq_scan/core/services/profile_service.dart';
+import 'package:croq_scan/core/constants/app_colors.dart';
 
 void main() {
   group('AnimalInfoCardFull Widget Tests', () {
@@ -17,8 +18,10 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: AnimalInfoCardFull(
+              title: 'Informations',
+              icon: Icons.info,
+              color: AppColors.primary,
               profile: profile,
-              buildDetailRow: (icon, label, value) => Text('$label: $value'),
             ),
           ),
         ),
@@ -38,8 +41,10 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: AnimalInfoCardFull(
+              title: 'Informations',
+              icon: Icons.info,
+              color: AppColors.primary,
               profile: profile,
-              buildDetailRow: (icon, label, value) => Text('$label: $value'),
             ),
           ),
         ),

@@ -7,21 +7,43 @@ void main() {
   group('ScoreBadge Widget Tests', () {
     testWidgets('displays score correctly', (tester) async {
       await tester.pumpWidget(
-        const MaterialApp(home: Scaffold(body: ScoreBadge(score: 85))),
+        const MaterialApp(
+          home: Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 150,
+                height: 150,
+                child: ScoreBadge(score: 85, size: 120),
+              ),
+            ),
+          ),
+        ),
       );
 
-      expect(find.text('85'), findsOneWidget);
+      await tester.pumpAndSettle();
+      expect(find.textContaining('85'), findsOneWidget);
     });
 
     testWidgets('shows excellent for score >= 80', (tester) async {
       await tester.pumpWidget(
-        const MaterialApp(home: Scaffold(body: ScoreBadge(score: 85))),
+        const MaterialApp(
+          home: Scaffold(
+            body: Center(
+              child: SizedBox(
+                width: 150,
+                height: 150,
+                child: ScoreBadge(score: 90, size: 120),
+              ),
+            ),
+          ),
+        ),
       );
 
       await tester.pumpAndSettle();
 
-      // Badge should exist
-      expect(find.byType(ScoreBadge), findsOneWidget);
+      // Score should be displayed
+      expect(find.textContaining('90'), findsOneWidget);
+      expect(find.text('Excellent'), findsOneWidget);
     });
 
     testWidgets('shows good for score 60-79', (tester) async {
@@ -29,7 +51,7 @@ void main() {
         const MaterialApp(home: Scaffold(body: ScoreBadge(score: 70))),
       );
 
-      expect(find.text('70'), findsOneWidget);
+      expect(find.textContaining('70'), findsOneWidget);
     });
 
     testWidgets('shows medium for score 40-59', (tester) async {
@@ -37,7 +59,7 @@ void main() {
         const MaterialApp(home: Scaffold(body: ScoreBadge(score: 50))),
       );
 
-      expect(find.text('50'), findsOneWidget);
+      expect(find.textContaining('50'), findsOneWidget);
     });
 
     testWidgets('shows poor for score < 40', (tester) async {
@@ -45,7 +67,7 @@ void main() {
         const MaterialApp(home: Scaffold(body: ScoreBadge(score: 30))),
       );
 
-      expect(find.text('30'), findsOneWidget);
+      expect(find.textContaining('30'), findsOneWidget);
     });
   });
 }

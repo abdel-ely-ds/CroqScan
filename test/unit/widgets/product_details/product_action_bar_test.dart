@@ -13,6 +13,7 @@ void main() {
             body: ProductActionBar(
               isFavorite: false,
               onFavoriteToggle: () => favoriteToggled = true,
+              onShare: () {},
             ),
           ),
         ),
@@ -29,7 +30,11 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: ProductActionBar(isFavorite: true, onFavoriteToggle: () {}),
+            body: ProductActionBar(
+              isFavorite: true,
+              onFavoriteToggle: () {},
+              onShare: () {},
+            ),
           ),
         ),
       );
@@ -41,12 +46,16 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: ProductActionBar(isFavorite: false, onFavoriteToggle: () {}),
+            body: ProductActionBar(
+              isFavorite: false,
+              onFavoriteToggle: () {},
+              onShare: () {},
+            ),
           ),
         ),
       );
 
-      expect(find.byIcon(Icons.share_rounded), findsOneWidget);
+      expect(find.byIcon(Icons.share), findsOneWidget);
     });
   });
 }

@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:croq_scan/core/services/profile_service.dart';
 
 void main() {
@@ -6,6 +7,8 @@ void main() {
 
   group('ProfileService', () {
     setUp(() async {
+      // Mock SharedPreferences
+      SharedPreferences.setMockInitialValues({});
       // Clear profile before each test
       await ProfileService.deleteProfile();
     });
@@ -34,52 +37,46 @@ void main() {
 
     test('loadProfile returns null when no profile exists', () async {
       await ProfileService.deleteProfile();
-      
+
       final profile = await ProfileService.loadProfile();
-      
+
       expect(profile, isNull);
     });
 
     test('saveUserName stores and retrieves user name', () async {
       const testName = 'John Doe';
-      
+
       await ProfileService.saveUserName(testName);
       final loaded = await ProfileService.loadUserName();
-      
+
       expect(loaded, testName);
     });
 
     test('loadUserName returns null when no name stored', () async {
       await ProfileService.deleteProfile();
-      
+
       final name = await ProfileService.loadUserName();
-      
+
       expect(name, isNull);
     });
 
     test('deleteProfile removes all profile data', () async {
       // Save some data first
-      final testProfile = AnimalProfile(
-        name: 'Rex',
-        animalType: 'dog',
-      );
+      final testProfile = AnimalProfile(name: 'Rex', animalType: 'dog');
       await ProfileService.saveProfile(testProfile);
       await ProfileService.saveUserName('John');
-      
+
       // Delete profile
       await ProfileService.deleteProfile();
-      
+
       // Verify profile is cleared (name might still exist)
       final profile = await ProfileService.loadProfile();
-      
+
       expect(profile, isNull);
     });
 
     test('AnimalProfile with minimal data', () async {
-      final testProfile = AnimalProfile(
-        name: 'Fluffy',
-        animalType: 'cat',
-      );
+      final testProfile = AnimalProfile(name: 'Fluffy', animalType: 'cat');
 
       await ProfileService.saveProfile(testProfile);
       final loaded = await ProfileService.loadProfile();
@@ -117,4 +114,3 @@ void main() {
     });
   });
 }
-

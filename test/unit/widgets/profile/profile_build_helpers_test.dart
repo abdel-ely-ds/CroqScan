@@ -8,16 +8,10 @@ void main() {
       final card = ProfileBuildHelpers.buildInfoCard(
         title: 'Test Title',
         icon: Icons.info,
-        content: const Text('Test Content'),
+        children: const [Text('Test Content')],
       );
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: card,
-          ),
-        ),
-      );
+      await tester.pumpWidget(MaterialApp(home: Scaffold(body: card)));
 
       expect(find.text('Test Title'), findsOneWidget);
       expect(find.text('Test Content'), findsOneWidget);
@@ -25,18 +19,12 @@ void main() {
 
     testWidgets('buildDetailRow creates row', (tester) async {
       final row = ProfileBuildHelpers.buildDetailRow(
-        icon: Icons.person,
-        label: 'Name',
-        value: 'Rex',
+        Icons.person,
+        'Name',
+        'Rex',
       );
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: row,
-          ),
-        ),
-      );
+      await tester.pumpWidget(MaterialApp(home: Scaffold(body: row)));
 
       expect(find.text('Name'), findsOneWidget);
       expect(find.text('Rex'), findsOneWidget);
@@ -61,4 +49,3 @@ void main() {
     });
   });
 }
-

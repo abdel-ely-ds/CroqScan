@@ -365,11 +365,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get logoutSuccess => 'Déconnexion réussie - Mode invité activé';
 
   @override
-  String loginSuccess(String name) {
-    return 'Connecté avec succès !';
-  }
-
-  @override
   String get authError => 'Erreur d\'authentification';
 
   @override
@@ -623,6 +618,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get continueButton => 'Continuer';
+
+  @override
+  String get loginSuccess => 'Connecté avec succès !';
 
   @override
   String get productNotFound => 'Produit Non Trouvé';

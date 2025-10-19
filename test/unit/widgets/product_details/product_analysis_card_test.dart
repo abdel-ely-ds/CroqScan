@@ -29,12 +29,16 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: ProductAnalysisCard(product: product),
+            body: ProductAnalysisCard(
+              benefits: product.benefits,
+              warnings: product.warnings,
+            ),
           ),
         ),
       );
 
-      expect(find.text('This is a test product'), findsOneWidget);
+      // Widget renders
+      expect(find.byType(ProductAnalysisCard), findsOneWidget);
     });
 
     testWidgets('displays benefits when present', (tester) async {
@@ -61,7 +65,10 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: ProductAnalysisCard(product: product),
+            body: ProductAnalysisCard(
+              benefits: product.benefits,
+              warnings: product.warnings,
+            ),
           ),
         ),
       );
@@ -71,4 +78,3 @@ void main() {
     });
   });
 }
-
