@@ -1,0 +1,20 @@
+---
+description: Meta-rules for auto-improvement of cursor rules
+alwaysApply: true
+---
+
+# Meta-rule: Auto-improvement of .cursorrules
+
+Whenever a new engineering rule or best practice appears in a prompt or generated code, Cursor should:
+
+1. Evaluate if the rule is beneficial, broadly applicable, and aligned with Flutter best practices
+2. Check if an equivalent rule already exists in `.cursor/rules/`
+3. If it's new, clear, and valuable, append it automatically to the appropriate `.mdc` file under the correct category
+4. Do not ask for user confirmation unless the new rule contradicts existing standards
+5. Never duplicate or weaken existing rules
+6. Only update the rule files if the addition improves technical quality, maintainability, performance, security, or user experience
+7. Never add rules that:
+   - are specific to a temporary implementation detail
+   - conflict with Flutter official guidelines
+   - reduce performance, clarity, or security
+   - or depend on unstable third-party packages

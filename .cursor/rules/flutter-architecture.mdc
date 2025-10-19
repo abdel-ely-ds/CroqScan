@@ -1,0 +1,105 @@
+---
+description: Flutter architecture patterns and project structure
+alwaysApply: true
+---
+
+# Project Layout and Modularity
+
+Recommended structure:
+
+```
+lib/
+ ├─ main.dart
+ ├─ app.dart
+ ├─ core/
+ │   ├─ models/
+ │   ├─ services/
+ │   ├─ repositories/
+ │   ├─ providers/
+ │   ├─ utils/
+ │   └─ constants/
+ ├─ features/ (optional, domain-driven)
+ ├─ ui/
+ │   ├─ screens/
+ │   ├─ widgets/
+ │   └─ themes/
+ ├─ l10n/
+ └─ test/
+```
+
+**Rules**:
+
+- Keep files small (< 300 lines)
+- No business logic inside build()
+- Avoid cyclic dependencies
+- Keep data, domain logic, and UI layers clearly separated
+
+# Architecture Patterns
+
+- Prefer Clean Architecture, MVVM, or feature-first modularity
+- Split layers: Presentation / Domain / Data
+- Use repositories for all data access abstraction
+
+## Layer Separation Example
+
+```dart
+// ✅ GOOD: Clean separation of concerns
+
+// Data Layer (lib/core/repositories/)
+class UserRepository {
+  final ApiClient _apiClient;
+
+  UserRepository(this._apiClient);
+
+  Future<User> getUser(String id) async {
+    final data = await _apiClient.get('/users/$id');
+    return User.fromJson(data);
+  }
+}
+
+// Domain Layer (lib/core/models/)
+class User {
+  final String id;
+  final String name;
+  final String email;
+
+  User({required this.id, required this.name, required this.email});
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json['id'],
+      name: json['name'],
+      email: json['email'],
+    );
+  }
+}
+
+// Presentation Layer (lib/providers/)
+class UserProvider extends ChangeNotifier {
+  final UserRepository _repository;
+  User? _user;
+
+  UserProvider(this._repository);
+
+  User? get user => _user;
+
+  Future<void> loadUser(String id) async {
+    _user = await _repository.getUser(id);
+    notifyListeners();
+  }
+}
+
+// UI Layer (lib/screens/)
+class UserScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final user = context.watch<UserProvider>().user;
+    return Text(user?.name ?? 'Loading...');
+  }
+}
+```
+
+**Note**: For state management and DI details, see:
+
+- @state-management
+- @dependency-injection

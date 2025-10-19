@@ -1,0 +1,247 @@
+---
+description: State management patterns with Provider/Riverpod/Bloc
+alwaysApply: true
+---
+
+# State Management Best Practices
+
+## Choose the Right Solution
+
+- **Simple apps** → Provider + ChangeNotifier
+- **Medium apps** → Provider + Selector/Consumer
+- **Complex apps** → Riverpod or Bloc
+- **Avoid** putting complex logic in setState()
+
+## Provider Pattern (Simple Apps)
+
+### Basic ChangeNotifier
+
+```dart
+// ✅ GOOD: Simple counter provider
+class CounterProvider extends ChangeNotifier {
+  int _count = 0;
+
+  int get count => _count;
+
+  void increment() {
+    _count++;
+    notifyListeners();
+  }
+
+  void reset() {
+    _count = 0;
+    notifyListeners();
+  }
+}
+
+// Setup in main.dart
+void main() {
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => CounterProvider(),
+      child: MyApp(),
+    ),
+  );
+}
+
+// Usage in widget
+class CounterScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // Watch rebuilds widget on any change
+    final counter = context.watch<CounterProvider>();
+
+    return Column(
+      children: [
+        Text('Count: ${counter.count}'),
+        ElevatedButton(
+          // Read doesn't rebuild widget
+          onPressed: () => context.read<CounterProvider>().increment(),
+          child: const Text('Increment'),
+        ),
+      ],
+    );
+  }
+}
+```
+
+## Limit Rebuilds with Selector
+
+```dart
+// ✅ GOOD: Only rebuild when specific value changes
+class MyWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Selector<CounterProvider, int>(
+      selector: (_, provider) => provider.count,
+      builder: (_, count, __) {
+        // Only rebuilds when count changes
+        return Text('Count: $count');
+      },
+    );
+  }
+}
+```
+
+## Consumer for Partial Rebuilds
+
+```dart
+// ✅ GOOD: Only rebuild part of widget tree
+class MyWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        // This doesn't rebuild
+        const Text('Static header'),
+
+        // Only this rebuilds
+        Consumer<CounterProvider>(
+          builder: (_, counter, __) {
+            return Text('Count: ${counter.count}');
+          },
+        ),
+
+        // This doesn't rebuild
+        const Text('Static footer'),
+      ],
+    );
+  }
+}
+```
+
+## Complex State with Multiple Providers
+
+```dart
+// Setup multiple providers
+void main() {
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => CartProvider()),
+        // Depends on AuthProvider
+        ChangeNotifierProxyProvider<AuthProvider, OrderProvider>(
+          create: (_) => OrderProvider(null),
+          update: (_, auth, previous) => OrderProvider(auth.user),
+        ),
+      ],
+      child: MyApp(),
+    ),
+  );
+}
+```
+
+## Async State Management
+
+```dart
+class UserProvider extends ChangeNotifier {
+  User? _user;
+  bool _isLoading = false;
+  String? _error;
+
+  User? get user => _user;
+  bool get isLoading => _isLoading;
+  String? get error => _error;
+
+  Future<void> fetchUser(String id) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      _user = await _userRepository.fetchUser(id);
+      _isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      _error = e.toString();
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+}
+
+// Usage
+class UserScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Selector<UserProvider, ({bool loading, String? error, User? user})>(
+      selector: (_, provider) => (
+        loading: provider.isLoading,
+        error: provider.error,
+        user: provider.user,
+      ),
+      builder: (_, state, __) {
+        if (state.loading) return const CircularProgressIndicator();
+        if (state.error != null) return Text('Error: ${state.error}');
+        if (state.user == null) return const Text('No user');
+        return Text('Hello ${state.user!.name}');
+      },
+    );
+  }
+}
+```
+
+## Avoid Common Pitfalls
+
+```dart
+// ❌ BAD: Don't use context.watch in callbacks
+ElevatedButton(
+  onPressed: () {
+    final counter = context.watch<CounterProvider>(); // ERROR!
+    counter.increment();
+  },
+)
+
+// ✅ GOOD: Use context.read in callbacks
+ElevatedButton(
+  onPressed: () {
+    context.read<CounterProvider>().increment();
+  },
+)
+
+// ❌ BAD: Complex logic in setState
+setState(() {
+  // Complex calculation
+  // API calls
+  // Multiple state updates
+});
+
+// ✅ GOOD: Move logic to provider
+class MyProvider extends ChangeNotifier {
+  Future<void> complexOperation() async {
+    // All logic here
+    notifyListeners();
+  }
+}
+```
+
+## Testing State Management
+
+```dart
+void main() {
+  test('CounterProvider increments', () {
+    final provider = CounterProvider();
+    expect(provider.count, 0);
+
+    provider.increment();
+    expect(provider.count, 1);
+
+    provider.increment();
+    expect(provider.count, 2);
+  });
+
+  test('CounterProvider notifies listeners', () {
+    final provider = CounterProvider();
+    var notified = false;
+
+    provider.addListener(() {
+      notified = true;
+    });
+
+    provider.increment();
+    expect(notified, isTrue);
+  });
+}
+```

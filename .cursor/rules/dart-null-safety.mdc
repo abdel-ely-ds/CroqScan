@@ -1,0 +1,48 @@
+---
+description: Dart null safety, code quality, security, and error handling
+alwaysApply: true
+---
+
+# Language and Null Safety
+
+- Enforce Dart null-safety (SDK >= 2.12)
+- Initialize all non-nullable variables or mark as required/late
+- Use final for immutability where possible
+- Avoid dynamic unless absolutely necessary
+- Use const constructors where possible
+
+# Code Quality and Linting
+
+- Use flutter_lints or effective_dart
+- Enforce dart format
+- Run flutter analyze before commit
+- Keep build() methods minimal and readable
+- Document public APIs with /// comments
+
+# Error Handling & Logging
+
+- Centralize async error handling with try/catch
+- Capture global errors via FlutterError.onError
+- Use structured logging (e.g., logger package)
+- Integrate crash reporting (Sentry / Firebase Crashlytics)
+- Never silently swallow exceptions
+
+# Security
+
+- Never commit secrets or API keys
+- Use flutter_secure_storage for sensitive data
+- Obfuscate release builds
+- Sanitize user inputs and outputs
+- Keep dependencies up to date and scan for vulnerabilities
+
+# UI Regression & Golden Testing
+
+1. For each key screen or reusable widget, create a golden test comparing the current UI rendering with a reference image
+2. Cursor should:
+   - Generate golden test templates automatically when a new screen or widget is added
+   - Update golden images only if approved changes are intentional
+   - Avoid false positives by stabilizing animations, fonts, and device size during tests
+3. For any UI change:
+   - Run golden tests to detect visual regressions
+   - If differences are detected, flag them in tests before merging
+4. Organize golden images under `test/goldens/` for maintainability

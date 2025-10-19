@@ -1,0 +1,49 @@
+---
+description: Data models, local storage, networking, assets, and dependencies
+globs:
+  [
+    "lib/core/models/**/*.dart",
+    "lib/core/services/**/*.dart",
+    "lib/core/repositories/**/*.dart",
+    "pubspec.yaml",
+    "assets/**/*",
+  ]
+alwaysApply: true
+---
+
+# Data Models & Serialization
+
+- Use json_serializable or freezed for immutable, equality-safe models
+- Keep models lightweight and pure (no UI logic)
+- Validate and sanitize input data
+- Version data if persisted locally
+
+# Local Storage
+
+- Simple data → SharedPreferences
+- Structured data → sqflite, sembast, or hive
+- Secrets → flutter_secure_storage
+- Wrap storage logic in repository/service classes
+
+# Networking & API
+
+- Use http or dio (prefer dio for interceptors, cancellation)
+- Implement retry & timeout logic
+- Abstract API clients behind services
+- Handle all errors centrally
+- Mock HTTP calls in unit tests
+
+# Assets & Fonts
+
+- Store assets under assets/images, assets/icons, assets/fonts
+- Use SVGs (flutter_svg) or WebP for optimized assets
+- Declare all assets explicitly in pubspec.yaml
+- Optimize image size for mobile targets
+
+# Dependency Management
+
+- Prefer maintained packages with null-safety
+- Avoid adding a package for trivial tasks
+- Use semantic versioning in pubspec.yaml
+- Regularly run flutter pub outdated
+- Audit transitive dependencies occasionally

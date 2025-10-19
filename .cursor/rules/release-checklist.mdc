@@ -1,0 +1,33 @@
+---
+description: Release and packaging checklist for production builds
+alwaysApply: true
+---
+
+# Release & Packaging
+
+- Use Android App Bundle (AAB) for Play Store
+- Sign release builds properly
+- Use semantic versioning (versionCode/versionName)
+- Split per ABI for smaller download sizes
+- Test on multiple physical devices and OS versions
+
+# Pre-Release Checklist
+
+Before releasing a new version:
+
+- [ ] Run `flutter analyze` with 0 errors
+- [ ] Run all tests (`flutter test`)
+- [ ] Test on real devices (Android + iOS)
+- [ ] Verify localization works (EN + FR)
+- [ ] Test dark/light themes
+- [ ] Verify accessibility (VoiceOver/TalkBack)
+- [ ] Check performance (60 FPS, no jank)
+- [ ] Test ads (if applicable)
+- [ ] Verify premium features work
+- [ ] Update CHANGELOG.md
+- [ ] Update version in pubspec.yaml
+- [ ] Run `flutter pub outdated` and update dependencies
+- [ ] Test on different screen sizes
+- [ ] Verify all assets load correctly
+- [ ] Test offline functionality
+- [ ] Check app size and optimize if needed

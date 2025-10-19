@@ -1,0 +1,274 @@
+---
+description: Dependency injection patterns with get_it and Provider
+alwaysApply: true
+---
+
+# Dependency Injection Best Practices
+
+## Use get_it or Riverpod
+
+- **get_it** - Simple service locator
+- **Provider** - For state management + DI
+- **Riverpod** - Advanced DI with compile-time safety
+
+## get_it Pattern (Service Locator)
+
+### Setup Service Locator
+
+```dart
+import 'package:get_it/get_it.dart';
+
+final getIt = GetIt.instance;
+
+void setupDependencies() {
+  // Singletons (shared instance)
+  getIt.registerSingleton<ApiClient>(ApiClient());
+  getIt.registerSingleton<DatabaseService>(DatabaseService());
+
+  // Lazy singletons (created on first use)
+  getIt.registerLazySingleton<PreferencesService>(
+    () => PreferencesService(),
+  );
+
+  // Factories (new instance every time)
+  getIt.registerFactory<UserRepository>(
+    () => UserRepository(
+      apiClient: getIt<ApiClient>(),
+      database: getIt<DatabaseService>(),
+    ),
+  );
+
+  // Abstract classes / Interfaces
+  getIt.registerLazySingleton<IAuthService>(
+    () => AuthService(getIt<ApiClient>()),
+  );
+}
+
+// In main.dart
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  setupDependencies();
+  runApp(MyApp());
+}
+```
+
+### Use Dependencies
+
+```dart
+// ✅ GOOD: Inject dependencies via constructor
+class UserRepository {
+  final ApiClient _apiClient;
+  final DatabaseService _database;
+
+  UserRepository({
+    required ApiClient apiClient,
+    required DatabaseService database,
+  })  : _apiClient = apiClient,
+        _database = database;
+
+  Future<User> getUser(String id) async {
+    final data = await _apiClient.get('/users/$id');
+    return User.fromJson(data);
+  }
+}
+
+// Usage
+final userRepo = getIt<UserRepository>();
+final user = await userRepo.getUser('123');
+```
+
+## Provider Pattern (State + DI)
+
+```dart
+// ✅ GOOD: Use Provider for DI
+void main() {
+  runApp(
+    MultiProvider(
+      providers: [
+        // Services (singletons)
+        Provider<ApiClient>(
+          create: (_) => ApiClient(),
+          dispose: (_, client) => client.dispose(),
+        ),
+        Provider<DatabaseService>(
+          create: (_) => DatabaseService(),
+        ),
+
+        // Repositories (depend on services)
+        ProxyProvider<ApiClient, UserRepository>(
+          update: (_, apiClient, __) => UserRepository(apiClient),
+        ),
+
+        // State management
+        ChangeNotifierProvider<AuthProvider>(
+          create: (context) => AuthProvider(
+            authService: context.read<IAuthService>(),
+          ),
+        ),
+      ],
+      child: MyApp(),
+    ),
+  );
+}
+```
+
+## Inject Interfaces, Not Implementations
+
+```dart
+// ✅ GOOD: Define interface
+abstract class IAuthService {
+  Future<User> login(String email, String password);
+  Future<void> logout();
+  User? get currentUser;
+}
+
+// Implementation
+class AuthService implements IAuthService {
+  final ApiClient _apiClient;
+
+  AuthService(this._apiClient);
+
+  @override
+  Future<User> login(String email, String password) async {
+    // Implementation
+  }
+
+  @override
+  Future<void> logout() async {
+    // Implementation
+  }
+
+  @override
+  User? get currentUser => _currentUser;
+}
+
+// Register interface
+getIt.registerLazySingleton<IAuthService>(
+  () => AuthService(getIt<ApiClient>()),
+);
+
+// Use interface in consumers
+class AuthProvider extends ChangeNotifier {
+  final IAuthService _authService;
+
+  AuthProvider(this._authService);
+
+  Future<void> login(String email, String password) async {
+    await _authService.login(email, password);
+    notifyListeners();
+  }
+}
+```
+
+## Keep Constructors Simple
+
+```dart
+// ❌ BAD: Complex constructor
+class MyRepository {
+  MyRepository() {
+    _init();
+    _loadCache();
+    _setupListeners();
+  }
+}
+
+// ✅ GOOD: Simple constructor + factory
+class MyRepository {
+  MyRepository._(this._apiClient);
+
+  factory MyRepository.create(ApiClient apiClient) {
+    final repo = MyRepository._(apiClient);
+    repo._init();
+    return repo;
+  }
+}
+
+// Or use DI container
+getIt.registerLazySingleton<MyRepository>(
+  () {
+    final repo = MyRepository(getIt<ApiClient>());
+    repo.init(); // Initialize after construction
+    return repo;
+  },
+);
+```
+
+## Testable DI
+
+```dart
+// ✅ GOOD: Easy to mock for testing
+class UserRepository {
+  final IApiClient _apiClient; // Interface, not concrete class
+
+  UserRepository(this._apiClient);
+
+  Future<User> getUser(String id) => _apiClient.get('/users/$id');
+}
+
+// In tests
+void main() {
+  test('getUser returns user', () async {
+    // Mock the interface
+    final mockApi = MockApiClient();
+    when(mockApi.get('/users/123'))
+      .thenAnswer((_) async => {'id': '123', 'name': 'John'});
+
+    final repo = UserRepository(mockApi);
+    final user = await repo.getUser('123');
+
+    expect(user.name, 'John');
+  });
+}
+```
+
+## Dependency Graph Example
+
+```dart
+// Layer 1: Core services (no dependencies)
+getIt.registerSingleton<HttpClient>(HttpClient());
+getIt.registerSingleton<SecureStorage>(SecureStorage());
+
+// Layer 2: API clients (depend on Layer 1)
+getIt.registerSingleton<ApiClient>(
+  ApiClient(httpClient: getIt<HttpClient>()),
+);
+
+// Layer 3: Repositories (depend on Layer 2)
+getIt.registerLazySingleton<IUserRepository>(
+  () => UserRepository(
+    apiClient: getIt<ApiClient>(),
+    storage: getIt<SecureStorage>(),
+  ),
+);
+
+// Layer 4: Business logic (depend on Layer 3)
+getIt.registerFactory<LoginUseCase>(
+  () => LoginUseCase(
+    userRepository: getIt<IUserRepository>(),
+  ),
+);
+```
+
+## Environment-Based DI
+
+```dart
+enum Environment { dev, staging, prod }
+
+void setupDependencies(Environment env) {
+  switch (env) {
+    case Environment.dev:
+      getIt.registerSingleton<IApiClient>(MockApiClient());
+      break;
+    case Environment.staging:
+      getIt.registerSingleton<IApiClient>(
+        ApiClient(baseUrl: 'https://staging-api.example.com'),
+      );
+      break;
+    case Environment.prod:
+      getIt.registerSingleton<IApiClient>(
+        ApiClient(baseUrl: 'https://api.example.com'),
+      );
+      break;
+  }
+}
+```

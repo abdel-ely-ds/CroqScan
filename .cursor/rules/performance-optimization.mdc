@@ -1,0 +1,47 @@
+---
+description: Performance optimization best practices for Flutter widgets
+alwaysApply: true
+---
+
+# Performance Best Practices
+
+- Use const constructors where possible
+- Offload expensive work from build() and initState()
+- Debounce TextField inputs (200–300 ms)
+- Use compute() or Isolate for CPU-heavy tasks
+- Use ListView.builder / GridView.builder to avoid full rebuilds
+- Cache images and use lightweight formats (WebP)
+- Wrap complex widgets in RepaintBoundary
+- Monitor with performance overlay and DevTools
+- Target 60 FPS, no frame >16ms
+
+# Widget Performance Checklist
+
+For each widget/screen:
+
+1. Use const constructors wherever possible
+2. Apply Selector / Consumer to reduce unnecessary rebuilds
+3. Wrap complex widgets with RepaintBoundary
+4. Offload heavy computations to compute() or Isolate
+5. Debounce TextField inputs for high-frequency events
+6. Use ListView.builder or GridView.builder for lists
+7. Cache images and prefer WebP or optimized formats
+
+# Performance Thresholds
+
+Flag widget for optimization if:
+
+- FPS < 60
+- Frame > 16ms
+- Excessive rebuilds or high memory allocation
+
+# Automated Performance Tests
+
+- Generate performance tests using WidgetTester and DevTools metrics
+- Measure FPS, frame times, widget rebuild counts, and memory usage
+- Ensure scrolling lists, image-heavy widgets, and forms are tested
+- Integrate tests into CI to prevent regressions
+- Generate clear reports on:
+  - FPS drops
+  - Excessive rebuilds
+  - Expensive widget trees

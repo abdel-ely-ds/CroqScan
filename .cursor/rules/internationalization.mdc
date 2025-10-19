@@ -1,0 +1,225 @@
+---
+description: Internationalization (i18n) - ARB-based localization with French as primary language
+alwaysApply: true
+---
+
+# 🌍 Internationalization (i18n)
+
+## Current Language Support
+
+**The app currently supports French only, but uses ARB infrastructure for easy future expansion.**
+
+- Primary language: French 🇫🇷
+- Additional languages: Ready to add (English, Spanish, etc.)
+- Architecture: ARB + flutter_localizations
+
+## Why Use i18n with One Language?
+
+**Future-proof architecture:**
+
+- ✅ Easy to add new languages later (just add .arb file)
+- ✅ No code refactoring needed when adding languages
+- ✅ Centralized text management
+- ✅ Professional app structure
+- ✅ Separates content from code
+
+## Implementation Rules
+
+### 1. Setup (Required)
+
+**pubspec.yaml:**
+
+```yaml
+dependencies:
+  flutter_localizations:
+    sdk: flutter
+  intl: any
+
+flutter:
+  generate: true
+```
+
+**l10n.yaml:**
+
+```yaml
+arb-dir: lib/l10n
+template-arb-file: app_fr.arb
+output-localization-file: app_localizations.dart
+```
+
+### 2. ARB Files
+
+**lib/l10n/app_fr.arb** (Primary):
+
+```json
+{
+  "@@locale": "fr",
+  "appTitle": "PetScan",
+  "addToFavorites": "Ajouter aux favoris",
+  "healthScore": "Score Santé",
+  "@healthScore": {
+    "description": "Label for health score section"
+  }
+}
+```
+
+**Future languages** (when needed):
+
+- `app_en.arb` for English
+- `app_es.arb` for Spanish
+- etc.
+
+### 3. Code Usage
+
+**ALWAYS use AppLocalizations, NEVER hardcode strings:**
+
+```dart
+// ✅ GOOD: Using l10n
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+class MyWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Text(l10n.addToFavorites);
+  }
+}
+
+// ❌ BAD: Hardcoded text
+class MyWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Text('Ajouter aux favoris'); // NEVER do this
+  }
+}
+```
+
+### 4. App Configuration
+
+**lib/app.dart:**
+
+```dart
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+MaterialApp(
+  localizationsDelegates: const [
+    AppLocalizations.delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+  ],
+  supportedLocales: const [
+    Locale('fr'), // French (current)
+    // Locale('en'), // English (when ready)
+  ],
+  locale: const Locale('fr'), // Default locale
+)
+```
+
+### 5. Adding New Languages (Future)
+
+**Easy 3-step process:**
+
+1. **Create ARB file** (30 min):
+
+   ```bash
+   cp lib/l10n/app_fr.arb lib/l10n/app_en.arb
+   # Translate values to English
+   ```
+
+2. **Add locale** (2 min):
+
+   ```dart
+   supportedLocales: const [
+     Locale('fr'),
+     Locale('en'), // Added
+   ],
+   ```
+
+3. **Add language switcher** (1 hour):
+   ```dart
+   // In settings/profile
+   DropdownButton<Locale>(
+     value: currentLocale,
+     items: [
+       DropdownMenuItem(value: Locale('fr'), child: Text('Français')),
+       DropdownMenuItem(value: Locale('en'), child: Text('English')),
+     ],
+     onChanged: (locale) => _changeLanguage(locale),
+   )
+   ```
+
+**Total time to add a language: ~2-3 hours** (vs 12-15 hours if refactoring from hardcoded)
+
+## Code & Documentation Language
+
+**All source code, comments, and documentation must be in English:**
+
+- ✅ Variable names in English
+- ✅ Function names in English
+- ✅ Class names in English
+- ✅ Comments in English
+- ✅ Documentation (README, etc.) in English
+- ✅ Git commits in English
+
+## Finding Violations
+
+**Check for hardcoded strings:**
+
+```bash
+# Should return 0 (or only comments/debug)
+grep -r "Text('" lib/ | grep -v "AppLocalizations"
+```
+
+## Text Categories
+
+**All text must use l10n:**
+
+- Buttons and labels
+- Error messages
+- Empty states
+- Placeholders
+- Tooltips
+- Snackbar messages
+- Dialog titles/content
+- Navigation labels
+
+## Testing
+
+**Required tests:**
+
+- Verify all ARB keys exist
+- Test that missing keys throw errors (not fail silently)
+- Test locale switching (when multiple languages added)
+
+```dart
+test('All strings use localization', () {
+  final l10n = AppLocalizations.of(context)!;
+  expect(l10n.appTitle, isNotEmpty);
+  expect(l10n.addToFavorites, isNotEmpty);
+});
+```
+
+## Benefits of This Approach
+
+1. **Future-proof**: Easy to add languages
+2. **Centralized**: All text in one place
+3. **Type-safe**: Compile-time checking
+4. **Professional**: Standard Flutter practice
+5. **Maintainable**: Clear separation of content and code
+
+## Migration Strategy
+
+**Current state**: Hardcoded French strings exist
+**Target**: All strings use AppLocalizations
+
+**Gradual migration:**
+
+1. Setup infrastructure (l10n.yaml, app_fr.arb)
+2. Configure app to use AppLocalizations
+3. Replace strings screen by screen
+4. Use grep to find remaining hardcoded strings
+5. Verify with tests
+
+**Estimated effort**: 6-8 hours to migrate existing strings

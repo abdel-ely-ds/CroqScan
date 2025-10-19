@@ -1,0 +1,81 @@
+---
+description: UI/UX design system and responsive design patterns
+alwaysApply: true
+---
+
+# UI / Design System
+
+- Centralize colors, typography, and spacing in ui/themes/
+- Always use Theme.of(context) for dynamic styling
+- Build reusable widgets (buttons, inputs, cards)
+- Implement light/dark themes
+- Prepare responsive variants (small / medium / large screens)
+
+# Responsive & Adaptive UI
+
+- Use LayoutBuilder and MediaQuery for responsive design
+- Define breakpoints for phone/tablet layouts
+- Follow Material or Cupertino design per platform
+- Avoid hardcoded sizes; use flexible layouts
+
+## Example: Responsive Layout
+
+```dart
+class ResponsiveLayout extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < 600) {
+          // Mobile layout
+          return MobileLayout();
+        } else if (constraints.maxWidth < 1200) {
+          // Tablet layout
+          return TabletLayout();
+        } else {
+          // Desktop layout
+          return DesktopLayout();
+        }
+      },
+    );
+  }
+}
+```
+
+## Theme Usage
+
+```dart
+// ✅ GOOD: Use theme for dynamic styling
+Container(
+  color: Theme.of(context).colorScheme.primary,
+  child: Text(
+    'Hello',
+    style: Theme.of(context).textTheme.headlineMedium,
+  ),
+)
+
+// Define themes in ui/themes/
+class AppTheme {
+  static ThemeData lightTheme = ThemeData(
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: Colors.blue,
+      brightness: Brightness.light,
+    ),
+    textTheme: GoogleFonts.poppinsTextTheme(),
+  );
+
+  static ThemeData darkTheme = ThemeData(
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: Colors.blue,
+      brightness: Brightness.dark,
+    ),
+    textTheme: GoogleFonts.poppinsTextTheme(),
+  );
+}
+```
+
+**Note**: For animations, forms, and state restoration, see:
+
+- @animations
+- @forms-input
+- @state-restoration

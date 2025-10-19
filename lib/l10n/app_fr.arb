@@ -1,0 +1,189 @@
+{
+  "@@locale": "fr",
+  
+  "appTitle": "PetScan",
+  "@appTitle": {
+    "description": "Titre de l'application"
+  },
+  
+  "welcomeBack": "Bonjour",
+  "forYourPet": "Des produits sains pour {petName} 🐾",
+  "@forYourPet": {
+    "description": "Message d'accueil personnalisé",
+    "placeholders": {
+      "petName": {
+        "type": "String"
+      }
+    }
+  },
+  
+  "scanProduct": "Scanner un produit",
+  "recentProducts": "Mes derniers produits",
+  "recommendations": "Recommandations",
+  "exploreByCategory": "Explorer par catégorie",
+  
+  "dryFood": "Croquettes",
+  "wetFood": "Pâtées",
+  "treats": "Friandises",
+  "supplements": "Compléments",
+  
+  "home": "Accueil",
+  "search": "Recherche",
+  "scanner": "Scanner",
+  "favorites": "Favoris",
+  "profile": "Profil",
+  
+  "addToFavorites": "Ajouter aux favoris",
+  "addedToFavorites": "Ajouté à vos favoris",
+  "removedFromFavorites": "Retiré de vos favoris",
+  "removeFromFavorites": "Retirer des favoris",
+  
+  "globalHealthScore": "Score Santé Global",
+  "nutritionalValues": "Valeurs Nutritionnelles",
+  "per100g": "Pour 100g de produit",
+  "ingredients": "Ingrédients",
+  "analysis": "Analyse",
+  "description": "Description",
+  "information": "Informations",
+  
+  "protein": "Protéines",
+  "fat": "Matières grasses",
+  "fiber": "Fibres",
+  "ash": "Cendres",
+  "moisture": "Humidité",
+  "energy": "Énergie",
+  
+  "goodIngredients": "Bon",
+  "watchOutIngredients": "À surveiller",
+  "positivePoints": "Points positifs",
+  "attentionPoints": "Points d'attention",
+  
+  "categories": "Catégories",
+  "origin": "Origine",
+  "brand": "Marque",
+  
+  "scoreExcellent": "Excellent",
+  "scoreVeryGood": "Très bon",
+  "scoreGood": "Bon",
+  "scoreMediocre": "Moyen",
+  "scoreFair": "Passable",
+  "scorePoor": "Médiocre",
+  "scoreAvoid": "À éviter",
+  
+  "noFavoritesYet": "Aucun favori pour le moment",
+  "noFavoritesDescription": "Scannez ou recherchez des produits pour les ajouter à vos favoris",
+  "scanAProduct": "Scanner un produit",
+  "exploreCategories": "Explorer les catégories",
+  
+  "myFavorites": "Mes Favoris",
+  "favoriteCount": "{count} produit",
+  "@favoriteCount": {
+    "description": "Nombre de favoris",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "favoriteCountPlural": "{count} produits",
+  "@favoriteCountPlural": {
+    "description": "Nombre de favoris (pluriel)",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  
+  "searchPlaceholder": "Rechercher un produit...",
+  "searchByName": "Nom du produit",
+  "filters": "Filtres",
+  "resetFilters": "Réinitialiser",
+  "applyFilters": "Appliquer",
+  "selectAnimal": "Sélectionner un animal",
+  "selectCategory": "Sélectionner une catégorie",
+  "selectSubCategory": "Sélectionner une sous-catégorie",
+  
+  "dog": "Chien",
+  "cat": "Chat",
+  "bird": "Oiseau",
+  "rabbit": "Lapin",
+  "other": "Autre",
+  
+  "noResultsFound": "Aucun résultat trouvé",
+  "tryDifferentSearch": "Essayez une autre recherche ou ajustez les filtres",
+  
+  "scannerTitle": "Scanner",
+  "scanInstructions": "Placez le code-barres dans le cadre",
+  "scanningProduct": "Scan en cours...",
+  "productFound": "Produit trouvé !",
+  
+  "myProfile": "Mon Profil",
+  "myPet": "Mon Animal",
+  "animalInfo": "Informations de l'animal",
+  "foodPreferences": "Préférences Alimentaires",
+  "appSettings": "Paramètres",
+  
+  "name": "Nom",
+  "type": "Type",
+  "age": "Âge",
+  "weight": "Poids",
+  "breed": "Race",
+  "neutered": "Stérilisé",
+  
+  "yes": "Oui",
+  "no": "Non",
+  
+  "signInWithApple": "Continuer avec Apple",
+  "continueWithoutAccount": "Continuer sans compte",
+  "logout": "Déconnexion",
+  "deleteAccount": "Supprimer le compte",
+  
+  "guestMode": "Mode Invité",
+  "notConnected": "Vous n'êtes pas connecté",
+  "connectPrompt": "Connectez-vous pour sauvegarder vos données",
+  
+  "edit": "Modifier",
+  "save": "Enregistrer",
+  "cancel": "Annuler",
+  "delete": "Supprimer",
+  "confirm": "Confirmer",
+  
+  "loading": "Chargement...",
+  "error": "Erreur",
+  "retry": "Réessayer",
+  "refresh": "Actualiser",
+  
+  "shareProduct": "Partager",
+  "shareFunctionalityComingSoon": "📤 Fonctionnalité de partage à venir",
+  
+  "pullToRefresh": "Tirer pour actualiser",
+  
+  "kcal": "kcal",
+  "grams": "g",
+  "percent": "%",
+  
+  "welcome": "Bienvenue sur PetScan",
+  "welcomeDescription": "Analyse pour animaux",
+  
+  "confirmLogout": "Confirmer la déconnexion",
+  "confirmLogoutMessage": "Êtes-vous sûr de vouloir vous déconnecter ?",
+  "confirmDeleteAccount": "Supprimer le compte",
+  "confirmDeleteAccountMessage": "Cette action est irréversible. Toutes vos données seront supprimées.",
+  
+  "logoutSuccess": "Déconnexion réussie",
+  "loginSuccess": "Connexion réussie ! Bienvenue {name}",
+  "@loginSuccess": {
+    "description": "Message de succès de connexion",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  
+  "authError": "Erreur d'authentification",
+  "networkError": "Erreur réseau",
+  "unknownError": "Erreur inconnue"
+}
+

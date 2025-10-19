@@ -1,0 +1,41 @@
+---
+description: Accessibility (a11y) requirements and WCAG AA compliance
+alwaysApply: true
+---
+
+# Accessibility (a11y) Requirements
+
+- Use Semantics widgets for interactive elements
+- Maintain minimum touch target size (48x48 dp)
+- Support dynamic text scaling
+- Ensure contrast ratio meets WCAG AA
+- Add accessible labels for images, buttons, and inputs
+- Control focus order with FocusScope and traversal policies
+- Test with TalkBack (Android) and VoiceOver (iOS)
+
+# Enhanced Accessibility Testing
+
+1. Automate accessibility tests to validate:
+
+   - Semantics tree structure
+   - Labels for all interactive elements
+   - Focus order
+   - Dynamic text scaling
+
+2. Test TalkBack (Android) and VoiceOver (iOS) behavior programmatically
+
+3. Validate contrast ratios dynamically for light and dark themes
+
+4. Ensure widgets respect:
+
+   - Reduced motion preferences
+   - Accessibility settings
+
+5. Include accessibility checks in CI to prevent regressions
+
+6. Flag violations:
+
+   - Missing accessibility labels
+   - Incorrect focus order
+   - WCAG AA standards violations
+   - Touch targets < 48x48 dp
