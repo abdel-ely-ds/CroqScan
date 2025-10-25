@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/services/scan_history_service.dart';
 import '../../core/services/profile_service.dart';
-import 'scanner_screen.dart';
-import 'search_screen_new.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final Function(int)? onNavigateToTab;
+  
+  const HomeScreen({super.key, this.onNavigateToTab});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -142,13 +142,8 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icons.qr_code_scanner_rounded,
             color: AppColors.pastelPeach,
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const ScannerScreen(),
-                  fullscreenDialog: true,
-                ),
-              );
+              // Navigate to scanner tab (index 2)
+              widget.onNavigateToTab?.call(2);
             },
           ),
           const SizedBox(height: 12),
@@ -158,12 +153,8 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icons.search_rounded,
             color: AppColors.pastelMint,
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SearchScreenNew(),
-                ),
-              );
+              // Navigate to search tab (index 1)
+              widget.onNavigateToTab?.call(1);
             },
           ),
           const SizedBox(height: 12),
@@ -173,8 +164,8 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icons.favorite_rounded,
             color: AppColors.pastelLavender,
             onTap: () {
-              // Navigate to favorites (via navigation bar)
-              DefaultTabController.of(context).animateTo(3);
+              // Navigate to favorites tab (index 3)
+              widget.onNavigateToTab?.call(3);
             },
           ),
         ],

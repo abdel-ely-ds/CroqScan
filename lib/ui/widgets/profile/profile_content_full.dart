@@ -12,6 +12,7 @@ class ProfileContentFull extends StatelessWidget {
   final AnimalProfile profile;
   final UserInfo? appleUser;
   final VoidCallback onLogin;
+  final VoidCallback onGoogleLogin;
   final VoidCallback onLogout;
 
   const ProfileContentFull({
@@ -19,6 +20,7 @@ class ProfileContentFull extends StatelessWidget {
     required this.profile,
     required this.appleUser,
     required this.onLogin,
+    required this.onGoogleLogin,
     required this.onLogout,
   });
 
@@ -123,6 +125,7 @@ class ProfileContentFull extends StatelessWidget {
             AccountCardFull(
               appleUser: appleUser,
               onLogin: onLogin,
+              onGoogleLogin: onGoogleLogin,
               onLogout: onLogout,
               buildDetailRow: ProfileBuildHelpers.buildDetailRow,
             ),
@@ -187,59 +190,6 @@ class ProfileContentFull extends StatelessWidget {
             ),
 
             const SizedBox(height: 24),
-
-            // Bouton de connexion (si mode invité)
-            if (appleUser == null)
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.1),
-                      blurRadius: 15,
-                      offset: const Offset(0, 6),
-                    ),
-                  ],
-                ),
-                child: ElevatedButton.icon(
-                  onPressed: onLogin,
-                  icon: const Icon(Icons.apple, size: 24),
-                  label: const Text(
-                    'Se connecter avec Apple',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 18),
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                  ),
-                ),
-              )
-            else
-              // Bouton de déconnexion (si connecté avec Apple)
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton.icon(
-                  onPressed: onLogout,
-                  icon: const Icon(Icons.logout_rounded),
-                  label: const Text(
-                    'Se déconnecter',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.red.shade400,
-                    padding: const EdgeInsets.symmetric(vertical: 18),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    side: BorderSide(color: Colors.red.shade400, width: 2),
-                  ),
-                ),
-              ),
           ],
         ),
       ),

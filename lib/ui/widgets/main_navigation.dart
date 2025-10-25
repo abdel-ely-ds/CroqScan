@@ -31,8 +31,8 @@ class _MainNavigationState extends State<MainNavigation> {
   // Construire les écrans à la demande
   // Le scanner n'est PAS dans l'IndexedStack pour éviter qu'il reste actif
   List<Widget> get _screens => [
-    const HomeScreen(),
-    const SearchScreenNew(),
+    HomeScreen(onNavigateToTab: _onTabTapped),
+    SearchScreenNew(),
     FavoritesScreen(key: _favoritesKey), // Avec clé pour forcer rebuild
     const ProfileScreen(),
   ];

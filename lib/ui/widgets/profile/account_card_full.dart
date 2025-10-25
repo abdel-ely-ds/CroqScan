@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/services/auth_service.dart';
 
@@ -6,6 +7,7 @@ import '../../../core/services/auth_service.dart';
 class AccountCardFull extends StatelessWidget {
   final UserInfo? appleUser;
   final VoidCallback onLogin;
+  final VoidCallback onGoogleLogin;
   final VoidCallback onLogout;
   final Widget Function(IconData, String, String) buildDetailRow;
 
@@ -13,6 +15,7 @@ class AccountCardFull extends StatelessWidget {
     super.key,
     required this.appleUser,
     required this.onLogin,
+    required this.onGoogleLogin,
     required this.onLogout,
     required this.buildDetailRow,
   });
@@ -117,18 +120,44 @@ class AccountCardFull extends StatelessWidget {
               ),
             )
           else
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: onLogin,
-                icon: const Icon(Icons.apple),
-                label: const Text('Se connecter avec Apple'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
+            Column(
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: onLogin,
+                    icon: const FaIcon(
+                      FontAwesomeIcons.apple,
+                      color: Colors.white,
+                      size: 18,
+                    ),
+                    label: const Text('Se connecter avec Apple'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                    ),
+                  ),
                 ),
-              ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: onGoogleLogin,
+                    icon: const FaIcon(
+                      FontAwesomeIcons.google,
+                      color: Colors.white,
+                      size: 18,
+                    ),
+                    label: const Text('Se connecter avec Google'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                    ),
+                  ),
+                ),
+              ],
             ),
         ],
       ),

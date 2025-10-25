@@ -131,6 +131,90 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  Future<void> _handleGoogleLogin() async {
+    final l10n = AppLocalizations.of(context)!;
+
+    // Afficher un message de confirmation avant de se connecter
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            const Icon(Icons.login, color: Colors.blue),
+            const SizedBox(width: 12),
+            Text(l10n.signIn),
+          ],
+        ),
+        content: const Text(
+          'Connectez-vous avec votre compte Google pour :\n\n'
+          '✅ Sauvegarder vos données de manière sécurisée\n'
+          '✅ Accéder à vos favoris depuis plusieurs appareils (futur)\n'
+          '✅ Synchroniser votre profil\n\n'
+          'Vos favoris et données actuels seront conservés.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Annuler'),
+          ),
+          ElevatedButton.icon(
+            onPressed: () => Navigator.pop(context, true),
+            icon: const Icon(Icons.login),
+            label: Text(l10n.continueButton),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.white,
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true && mounted) {
+      setState(() {
+        _isLoading = true;
+      });
+
+      final result = await AuthService.signInWithGoogle();
+
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+
+        if (result.success) {
+          // Connexion réussie - recharger le profil
+          await _loadProfile();
+
+          if (!mounted) return;
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Row(
+                children: [
+                  const Icon(Icons.check_circle, color: Colors.white),
+                  const SizedBox(width: 12),
+                  Text(l10n.loginSuccess),
+                ],
+              ),
+              backgroundColor: AppColors.scoreExcellent,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        } else if (!result.canceled) {
+          // Erreur (sauf annulation)
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(result.error ?? 'Erreur de connexion'),
+              backgroundColor: Colors.red,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        }
+      }
+    }
+  }
+
   Future<void> _handleLogout() async {
     final l10n = AppLocalizations.of(context)!;
 
@@ -224,6 +308,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 profile: _profile!,
                 appleUser: _appleUser,
                 onLogin: _handleLogin,
+                onGoogleLogin: _handleGoogleLogin,
                 onLogout: _handleLogout,
               ),
 

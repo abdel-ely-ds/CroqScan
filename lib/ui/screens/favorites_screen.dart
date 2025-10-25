@@ -164,7 +164,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Mes Favoris ❤️', // AppLocalizations not available in sliver header
+                      'Mes Favoris',
                       style: const TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
@@ -173,7 +173,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                     ),
                     Text(
                       favoriteProducts.isEmpty
-                          ? 'Tes coups de cœur ici 💕'
+                          ? 'Tes coups de cœur ici'
                           : '${favoriteProducts.length} produit${favoriteProducts.length > 1 ? 's' : ''} sauvegardé${favoriteProducts.length > 1 ? 's' : ''}',
                       style: const TextStyle(
                         fontSize: 14,
@@ -367,7 +367,6 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
               child: ProductCard(
                 product: product,
                 isFavorite: true,
-                onFavoriteToggle: () => _removeFavorite(product.barcode),
                 onTap: () {
                   Navigator.push(
                     context,
